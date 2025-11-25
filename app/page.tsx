@@ -44,8 +44,7 @@ export default function HomePage() {
                   </motion.div>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-black text-[#e0e0e0] tracking-tighter">GITRACK</span>
-                  <span className="text-xl font-black text-[#666]">.ME</span>
+                  <span className="text-xl font-black text-[#e0e0e0] tracking-tighter">GITRACK</span>                  
                 </div>
               </motion.div>
             </Link>
@@ -135,7 +134,7 @@ export default function HomePage() {
             >
               <Link href="/login">
                 <motion.div className="relative inline-block group" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                  <Button size="lg" className="relative bg-[#e0e0e0] text-[#1f1f1f] hover:bg-[#d0d0d0] px-12 py-8 text-lg font-bold rounded-2xl tracking-wide transition-colors duration-300">
+                  <Button size="lg" className="relative bg-[#e0e0e0] text-[#1f1f1f] hover:bg-[#d0d0d0] px-12 py-8 text-lg font-bold rounded-xl tracking-wide transition-colors duration-300">
                     <Github className="mr-3 h-6 w-6" />
                     ANALYZE NOW
                     <motion.div className="ml-3" animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
@@ -146,7 +145,7 @@ export default function HomePage() {
               </Link>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} className="flex items-center justify-center gap-12 pt-16 text-sm font-mono text-[#666]">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} className="flex items-center justify-center gap-12 text-sm font-mono text-[#666]">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-[#919191] rounded-full animate-pulse" />
                 <span>10,427 SCANS</span>
@@ -203,7 +202,7 @@ export default function HomePage() {
               >
                 <div className="relative bg-[#252525] border border-[#2a2a2a] rounded-2xl p-10 hover:border-[#333] transition-all duration-500 h-full overflow-hidden">
                   <div className="relative z-10">
-                    <div className="text-6xl font-black text-[#2a2a2a] mb-6 group-hover:text-[#303030] transition-colors duration-300">
+                    <div className="text-6xl font-black text-[#919191] mb-6 group-hover:text-[#303030] transition-colors duration-300">
                       {feature.number}
                     </div>
 
@@ -286,7 +285,7 @@ export default function HomePage() {
                   <Code2 className="h-4 w-4 text-[#919191]" />
                 </div>
                 <div className="text-2xl font-black text-[#e0e0e0] tracking-tighter">
-                  GITRACK<span className="text-[#666]">.ME</span>
+                  GITRACK
                 </div>
               </div>
             </Link>
