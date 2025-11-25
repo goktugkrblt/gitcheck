@@ -7,6 +7,7 @@ import { Star, GitFork, Package, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageChart } from "@/components/dashboard/language-chart";
 import { TopRepos } from "@/components/dashboard/top-repos";
+import { motion } from "framer-motion";
 
 export default function DashboardPage() {
   const [hasProfile, setHasProfile] = useState(false);
@@ -57,7 +58,7 @@ export default function DashboardPage() {
   if (initialLoading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-gray-400">Loading...</div>
+        <div className="text-[#919191] font-mono text-sm">LOADING...</div>
       </div>
     );
   }
@@ -73,81 +74,107 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-          <p className="text-gray-400 mt-1">
-            Welcome back! Here's your GitHub profile overview.
-          </p>
-        </div>
-      </div>
+    <div className="space-y-8">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h1 className="text-4xl font-black text-[#e0e0e0] tracking-tighter">
+          DASHBOARD
+        </h1>
+        <p className="text-[#919191] mt-2 font-light">
+          Track your GitHub metrics and developer growth
+        </p>
+      </motion.div>
 
       {!hasProfile ? (
-        <div className="bg-gray-900 rounded-lg p-12 border border-gray-800 text-center">
-          <div className="max-w-md mx-auto space-y-4">
-            <TrendingUp className="h-16 w-16 text-blue-500 mx-auto" />
-            <h2 className="text-2xl font-bold text-white">
-              Analyze Your GitHub Profile
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="bg-[#252525] rounded-2xl p-16 border border-[#2a2a2a] text-center"
+        >
+          <div className="max-w-md mx-auto space-y-6">
+            <div className="w-20 h-20 rounded-full border-2 border-[#2a2a2a] flex items-center justify-center mx-auto mb-6">
+              <TrendingUp className="h-10 w-10 text-[#919191]" />
+            </div>
+            <h2 className="text-3xl font-black text-[#e0e0e0] tracking-tighter">
+              ANALYZE YOUR PROFILE
             </h2>
-            <p className="text-gray-400">
-              Get insights into your coding activity, discover your strengths,
-              and see how you compare to other developers.
+            <p className="text-[#919191] font-light">
+              Get insights into your coding activity, discover your strengths, and see how you compare to other developers.
             </p>
             <Button 
               size="lg" 
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-[#e0e0e0] text-[#1f1f1f] hover:bg-[#d0d0d0] px-12 py-7 text-base font-bold rounded-2xl transition-colors duration-300"
               onClick={handleAnalyze}
               disabled={loading}
             >
-              {loading ? "Analyzing..." : "Start Analysis"}
+              {loading ? "ANALYZING..." : "START ANALYSIS"}
             </Button>
-            <p className="text-xs text-gray-500">
-              ✨ Free analysis • No credit card required
+            <p className="text-xs text-[#666] font-mono">
+              ✓ FREE SCAN • NO LIMITS
             </p>
           </div>
-        </div>
+        </motion.div>
       ) : (
         <>
+          {/* Score + Stats Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-1">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="lg:col-span-1"
+            >
               <ScoreDisplay
                 score={displayData.score}
                 percentile={displayData.percentile}
               />
-            </div>
+            </motion.div>
 
             <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <StatsCard
-                title="Total Repositories"
-                value={displayData.totalRepos}
-                icon={Package}
-                description="Public repositories"
-              />
-              <StatsCard
-                title="Total Stars"
-                value={displayData.totalStars}
-                icon={Star}
-                description="Stars received"
-              />
-              <StatsCard
-                title="Total Forks"
-                value={displayData.totalForks}
-                icon={GitFork}
-                description="Repository forks"
-              />
-              <StatsCard
-                title="Profile Score"
-                value={displayData.score.toFixed(1)}
-                icon={TrendingUp}
-                description="Out of 10.0"
-              />
+              {[
+                { title: "REPOSITORIES", value: displayData.totalRepos, icon: Package, description: "Public repos" },
+                { title: "TOTAL STARS", value: displayData.totalStars, icon: Star, description: "Stars received" },
+                { title: "TOTAL FORKS", value: displayData.totalForks, icon: GitFork, description: "Repository forks" },
+                { title: "PROFILE SCORE", value: displayData.score.toFixed(1), icon: TrendingUp, description: "Out of 10.0" },
+              ].map((stat, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2 + i * 0.1 }}
+                >
+                  <StatsCard
+                    title={stat.title}
+                    value={stat.value}
+                    icon={stat.icon}
+                    description={stat.description}
+                  />
+                </motion.div>
+              ))}
             </div>
           </div>
 
+          {/* Charts Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <LanguageChart languages={displayData.languages} />
-            <TopRepos repos={displayData.topRepos} />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              <LanguageChart languages={displayData.languages} />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+            >
+              <TopRepos repos={displayData.topRepos} />
+            </motion.div>
           </div>
         </>
       )}

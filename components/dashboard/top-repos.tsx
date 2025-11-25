@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star, GitFork, Code } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Star, GitFork, Code2 } from "lucide-react";
 
 interface TopRepo {
   name: string;
@@ -14,45 +14,61 @@ interface TopReposProps {
 }
 
 export function TopRepos({ repos }: TopReposProps) {
+  if (repos.length === 0) {
+    return (
+      <Card className="bg-[#252525] border-[#2a2a2a] p-8">
+        <h3 className="text-xl font-black text-[#e0e0e0] tracking-tighter mb-6">
+          TOP REPOSITORIES
+        </h3>
+        <div className="flex items-center justify-center h-64">
+          <p className="text-[#666] font-mono text-sm">NO DATA</p>
+        </div>
+      </Card>
+    );
+  }
+
   return (
-    <Card className="bg-gray-900 border-gray-800">
-      <CardHeader>
-        <CardTitle className="text-white">Top Repositories</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <Card className="bg-[#252525] border-[#2a2a2a] p-8">
+      <h3 className="text-xl font-black text-[#e0e0e0] tracking-tighter mb-6">
+        TOP REPOSITORIES
+      </h3>
+      <div className="space-y-4">
         {repos.map((repo, index) => (
           <div
             key={index}
-            className="p-4 rounded-lg bg-gray-800/50 border border-gray-700 hover:border-blue-500/50 transition-colors"
+            className="group p-4 rounded-xl bg-[#2a2a2a] border border-[#333] hover:border-[#404040] transition-all duration-300 cursor-pointer"
           >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h3 className="font-semibold text-white mb-1">{repo.name}</h3>
-                <p className="text-sm text-gray-400 line-clamp-2">
-                  {repo.description || "No description"}
-                </p>
+            <div className="flex items-start justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Code2 className="h-4 w-4 text-[#919191]" />
+                <h4 className="font-bold text-[#e0e0e0] group-hover:text-white transition-colors">
+                  {repo.name}
+                </h4>
+              </div>
+              <div className="flex items-center gap-3 text-xs font-mono text-[#666]">
+                <span className="flex items-center gap-1">
+                  <Star className="h-3 w-3" />
+                  {repo.stars}
+                </span>
+                <span className="flex items-center gap-1">
+                  <GitFork className="h-3 w-3" />
+                  {repo.forks}
+                </span>
               </div>
             </div>
-
-            <div className="flex items-center gap-4 mt-3 text-sm text-gray-400">
-              {repo.language && (
-                <div className="flex items-center gap-1">
-                  <Code className="h-4 w-4" />
-                  <span>{repo.language}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-1">
-                <Star className="h-4 w-4 text-yellow-500" />
-                <span>{repo.stars}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <GitFork className="h-4 w-4 text-blue-500" />
-                <span>{repo.forks}</span>
-              </div>
-            </div>
+            {repo.description && (
+              <p className="text-sm text-[#919191] mb-2 line-clamp-2 font-light">
+                {repo.description}
+              </p>
+            )}
+            {repo.language && (
+              <span className="inline-block px-2 py-1 text-xs font-mono bg-[#333] text-[#919191] rounded">
+                {repo.language}
+              </span>
+            )}
           </div>
         ))}
-      </CardContent>
+      </div>
     </Card>
   );
 }

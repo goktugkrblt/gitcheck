@@ -1,11 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 interface StatsCardProps {
   title: string;
-  value: string | number;
+  value: number | string;
   icon: LucideIcon;
-  description?: string;
+  description: string;
   trend?: {
     value: number;
     isPositive: boolean;
@@ -20,31 +20,25 @@ export function StatsCard({
   trend,
 }: StatsCardProps) {
   return (
-    <Card className="bg-gray-900 border-gray-800">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-gray-400">
-          {title}
-        </CardTitle>
-        <Icon className="h-4 w-4 text-gray-400" />
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold text-white">{value}</div>
-        {description && (
-          <p className="text-xs text-gray-500 mt-1">{description}</p>
-        )}
-        {trend && (
-          <div className="flex items-center mt-2">
-            <span
-              className={`text-xs font-medium ${
-                trend.isPositive ? "text-green-500" : "text-red-500"
-              }`}
-            >
-              {trend.isPositive ? "↑" : "↓"} {Math.abs(trend.value)}%
-            </span>
-            <span className="text-xs text-gray-500 ml-2">from last scan</span>
-          </div>
-        )}
-      </CardContent>
+    <Card className="bg-[#252525] border-[#2a2a2a] hover:border-[#333] transition-all duration-300 p-6 group cursor-pointer">
+      <div className="flex items-start justify-between">
+        <div className="space-y-2">
+          <p className="text-xs font-mono text-[#666] tracking-wider">{title}</p>
+          <p className="text-3xl font-black text-[#e0e0e0] tracking-tighter">
+            {value}
+          </p>
+          <p className="text-xs text-[#919191] font-light">{description}</p>
+        </div>
+        <div className="w-12 h-12 rounded-xl bg-[#2a2a2a] group-hover:bg-[#303030] flex items-center justify-center transition-colors duration-300">
+          <Icon className="h-6 w-6 text-[#919191] group-hover:text-[#b0b0b0] transition-colors duration-300" />
+        </div>
+      </div>
+      
+      {trend && (
+        <div className={`mt-4 text-xs font-mono ${trend.isPositive ? 'text-green-500' : 'text-red-500'}`}>
+          {trend.isPositive ? '↑' : '↓'} {trend.value}%
+        </div>
+      )}
     </Card>
   );
 }
