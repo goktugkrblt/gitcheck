@@ -31,14 +31,14 @@ export interface GitHubRepo {
   name: string;
   full_name: string;
   description: string | null;
-  stargazers_count: number;
-  forks_count: number;
+  stargazers_count?: number;
+  forks_count?: number;
   language: string | null;
-  fork: boolean; // BUNU EKLE
-  size: number;
+  fork?: boolean;
+  size?: number;
   updated_at: string;
-  topics: string[];
-  license: {
+  topics?: string[];
+  license?: {
     key: string;
     name: string;
   } | null;

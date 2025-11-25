@@ -10,7 +10,7 @@ export class GitHubService {
 
   async getUserData(username: string): Promise<GitHubUser> {
     const { data } = await this.octokit.users.getByUsername({ username });
-    return data;
+    return data as GitHubUser;
   }
 
   async getRepositories(username: string): Promise<GitHubRepo[]> {
@@ -20,7 +20,7 @@ export class GitHubService {
       sort: "updated",
       per_page: 100,
     });
-    return data;
+    return data as GitHubRepo[];
   }
 
   async getLanguageStats(repos: GitHubRepo[]): Promise<LanguageStats> {
@@ -55,10 +55,10 @@ export class GitHubService {
   }
 
   async getTotalStars(repos: GitHubRepo[]): Promise<number> {
-    return repos.reduce((sum, repo) => sum + repo.stargazers_count, 0);
+    return repos.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0);
   }
 
   async getTotalForks(repos: GitHubRepo[]): Promise<number> {
-    return repos.reduce((sum, repo) => sum + repo.forks_count, 0);
+    return repos.reduce((sum, repo) => sum + (repo.forks_count || 0), 0);
   }
 }
