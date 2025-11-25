@@ -77,17 +77,18 @@ export async function POST(req: NextRequest) {
     );
 
     // Get top repos
+    // Get top repos
     const topRepos = repos
       .filter((r) => !r.fork)
-      .sort((a, b) => b.stargazers_count - a.stargazers_count)
+      .sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0))
       .slice(0, 3)
       .map((repo) => ({
         name: repo.name,
-        stars: repo.stargazers_count,
-        forks: repo.forks_count,
+        stars: repo.stargazers_count || 0,
+        forks: repo.forks_count || 0,
         language: repo.language,
         description: repo.description,
-        qualityScore: 0, // Can add quality calculation
+        qualityScore: 0,
       }));
 
     // Save profile
