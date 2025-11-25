@@ -89,7 +89,7 @@ export default function LoginPage() {
                     size="lg"
                     className="w-full bg-[#e0e0e0] text-[#1f1f1f] hover:bg-[#d0d0d0] py-7 text-base font-bold rounded-2xl transition-colors duration-300"
                   >
-                    <Github className="mr-3 h-5 w-5" />
+                   <Github style={{ width: '18px', height: '18px' }} />
                     SIGN IN WITH GITHUB
                   </Button>
                 </motion.div>
@@ -126,19 +126,7 @@ export default function LoginPage() {
                     </motion.div>
                   ))}
                 </div>
-              </form>
-
-              {/* Footer Note */}
-              <p className="text-xs text-[#666] font-mono pt-4">
-                By signing in, you agree to our{" "}
-                <a href="#" className="text-[#919191] hover:text-[#e0e0e0] transition-colors">
-                  Terms
-                </a>{" "}
-                &{" "}
-                <a href="#" className="text-[#919191] hover:text-[#e0e0e0] transition-colors">
-                  Privacy
-                </a>
-              </p>
+              </form>                           
             </div>
           </div>
         </motion.div>
