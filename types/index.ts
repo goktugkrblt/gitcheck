@@ -127,3 +127,77 @@ export interface UserProfile {
   plan: Plan;
   subscriptionEnd: Date | null;
 }
+
+// types/index.ts dosyasının SONUNA ekle (mevcut kodları silme):
+
+// Yeni eklenecek tipler:
+export interface GitHubContributions {
+  totalCommits: number;
+  totalPRs: number;
+  totalIssues: number;
+  totalReviews: number;
+  contributionCalendar: {
+    totalContributions: number;
+    weeks: Array<{
+      contributionDays: Array<{
+        contributionCount: number;
+        date: string;
+      }>;
+    }>;
+  };
+  commitsByRepo: Array<{
+    repoName: string;
+    commitCount: number;
+  }>;
+}
+
+export interface RepoDetailedMetrics {
+  hasReadme: boolean;
+  readmeLength?: number;
+  hasLicense: boolean;
+  hasCI: boolean;
+  commitFrequency: number; // commits per month
+  lastCommitDate: string;
+  openIssuesCount: number;
+  contributorsCount: number;
+  releasesCount: number;
+  branchesCount: number;
+  isArchived: boolean;
+  isFork: boolean;
+  techStack: string[];
+}
+
+export interface PullRequestMetrics {
+  totalPRs: number;
+  mergedPRs: number;
+  openPRs: number;
+  closedPRs: number;
+  averageMergeTime?: number; // in hours
+  contributedRepos: string[];
+}
+
+export interface ActivityMetrics {
+  currentStreak: number;
+  longestStreak: number;
+  averageCommitsPerDay: number;
+  mostActiveDay: string;
+  mostActiveHour: number;
+  weekendActivity: number; // percentage
+}
+
+export interface DeveloperProfile extends ProfileData {
+  contributions: GitHubContributions;
+  pullRequests: PullRequestMetrics;
+  activity: ActivityMetrics;
+  organizations: string[];
+  gistsCount: number;
+  followersCount: number;
+  followingCount: number;
+  accountAge: number; // in years
+  hireable: boolean;
+  bio?: string;
+  location?: string;
+  company?: string;
+  blog?: string;
+  twitter?: string;
+}

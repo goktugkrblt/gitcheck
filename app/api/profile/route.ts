@@ -28,13 +28,46 @@ export async function GET() {
 
     return NextResponse.json({
       profile: {
+        // Core metrics
         score: profile.score,
         percentile: profile.percentile,
         totalRepos: profile.totalRepos,
         totalStars: profile.totalStars,
         totalForks: profile.totalForks,
+        totalCommits: profile.totalCommits,
+        
+        // PR metrics
+        totalPRs: profile.totalPRs,
+        mergedPRs: profile.mergedPRs,
+        openPRs: profile.openPRs,
+        
+        // Activity metrics
+        currentStreak: profile.currentStreak,
+        longestStreak: profile.longestStreak,
+        averageCommitsPerDay: profile.averageCommitsPerDay,
+        mostActiveDay: profile.mostActiveDay,
+        weekendActivity: profile.weekendActivity,
+        
+        // Community metrics
+        followersCount: profile.followersCount,
+        followingCount: profile.followingCount,
+        organizationsCount: profile.organizationsCount,
+        gistsCount: profile.gistsCount,
+        
+        // Account info
+        accountAge: profile.accountAge,
+        
+        // JSON fields
         languages: profile.languages,
         topRepos: profile.topRepos,
+        contributions: profile.contributions,
+        
+        // User info
+        username: profile.username,
+        avatarUrl: profile.avatarUrl,
+        bio: profile.bio,
+        location: profile.location,
+        company: profile.company,
       },
     });
   } catch (error) {

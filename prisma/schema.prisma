@@ -58,6 +58,38 @@ model Profile {
   topRepos        Json
   contributions   Json
   
+  // NEW FIELDS - Bunları ekliyoruz
+  // Basic info
+  username        String?
+  avatarUrl       String?
+  bio             String?
+  location        String?
+  company         String?
+  blog            String?
+  hireable        Boolean   @default(false)
+  
+  // PR metrics
+  totalPRs        Int       @default(0)
+  mergedPRs       Int       @default(0)
+  openPRs         Int       @default(0)
+  
+  // Activity metrics
+  currentStreak         Int       @default(0)
+  longestStreak         Int       @default(0)
+  averageCommitsPerDay  Float     @default(0)
+  mostActiveDay         String?
+  weekendActivity       Int       @default(0)
+  
+  // Community metrics
+  followersCount        Int       @default(0)
+  followingCount        Int       @default(0)
+  organizationsCount    Int       @default(0)
+  gistsCount           Int       @default(0)
+  
+  // Account info
+  accountAge            Int       @default(0)
+  accountCreatedAt      DateTime?
+  
   // Analysis
   strengths       Json?
   weaknesses      Json?

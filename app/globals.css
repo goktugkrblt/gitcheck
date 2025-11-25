@@ -135,3 +135,8 @@
   background-size: 200% 200%;
   animation: gradient 3s ease infinite;
 }
+
+.gitrack-logo{
+  width: 50px;
+  height: auto;
+}

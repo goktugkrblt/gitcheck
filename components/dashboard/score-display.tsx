@@ -28,7 +28,7 @@ export function ScoreDisplay({ score, percentile }: ScoreDisplayProps) {
   const offset = circumference - (score / 10) * circumference;
 
   return (
-    <Card className="bg-[#252525] border-[#2a2a2a] p-8 h-full">
+    <Card className="bg-[#252525] border-[#2a2a2a] p-8 h-full flex justify-center align-center">
       <div className="flex flex-col items-center justify-center space-y-6">
         <div className="text-center">
           <p className="text-xs font-mono text-[#666] tracking-wider mb-2">YOUR SCORE</p>
