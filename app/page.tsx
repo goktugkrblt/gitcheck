@@ -44,7 +44,7 @@ export default function HomePage() {
                   </motion.div>
                 </div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-black text-[#e0e0e0] tracking-tighter">GITTRACK</span>
+                  <span className="text-xl font-black text-[#e0e0e0] tracking-tighter">GITRACK</span>
                   <span className="text-xl font-black text-[#666]">.ME</span>
                 </div>
               </motion.div>
@@ -292,7 +292,7 @@ export default function HomePage() {
                   <Code2 className="h-4 w-4 text-[#919191]" />
                 </div>
                 <div className="text-2xl font-black text-[#e0e0e0] tracking-tighter">
-                  GITTRACK<span className="text-[#666]">.ME</span>
+                  GITRACK<span className="text-[#666]">.ME</span>
                 </div>
               </div>
             </Link>
