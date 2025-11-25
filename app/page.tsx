@@ -67,7 +67,7 @@ export default function HomePage() {
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                 <Button size="sm" className="bg-[#e0e0e0] text-[#1f1f1f] hover:bg-[#d0d0d0] px-10 py-5 text-sm font-bold rounded-xl transition-colors duration-300">
                   <Github />
-                  ANALYZ NOW
+                  ANALYZE NOW
                 </Button>
               </motion.div>
             </Link>
