@@ -20,27 +20,27 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,transparent_0%,#1f1f1f_100%)]" />
       </div>
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-px opacity-10"
-            style={{
-              left: `${(i * 12.5)}%`,
-              height: "100%",
-              background: "linear-gradient(to bottom, transparent, #919191, transparent)"
-            }}
-            animate={{
-              y: ["-100%", "100%"]
-            }}
-            transition={{
-              duration: 8 + Math.random() * 4,
-              repeat: Infinity,
-              delay: Math.random() * 8,
-              ease: "linear"
-            }}
-          />
-        ))}
-      </div>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-px opacity-30"
+                style={{
+                  left: `${(i * 12.5)}%`,
+                  height: "100%",
+                  background: "linear-gradient(to bottom, transparent, #919191 50%, transparent)"
+                }}
+                animate={{
+                  y: ["-100%", "100%"]
+                }}
+                transition={{
+                  duration: 4 + Math.random() * 2, // ✅ 8 → 4 (2x hızlı)
+                  repeat: Infinity,
+                  delay: Math.random() * 4, // ✅ 8 → 4
+                  ease: "linear"
+                }}
+              />
+            ))}
+          </div>
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 pt-12">
@@ -85,21 +85,31 @@ export default function HomePage() {
             </motion.div>
 
             <div className="space-y-8">
-              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}>
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#e0e0e0] leading-none tracking-tighter">
-                  GITHUB
-                  <br />
-                  <motion.span className="inline-block relative" whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300 }}>
-                  QUANTIFIED
-                    <motion.div
-                      className="absolute -bottom-2 left-0 right-0 h-[1px] bg-[#919191]"
-                      initial={{ scaleX: 0 }}
-                      animate={{ scaleX: 1 }}
-                      transition={{ delay: 0.8, duration: 0.6 }}
-                    />
-                  </motion.span>
-                </h1>
-              </motion.div>
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}>
+  <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#e0e0e0] leading-none tracking-tighter">
+    GITHUB
+    <br />
+    <motion.span className="inline-block relative" whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300 }}>
+      {"QUANTIFIED".split("").map((char, i) => (
+        <motion.span
+          key={i}
+          className="inline-block"
+          animate={{
+            y: [0, -10, 0]
+          }}
+          transition={{
+            duration: 0.6,
+            delay: 0.5 + (i * 0.08),
+            repeat: Infinity,
+            repeatDelay: 5 // ✅ 2 → 5 saniye (daha geç tekrar ediyor)
+          }}
+        >
+          {char}
+        </motion.span>
+      ))}
+    </motion.span>
+  </h1>
+</motion.div>
 
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
@@ -134,9 +144,8 @@ export default function HomePage() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }} className="flex items-center justify-center gap-12 text-sm font-mono text-[#666]">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-[#919191] rounded-full animate-pulse" />
-                <span>10,427 SCANS</span>
-              </div>
-              <div className="h-4 w-px bg-[#333]" />
+                <span>427 SCANS</span>
+              </div>              
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-[#919191] rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
                 <span>REAL-TIME</span>
