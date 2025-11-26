@@ -38,42 +38,30 @@ export function SkillsTab({ profileData }: SkillsTabProps) {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-bold text-[#666] tracking-wider">LANGUAGES</h3>
-            <Code className="h-4 w-4 text-[#666]" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">          
+          <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-xs font-bold text-[#666] tracking-wider">LANGUAGES</h3>
+              <Code className="h-4 w-4 text-[#666]" />
+            </div>
+            <p className="text-3xl font-black text-[#e0e0e0] mb-1">
+              {Object.keys(languages).length}
+            </p>
+            <p className="text-xs text-[#666]">Technologies used</p>
           </div>
-          <p className="text-3xl font-black text-[#e0e0e0] mb-1">
-            {Object.keys(languages).length}
-          </p>
-          <p className="text-xs text-[#666]">Technologies used</p>
-        </div>
 
-        <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-bold text-[#666] tracking-wider">PRIMARY LANGUAGE</h3>
-            <BarChart3 className="h-4 w-4 text-[#666]" />
+          <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-xs font-bold text-[#666] tracking-wider">GISTS</h3>
+              <Code className="h-4 w-4 text-[#666]" />
+            </div>
+            <p className="text-3xl font-black text-[#e0e0e0] mb-1">
+              {profileData.gistsCount || 0}
+            </p>
+            <p className="text-xs text-[#666]">Public only</p>
+            <p className="text-xs text-[#666]">Code snippets</p>
           </div>
-          <p className="text-3xl font-black text-[#e0e0e0] mb-1 truncate">
-            {languageEntries[0]?.[0] || "N/A"}
-          </p>
-          <p className="text-xs text-[#666]">
-            {languageEntries[0] ? `${Math.round((languageEntries[0][1] as number / totalBytes) * 100)}% of code` : "No data"}
-          </p>
         </div>
-
-        <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-bold text-[#666] tracking-wider">CODE WRITTEN</h3>
-            <Code className="h-4 w-4 text-[#666]" />
-          </div>
-          <p className="text-3xl font-black text-[#e0e0e0] mb-1">
-            {totalBytes > 0 ? `${Math.round(totalBytes / 1024)}` : "0"}KB
-          </p>
-          <p className="text-xs text-[#666]">Analyzed codebase</p>
-        </div>
-      </div>
 
       {/* Language Chart */}
       <LanguageChart languages={languages} />

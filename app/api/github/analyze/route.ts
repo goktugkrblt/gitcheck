@@ -111,6 +111,12 @@ export async function POST(req: NextRequest) {
       : 0;
     const newTotalContributions = contributions?.contributionCalendar?.totalContributions || 0;
 
+    console.log('📊 Contributions Debug:');
+console.log('Calendar exists:', !!contributions?.contributionCalendar);
+console.log('Total from Calendar:', contributions?.contributionCalendar?.totalContributions);
+console.log('newTotalContributions:', newTotalContributions);
+    
+
     const profile = await prisma.profile.upsert({
       where: { 
         userId: user.id 
