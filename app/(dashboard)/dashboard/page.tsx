@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { ScoreDisplay } from "@/components/dashboard/score-display";
 import { ActivityHeatmap } from "@/components/dashboard/activity-heatmap";
+// import { ProTab } from "@/components/dashboard/pro-tab";
 import { 
   Star, 
   Package, 
@@ -16,7 +17,8 @@ import {
   Code,
   BarChart3,
   Activity,
-  Target
+  Target,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -180,7 +182,6 @@ export default function DashboardPage() {
               className="bg-[#252525] rounded-xl border border-[#2a2a2a] p-6 md:p-8 flex items-center"
             >
               <div className="flex items-center gap-4 md:gap-8 w-full">
-                {/* Avatar - Mobilde küçük, desktop'ta büyük */}
                 <div className="relative flex-shrink-0">
                   <img 
                     src={displayData.avatarUrl} 
@@ -189,7 +190,6 @@ export default function DashboardPage() {
                   />                 
                 </div>
 
-                {/* Info */}
                 <div className="flex-1 min-w-0">
                   <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-[#e0e0e0] tracking-tight mb-1 md:mb-2 truncate">
                     {displayData.username}
@@ -225,44 +225,50 @@ export default function DashboardPage() {
             </motion.div>
           </div>
 
-          {/* Tabs Section - Mobilde kaydırılabilir */}
+          {/* Tabs Section */}
           <Tabs defaultValue="overview" className="w-full">
-          <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            <TabsList className="bg-[#1a1a1a] border border-[#2a2a2a] p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-4 rounded-xl h-auto">
+            <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <TabsList className="bg-[#1a1a1a] border border-[#2a2a2a] p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-5 rounded-xl h-auto">
               <TabsTrigger 
-                value="overview" 
-                className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs md:text-sm tracking-wider transition-all duration-200 rounded-lg px-4 md:px-6 py-2.5 md:py-3 whitespace-nowrap"
-              >
-                <BarChart3 className="w-4 h-4 mr-2" />
-                OVERVIEW
-              </TabsTrigger>
-              <TabsTrigger 
-                value="activity" 
-                className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs md:text-sm tracking-wider transition-all duration-200 rounded-lg px-4 md:px-6 py-2.5 md:py-3 whitespace-nowrap"
-              >
-                <Activity className="w-4 h-4 mr-2" />
-                ACTIVITY
-              </TabsTrigger>
-              <TabsTrigger 
-                value="skills" 
-                className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs md:text-sm tracking-wider transition-all duration-200 rounded-lg px-4 md:px-6 py-2.5 md:py-3 whitespace-nowrap"
-              >
-                <Code className="w-4 h-4 mr-2" />
-                SKILLS
-              </TabsTrigger>
-              <TabsTrigger 
-                value="compare" 
-                className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs md:text-sm tracking-wider transition-all duration-200 rounded-lg px-4 md:px-6 py-2.5 md:py-3 whitespace-nowrap"
-              >
-                <Target className="w-4 h-4 mr-2" />
-                COMPARE
-              </TabsTrigger>
-            </TabsList>
-          </div>
+                  value="pro" 
+                  className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-300 text-purple-400/60 hover:text-purple-400 font-bold text-xs md:text-sm tracking-wider transition-all duration-200 rounded-lg px-4 md:px-6 py-2.5 md:py-3 whitespace-nowrap"
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  PRO
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="overview" 
+                  className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs md:text-sm tracking-wider transition-all duration-200 rounded-lg px-4 md:px-6 py-2.5 md:py-3 whitespace-nowrap"
+                >
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  OVERVIEW
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="activity" 
+                  className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs md:text-sm tracking-wider transition-all duration-200 rounded-lg px-4 md:px-6 py-2.5 md:py-3 whitespace-nowrap"
+                >
+                  <Activity className="w-4 h-4 mr-2" />
+                  ACTIVITY
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="skills" 
+                  className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs md:text-sm tracking-wider transition-all duration-200 rounded-lg px-4 md:px-6 py-2.5 md:py-3 whitespace-nowrap"
+                >
+                  <Code className="w-4 h-4 mr-2" />
+                  SKILLS
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="compare" 
+                  className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs md:text-sm tracking-wider transition-all duration-200 rounded-lg px-4 md:px-6 py-2.5 md:py-3 whitespace-nowrap"
+                >
+                  <Target className="w-4 h-4 mr-2" />
+                  COMPARE
+                </TabsTrigger>               
+              </TabsList>
+            </div>
 
             {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-6 mt-6">
-              {/* Primary Stats */}    
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
                   { title: "REPOSITORIES", value: displayData.totalRepos, icon: Package, description: "Public repos" },
@@ -280,7 +286,6 @@ export default function DashboardPage() {
                 ))}
               </div>              
 
-              {/* Secondary Stats */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
                   { 
@@ -323,7 +328,6 @@ export default function DashboardPage() {
                 ))}
               </div>
 
-              {/* Top Repos */}
               <TopRepos repos={displayData.topRepos} />
             </TabsContent>
 
@@ -342,7 +346,16 @@ export default function DashboardPage() {
               <div className="bg-[#252525] rounded-xl border border-[#2a2a2a] p-8 text-center">
                 <Target className="w-12 h-12 text-[#666] mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-[#e0e0e0] mb-2">COMPARISON COMING SOON</h3>
-                <p className="text-[#666] text-sm">Compare your metrics with other developers</p>
+                <p className="text-[#666] text-sm">Compare your metrics with other developers.</p>
+              </div>
+            </TabsContent>
+
+            {/* Pro Tab */}
+            <TabsContent value="pro" className="space-y-6 mt-6">
+            <div className="bg-[#252525] rounded-xl border border-[#2a2a2a] p-8 text-center">
+            <Sparkles className="w-12 h-12 text-[#666] mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-[#e0e0e0] mb-2">PRO COMING SOON</h3>
+                <p className="text-[#666] text-sm">Advanced profile analytics is on the way — stay tuned.</p>
               </div>
             </TabsContent>
           </Tabs>                    
