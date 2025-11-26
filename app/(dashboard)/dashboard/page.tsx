@@ -275,6 +275,30 @@ export default function DashboardPage() {
                   { title: "TOTAL STARS", value: displayData.totalStars, icon: Star, description: "Stars received" },
                   { title: "TOTAL COMMITS", value: displayData.totalCommits, icon: GitBranch, description: `${displayData.averageCommitsPerDay}/day avg` },
                   { title: "PULL REQUESTS", value: displayData.totalPRs, icon: GitPullRequest, description: `${displayData.mergedPRs} merged` },
+                  { 
+                    title: "CURRENT STREAK", 
+                    value: `${displayData.currentStreak} days`, 
+                    icon: Zap, 
+                    description: `Longest: ${displayData.longestStreak} days`
+                  },
+                  { 
+                    title: "COMMUNITY", 
+                    value: displayData.followersCount, 
+                    icon: Users, 
+                    description: `${displayData.organizationsCount} organizations`
+                  },
+                  { 
+                    title: "MOST ACTIVE", 
+                    value: displayData.mostActiveDay, 
+                    icon: Calendar, 
+                    description: `${displayData.weekendActivity}% weekend`
+                  },
+                  { 
+                    title: "LANGUAGES", 
+                    value: Object.keys(displayData.languages).length, 
+                    icon: Code, 
+                    description: "Technologies used"
+                  }
                 ].map((stat, i) => (
                   <StatsCard
                     key={i}
@@ -284,49 +308,7 @@ export default function DashboardPage() {
                     description={stat.description}
                   />
                 ))}
-              </div>              
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                  { 
-                    title: "CURRENT STREAK", 
-                    value: `${displayData.currentStreak} days`, 
-                    icon: Zap, 
-                    description: `Longest: ${displayData.longestStreak} days`,
-                    color: "text-yellow-500"
-                  },
-                  { 
-                    title: "COMMUNITY", 
-                    value: displayData.followersCount, 
-                    icon: Users, 
-                    description: `${displayData.organizationsCount} organizations`,
-                    color: "text-purple-500"
-                  },
-                  { 
-                    title: "MOST ACTIVE", 
-                    value: displayData.mostActiveDay, 
-                    icon: Calendar, 
-                    description: `${displayData.weekendActivity}% weekend`,
-                    color: "text-teal-500"
-                  },
-                  { 
-                    title: "LANGUAGES", 
-                    value: Object.keys(displayData.languages).length, 
-                    icon: Code, 
-                    description: "Technologies used",
-                    color: "text-cyan-500"
-                  },
-                ].map((stat, i) => (
-                  <div key={i} className="bg-[#252525] rounded-xl p-6 border border-[#2a2a2a]">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-xs font-bold text-[#666] tracking-wider">{stat.title}</h3>
-                      <stat.icon className={`h-4 w-4 ${stat.color || 'text-[#919191]'}`} />
-                    </div>
-                    <p className="text-2xl font-black text-[#e0e0e0]">{stat.value}</p>
-                    <p className="text-xs text-[#666] mt-1">{stat.description}</p>
-                  </div>
-                ))}
-              </div>
+              </div>                            
 
               <TopRepos repos={displayData.topRepos} />
             </TabsContent>
