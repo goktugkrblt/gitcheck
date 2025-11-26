@@ -42,7 +42,7 @@ enum Plan {
 
 model Profile {
   id              String    @id @default(cuid())
-  userId          String
+  userId          String    @unique
   user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   // Core Metrics
@@ -58,7 +58,6 @@ model Profile {
   topRepos        Json
   contributions   Json
   
-  // NEW FIELDS - Bunları ekliyoruz
   // Basic info
   username        String?
   avatarUrl       String?
@@ -84,7 +83,7 @@ model Profile {
   followersCount        Int       @default(0)
   followingCount        Int       @default(0)
   organizationsCount    Int       @default(0)
-  gistsCount           Int       @default(0)
+  gistsCount            Int       @default(0)
   
   // Account info
   accountAge            Int       @default(0)
