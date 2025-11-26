@@ -64,7 +64,13 @@ export function LanguageChart({ languages }: LanguageChartProps) {
               backgroundColor: '#252525', 
               border: '1px solid #2a2a2a',
               borderRadius: '8px',
-              color: '#e0e0e0'
+              color: '#ededed' 
+            }}
+            itemStyle={{
+              color: '#ededed' 
+            }}
+            labelStyle={{
+              color: '#ededed' 
             }}
           />
           <Legend 
