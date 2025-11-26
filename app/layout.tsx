@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "GitTrack - GitHub Quantified",
-    template: "%s | GitTrack"
+    default: "Gitrack - GitHub Quantified",
+    template: "%s | Gitrack"
   },
   description: "Transform your GitHub contributions into quantifiable career metrics. Real-time analytics, developer scoring, and insights powered by advanced algorithms.",
   keywords: [
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Goktug Karabulut", url: "https://goktug.info" }],
   creator: "Goktug Karabulut",
-  publisher: "GitTrack",
+  publisher: "Gitrack",
   metadataBase: new URL("https://gitrack.me"),
   alternates: {
     canonical: "https://gitrack.me"
@@ -39,21 +39,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://gitrack.me",
-    title: "GitTrack - GitHub Quantified",
+    title: "Gitrack - GitHub Quantified",
     description: "Transform your GitHub contributions into quantifiable career metrics with real-time analytics and developer scoring.",
-    siteName: "GitTrack",
+    siteName: "Gitrack",
     images: [
       {
         url: "/og-image.jpg", 
         width: 1200,
         height: 630,
-        alt: "GitTrack - GitHub Analytics Platform"
+        alt: "Gitrack - GitHub Analytics Platform"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "GitTrack - GitHub Quantified",
+    title: "Gitrack - GitHub Quantified",
     description: "Transform your GitHub contributions into quantifiable career metrics.",
     images: ["/og-image.png"], 
     creator: "@yourtwitterhandle" 
