@@ -150,7 +150,7 @@ export function ProTab({ isPro = false }: ProTabProps) {
             </Button>
 
             <p className="text-xs text-[#666]">
-              Join <span className="text-purple-400 font-bold">500+</span> developers already using GitTrack Pro
+              Join <span className="text-purple-400 font-bold">500+</span> developers already using Gitrack Pro
             </p>
           </div>
         </div>

@@ -22,6 +22,50 @@ export function ScoreDisplay({ score, percentile }: ScoreDisplayProps) {
     return "BEGINNER";
   };
 
+  const getTier = (percentile: number) => {
+    if (percentile <= 10) return { 
+      label: "ELITE", 
+      bg: "bg-purple-500/20",
+      border: "border-purple-400",
+      text: "text-purple-400",
+      glow: "shadow-[0_0_20px_rgba(168,85,247,0.4)]"
+    };
+    if (percentile <= 25) return { 
+      label: "EXCELLENT", 
+      bg: "bg-green-500/20",
+      border: "border-green-400",
+      text: "text-green-400",
+      glow: "shadow-[0_0_20px_rgba(34,197,94,0.4)]"
+    };
+    if (percentile <= 50) return { 
+      label: "GOOD", 
+      bg: "bg-blue-500/20",
+      border: "border-blue-400",
+      text: "text-blue-400",
+      glow: "shadow-[0_0_20px_rgba(59,130,246,0.4)]"
+    };
+    if (percentile <= 75) return { 
+      label: "AVERAGE", 
+      bg: "bg-yellow-500/20",
+      border: "border-yellow-400",
+      text: "text-yellow-400",
+      glow: "shadow-[0_0_20px_rgba(234,179,8,0.4)]"
+    };
+    return { 
+      label: "RISING", 
+      bg: "bg-gray-500/20",
+      border: "border-gray-400",
+      text: "text-gray-300",
+      glow: "shadow-[0_0_20px_rgba(156,163,175,0.3)]"
+    };
+  };
+
+  const displayPercentile = percentile !== undefined && percentile !== null && percentile > 0
+    ? percentile
+    : null;
+
+  const tier = displayPercentile ? getTier(displayPercentile) : null;
+
   const color = getScoreColor(score);
   const radius = 80;
   const circumference = 2 * Math.PI * radius;
@@ -70,13 +114,32 @@ export function ScoreDisplay({ score, percentile }: ScoreDisplayProps) {
           </div>
         </div>
 
-        {percentile !== undefined && (
+        {displayPercentile !== null && tier ? (
+          <div className="text-center w-full space-y-3">
+            {/* Tier Badge */}
+            <div className="inline-flex">
+              <div className={`px-6 py-2 rounded-full ${tier.bg} border-2 ${tier.border} ${tier.glow} transition-all duration-300`}>
+                <span className={`text-sm font-black tracking-wider ${tier.text}`}>
+                  {tier.label} TIER
+                </span>
+              </div>
+            </div>
+
+            {/* Better Than Statement */}
+            <div className="space-y-1">
+              <div className="text-xs text-[#666] font-mono tracking-wider">YOU RANK HIGHER THAN</div>
+              <div className="flex items-baseline justify-center gap-1">
+                <span className="text-2xl font-black text-[#e0e0e0]">
+                  {100 - displayPercentile}%
+                </span>
+                <span className="text-sm text-[#666]">of developers</span>
+              </div>
+            </div>
+          </div>
+        ) : (
           <div className="text-center w-full">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#2a2a2a] border border-[#333]">
-              <span className="text-xs font-mono text-[#666]">TOP</span>
-              <span className="text-lg font-black text-[#e0e0e0]">
-                {percentile}%
-              </span>
+              <span className="text-xs font-mono text-[#666]">Calculating ranking...</span>
             </div>
           </div>
         )}

@@ -174,10 +174,19 @@ export function calculatePercentile(
   userScore: number,
   allScores: number[]
 ): number {
-  if (allScores.length === 0) return 50;
-
+  // Tek kullanıcıysa karşılaştırma yapma
+  if (allScores.length <= 1) return 99;
+  
   const sorted = [...allScores].sort((a, b) => a - b);
   const lowerCount = sorted.filter((s) => s < userScore).length;
-
-  return Math.round((lowerCount / sorted.length) * 100);
+  
+  // "Better than X%" hesapla
+  const betterThanPercent = Math.round((lowerCount / sorted.length) * 100);
+  
+  // TOP X% = 100 - betterThanPercent
+  // Eğer 5 kişiden daha iyiysen (83% better than) → TOP 17%
+  const topPercent = 100 - betterThanPercent;
+  
+  // Minimum TOP 1%, maksimum TOP 99%
+  return Math.max(Math.min(topPercent, 99), 1);
 }
