@@ -1,7 +1,8 @@
 "use client";
 
-import { Package, Star, GitFork, TrendingUp, Code, Calendar } from "lucide-react";
+import { Package, Star, GitFork, TrendingUp, Code, Calendar, Scale } from "lucide-react";
 import { TopRepos } from "./top-repos";
+import { LicenseChart } from "./license-chart";
 
 interface RepositoriesTabProps {
   profileData: any;
@@ -44,6 +45,22 @@ export function RepositoriesTab({ profileData }: RepositoriesTabProps) {
       languageRepos[repo.language] = (languageRepos[repo.language] || 0) + 1;
     }
   });
+
+  // YENİ: License Distribution
+  const licenseDistribution: Record<string, number> = {};
+  let licensedCount = 0;
+  
+  topRepos.forEach((repo: any) => {
+    if (repo.license) {
+      licensedCount++;
+      licenseDistribution[repo.license] = (licenseDistribution[repo.license] || 0) + 1;
+    }
+  });
+
+  const unlicensedCount = topRepos.length - licensedCount;
+  if (unlicensedCount > 0) {
+    licenseDistribution["No License"] = unlicensedCount;
+  }
 
   const avgStars = topRepos.length > 0 
     ? Math.round(topRepos.reduce((sum: number, r: any) => sum + (r.stars || 0), 0) / topRepos.length)
@@ -98,17 +115,17 @@ export function RepositoriesTab({ profileData }: RepositoriesTabProps) {
 
         <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-bold text-[#666] tracking-wider">FORK RATIO</h3>
-            <TrendingUp className="h-4 w-4 text-[#666]" />
+            <h3 className="text-xs font-bold text-[#666] tracking-wider">LICENSED</h3>
+            <Scale className="h-4 w-4 text-[#666]" />
           </div>
-          <p className="text-3xl font-black text-[#e0e0e0] mb-1">{forkRatio}%</p>
+          <p className="text-3xl font-black text-[#e0e0e0] mb-1">{licensedCount}</p>
           <p className="text-xs text-[#666]">
-            Forked repositories
+            {topRepos.length > 0 ? Math.round((licensedCount / topRepos.length) * 100) : 0}% with licenses
           </p>
         </div>
       </div>
 
-      {/* Most Starred Repo Highlight - gradient kalsın */}
+      {/* Most Starred Repo Highlight */}
       {mostStarred && (
         <div className="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 rounded-xl p-6">
           <div className="flex items-start gap-4">
@@ -162,6 +179,19 @@ export function RepositoriesTab({ profileData }: RepositoriesTabProps) {
                 </div>
               ))}
           </div>
+        </div>
+      )}
+
+      {/* YENİ: License Distribution */}
+      {Object.keys(licenseDistribution).length > 0 && (
+        <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-[#e0e0e0] mb-2">License Distribution</h3>
+            <p className="text-xs text-[#666]">
+              {licensedCount} of {topRepos.length} repositories have licenses
+            </p>
+          </div>
+          <LicenseChart licenses={licenseDistribution} />
         </div>
       )}
 

@@ -83,18 +83,21 @@ export async function POST(req: NextRequest) {
     );
 
     const topReposData = repos
-      .filter(r => !r.fork)
-      .sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0))
-      .slice(0, 5)
-      .map(repo => ({
-        name: repo.name,
-        stars: repo.stargazers_count || 0,
-        forks: repo.forks_count || 0,
-        language: repo.language,
-        description: repo.description,
-        url: repo.html_url,
-        qualityScore: 0,
-      }));
+    .filter(r => !r.fork)
+    .sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0))
+    .slice(0, 5)
+    .map(repo => ({
+      name: repo.name,
+      stars: repo.stargazers_count || 0,
+      forks: repo.forks_count || 0,
+      language: repo.language,
+      description: repo.description,
+      url: repo.html_url,
+      qualityScore: 0,      
+      license: repo.license ? (repo.license as any).key : null,
+      updatedAt: repo.updated_at,
+      isFork: repo.fork,
+    }));
 
     const contributionsData = contributions.contributionCalendar.weeks
       .flatMap(w => w.contributionDays)
