@@ -27,6 +27,9 @@ export async function GET() {
     const profile = user.profiles[0];
 
     return NextResponse.json({
+      user: {
+        plan: user.plan 
+      },
       profile: {
         // Core metrics
         score: profile.score,

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { ScoreDisplay } from "@/components/dashboard/score-display";
 import { ActivityHeatmap } from "@/components/dashboard/activity-heatmap";
-// import { ProTab } from "@/components/dashboard/pro-tab";
+import { ProTab } from "@/components/dashboard/pro-tab";
 import { CompareTab } from "@/components/dashboard/compare-tab";
 import { RepositoriesTab } from "@/components/dashboard/repositories-tab";
 import { ActivityTab } from "@/components/dashboard/activity-tab";
@@ -35,9 +35,52 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
   const [profileData, setProfileData] = useState<any>(null);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [userPlan, setUserPlan] = useState<string>("FREE");
+  
+  // DEV MODE - Mock plan state
+  const [devMockPlan, setDevMockPlan] = useState<"FREE" | "PRO" | null>(null);
 
   useEffect(() => {
     fetchProfile();
+  }, []);
+
+  // DEV MODE - Keyboard shortcut (Ctrl+Shift+P)
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'development') return;
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+        e.preventDefault();
+        setDevMockPlan(prev => {
+          const newPlan = prev === "PRO" ? "FREE" : "PRO";
+          console.log(`🔧 DEV MODE: Switched to ${newPlan}`);
+          
+          // Toast notification (optional)
+          const toast = document.createElement('div');
+          toast.textContent = `Dev Mode: ${newPlan}`;
+          toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(to right, #a855f7, #ec4899);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+          `;
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 2000);
+          
+          return newPlan;
+        });
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
   }, []);
 
   const fetchProfile = async () => {
@@ -51,6 +94,9 @@ export default function DashboardPage() {
         console.log('📊 Total Reviews:', data.profile.totalReviews);
         setProfileData(data.profile);
         setHasProfile(true);
+        
+        // User plan'ı al
+        setUserPlan(data.user?.plan || "FREE");
       }
     } catch (error) {
       console.error("Failed to fetch profile:", error);
@@ -88,6 +134,11 @@ export default function DashboardPage() {
     );
   }
 
+  // DEV MODE: Override plan if dev mock is active
+  const effectivePlan = process.env.NODE_ENV === 'development' && devMockPlan 
+    ? devMockPlan 
+    : userPlan;
+
   const displayData = profileData ? {
     score: profileData.score || 0,
     percentile: profileData.percentile || 0,
@@ -110,7 +161,6 @@ export default function DashboardPage() {
     avatarUrl: profileData.avatarUrl || `https://github.com/${profileData.username}.png`,
     bio: profileData.bio || null,
     
-    // YENİ FIELD'LAR - EKLE
     totalIssuesOpened: profileData.totalIssuesOpened || 0,
     totalReviews: profileData.totalReviews || 0,
     totalContributions: profileData.totalContributions || 0,
@@ -153,6 +203,13 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      {/* DEV MODE Indicator (sadece development'ta görünür) */}
+      {process.env.NODE_ENV === 'development' && devMockPlan && (
+        <div className="fixed top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 font-bold text-sm">
+          🔧 DEV: {devMockPlan} MODE
+        </div>
+      )}
+
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -164,6 +221,11 @@ export default function DashboardPage() {
         </h1>
         <p className="text-[#666] text-sm mt-1">
           Track your GitHub metrics and developer growth
+          {process.env.NODE_ENV === 'development' && (
+            <span className="ml-2 text-purple-400 text-xs">
+              (Press Ctrl+Shift+P to toggle PRO)
+            </span>
+          )}
         </p>
       </motion.div>
 
@@ -254,123 +316,50 @@ export default function DashboardPage() {
 
           {/* Tabs Section */}
           <Tabs defaultValue="overview" className="w-full">
-          <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-  <TabsList className="bg-[#1a1a1a] border border-[#2a2a2a] p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-6 rounded-xl h-auto">
-    <TabsTrigger 
-      value="overview" 
-      className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
-    >
-      <BarChart3 className="w-4 h-4 mr-1.5" />
-      OVERVIEW
-    </TabsTrigger>
-    <TabsTrigger 
-      value="activity" 
-      className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
-    >
-      <Activity className="w-4 h-4 mr-1.5" />
-      ACTIVITY
-    </TabsTrigger>
-    <TabsTrigger 
-      value="skills" 
-      className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
-    >
-      <Code className="w-4 h-4 mr-1.5" />
-      SKILLS
-    </TabsTrigger>
-    <TabsTrigger 
-      value="repositories" 
-      className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
-    >
-      <Package className="w-4 h-4 mr-1.5" />
-      REPOS
-    </TabsTrigger>
-    <TabsTrigger 
-      value="compare" 
-      className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
-    >
-      <Target className="w-4 h-4 mr-1.5" />
-      COMPARE
-    </TabsTrigger>
-    <TabsTrigger 
-      value="pro" 
-      className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-300 text-purple-400/60 hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
-    >
-      <Sparkles className="w-4 h-4 mr-1.5" />
-      PRO
-    </TabsTrigger>
-  </TabsList>
-</div>
+  <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+    <TabsList className={`bg-[#1a1a1a] border border-[#2a2a2a] p-1.5 w-full min-w-max md:min-w-0 grid ${process.env.NEXT_PUBLIC_ENABLE_PRO_TAB === 'true' ? 'grid-cols-6' : 'grid-cols-5'} rounded-xl h-auto`}>
+      
+      <TabsTrigger value="overview" className="...">
+        <BarChart3 className="w-4 h-4 mr-1.5" />
+        OVERVIEW
+      </TabsTrigger>
+      
+      <TabsTrigger value="activity" className="...">
+        <Activity className="w-4 h-4 mr-1.5" />
+        ACTIVITY
+      </TabsTrigger>
+      
+      <TabsTrigger value="skills" className="...">
+        <Code className="w-4 h-4 mr-1.5" />
+        SKILLS
+      </TabsTrigger>
+      
+      <TabsTrigger value="repositories" className="...">
+        <Package className="w-4 h-4 mr-1.5" />
+        REPOS
+      </TabsTrigger>
+      
+      <TabsTrigger value="compare" className="...">
+        <Target className="w-4 h-4 mr-1.5" />
+        COMPARE
+      </TabsTrigger>
+      
+      {/* PRO TAB - Conditionally render */}
+      {process.env.NEXT_PUBLIC_ENABLE_PRO_TAB === 'true' && (
+        <TabsTrigger 
+          value="pro" 
+          className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-300 text-purple-400/60 hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
+        >
+          <Sparkles className="w-4 h-4 mr-1.5" />
+          PRO
+        </TabsTrigger>
+      )}
+    </TabsList>
+  </div>
 
             {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-6 mt-6">
-              {/* Header */}
-              <div>
-                <h2 className="text-3xl font-black text-[#e0e0e0] tracking-tighter mb-2">
-                  Overview
-                </h2>
-                <p className="text-[#666]">
-                  Your core GitHub metrics at a glance
-                </p>
-              </div>
-
-              {/* Stats Grid - 6 kart */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold text-[#666] tracking-wider">TOTAL COMMITS</h3>
-                    <GitBranch className="h-4 w-4 text-[#666]" />
-                  </div>
-                  <p className="text-2xl font-black text-[#e0e0e0] mb-1">{displayData.totalCommits}</p>
-                  <p className="text-xs text-[#666]">{displayData.averageCommitsPerDay}/day average</p>
-                </div>
-
-                <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold text-[#666] tracking-wider">PULL REQUESTS</h3>
-                    <GitPullRequest className="h-4 w-4 text-[#666]" />
-                  </div>
-                  <p className="text-2xl font-black text-[#e0e0e0] mb-1">{displayData.totalPRs}</p>
-                  <p className="text-xs text-[#666]">{displayData.mergedPRs} merged</p>
-                </div>
-
-                <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold text-[#666] tracking-wider">CURRENT STREAK</h3>
-                    <Zap className="h-4 w-4 text-[#666]" />
-                  </div>
-                  <p className="text-2xl font-black text-[#e0e0e0] mb-1">{displayData.currentStreak} days</p>
-                  <p className="text-xs text-[#666]">Longest: {displayData.longestStreak} days</p>
-                </div>
-
-                <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold text-[#666] tracking-wider">COMMUNITY</h3>
-                    <Users className="h-4 w-4 text-[#666]" />
-                  </div>
-                  <p className="text-2xl font-black text-[#e0e0e0] mb-1">{displayData.followersCount}</p>
-                  <p className="text-xs text-[#666]">{displayData.organizationsCount} organizations</p>
-                </div>
-
-                {/* YENİ KART 1: Issues Opened */}
-                <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold text-[#666] tracking-wider">ISSUES OPENED</h3>
-                    <Activity className="h-4 w-4 text-[#666]" />
-                  </div>
-                  <p className="text-2xl font-black text-[#e0e0e0] mb-1">{displayData.totalIssuesOpened || 0}</p>
-                  <p className="text-xs text-[#666]">Contributions made</p>
-                </div>
-
-                {/* YENİ KART 2: Code Reviews */}
-                <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold text-[#666] tracking-wider">CODE REVIEWS</h3>
-                    <Code className="h-4 w-4 text-[#666]" />
-                  </div>
-                  <p className="text-2xl font-black text-[#e0e0e0] mb-1">{displayData.totalReviews || 0}</p>
-                  <p className="text-xs text-[#666]">Reviews given</p>
-                </div>
-              </div>
+              {/* ... mevcut overview content ... */}
             </TabsContent>
 
             {/* Activity Tab */}
@@ -387,7 +376,6 @@ export default function DashboardPage() {
               <RepositoriesTab profileData={profileData} />
             </TabsContent>
 
-
             {/* Compare Tab */}
             <TabsContent value="compare" className="space-y-6 mt-6">
               <div className="bg-[#252525] rounded-xl border border-[#2a2a2a] p-8 text-center">
@@ -396,14 +384,19 @@ export default function DashboardPage() {
             </TabsContent>
 
             {/* Pro Tab */}
-            <TabsContent value="pro" className="space-y-6 mt-6">
-            <div className="bg-[#252525] rounded-xl border border-[#2a2a2a] p-8 text-center">
-            <Sparkles className="w-12 h-12 text-[#666] mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-[#e0e0e0] mb-2">PRO COMING SOON</h3>
-                <p className="text-[#666] text-sm">Advanced profile analytics is on the way — stay tuned.</p>
-              </div>
-            </TabsContent>
-          </Tabs>                    
+            {process.env.NEXT_PUBLIC_ENABLE_PRO_TAB === 'true' && (
+                <TabsContent value="pro" className="space-y-6 mt-6">
+                  <div className="bg-[#252525] rounded-xl border border-[#2a2a2a] p-8 text-center">
+                    <ProTab 
+                      isPro={effectivePlan === "PRO"} 
+                      onPurchaseComplete={() => {
+                        fetchProfile();
+                      }}
+                    />
+                  </div>
+                </TabsContent>
+              )}
+            </Tabs>               
         </>
       )}
     </div>
