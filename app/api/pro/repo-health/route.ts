@@ -41,40 +41,35 @@ export async function GET() {
     const cached = CacheService.get(cacheKey);
 
     // If cached, return immediately
-    if (cached?.codeQuality) {
-      console.log(`📦 Returning cached code quality for: ${user.githubUsername}`);
+    if (cached?.repoHealth) {
+      console.log(`📦 Returning cached repo health for: ${user.githubUsername}`);
       return NextResponse.json({
         success: true,
         data: {
-          readmeQuality: cached.codeQuality,
+          repoHealth: cached.repoHealth,
         },
       });
     }
 
     // If not cached, analyze now
-    console.log(`🔍 No cache, analyzing code quality for: ${user.githubUsername}`);
-    
+    console.log(`🏥 No cache, analyzing repository health for: ${user.githubUsername}`);
+
     // Initialize GitHub Service
     const githubService = new GitHubService(user.githubToken);
 
-    // Analyze README Quality
-    const readmeAnalysis = await githubService.analyzeReadmeQuality(user.githubUsername);
-
-    // TODO: Add more analyses (Test Coverage, CI/CD, Documentation)
+    // Analyze Repository Health
+    const repoHealth = await githubService.analyzeRepositoryHealth(user.githubUsername);
 
     return NextResponse.json({
       success: true,
       data: {
-        readmeQuality: readmeAnalysis,
-        // testCoverage: null, // Coming soon
-        // cicd: null, // Coming soon
-        // documentation: null, // Coming soon
+        repoHealth,
       },
     });
   } catch (error) {
-    console.error("Code quality analysis error:", error);
+    console.error("Repository health analysis error:", error);
     return NextResponse.json(
-      { error: "Failed to analyze code quality" },
+      { error: "Failed to analyze repository health" },
       { status: 500 }
     );
   }

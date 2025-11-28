@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
 import { CodeQualityCard } from "@/components/dashboard/code-quality-card";
+import { RepoHealthCard } from "@/components/dashboard/repo-health-card"; // EKLE
 
 interface ProTabProps {
   isPro?: boolean;
@@ -58,11 +59,11 @@ export function ProTab({ isPro = false, onPurchaseComplete }: ProTabProps) {
     };
   }, [showFeaturesModal]);
 
-  // PRO user görünümü - MOBILE-FRIENDLY TABS
+  // PRO user görünümü
   if (isPro) {
     return (
       <div className="space-y-6">
-        {/* Hero Header - Responsive */}
+        {/* Hero Header */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 border-2 border-purple-500/20 p-4 md:p-6">
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-pink-500/5 animate-pulse" />
           
@@ -89,82 +90,77 @@ export function ProTab({ isPro = false, onPurchaseComplete }: ProTabProps) {
           </div>
         </div>
 
-        {/* Sub-Tabs - SCROLLABLE on Mobile */}
+        {/* Sub-Tabs */}
         <Tabs defaultValue="code-quality" className="w-full">
-  <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-    <TabsList className="bg-[#1a1a1a] border border-[#2a2a2a] p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-4 rounded-xl h-auto">
-      
-      <TabsTrigger 
-        value="code-quality" 
-        className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
-      >
-        <Code className="w-4 h-4 mr-1.5" />
-        CODE QUALITY
-      </TabsTrigger>
-      
-      <TabsTrigger 
-        value="repo-health"
-        disabled
-        className="cursor-not-allowed opacity-50 text-[#666] font-bold text-xs tracking-wider rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
-      >
-        <Shield className="w-4 h-4 mr-1.5" />
-        <span className="hidden sm:inline">REPO HEALTH</span>
-        <span className="sm:hidden">HEALTH</span>
-      </TabsTrigger>
-      
-      <TabsTrigger 
-        value="dev-patterns"
-        disabled
-        className="cursor-not-allowed opacity-50 text-[#666] font-bold text-xs tracking-wider rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
-      >
-        <Activity className="w-4 h-4 mr-1.5" />
-        PATTERNS
-      </TabsTrigger>
-      
-      <TabsTrigger 
-        value="career"
-        disabled
-        className="cursor-not-allowed opacity-50 text-[#666] font-bold text-xs tracking-wider rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
-      >
-        <Target className="w-4 h-4 mr-1.5" />
-        CAREER
-      </TabsTrigger>
-      
-    </TabsList>
-  </div>
+          <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <TabsList className="bg-[#1a1a1a] border border-[#2a2a2a] p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-4 rounded-xl h-auto">
+              
+              <TabsTrigger 
+                value="code-quality" 
+                className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
+              >
+                <Code className="w-4 h-4 mr-1.5" />
+                CODE QUALITY
+              </TabsTrigger>
+              
+              <TabsTrigger 
+                value="repo-health"
+                className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
+              >
+                <Shield className="w-4 h-4 mr-1.5" />
+                <span className="hidden sm:inline">REPO HEALTH</span>
+                <span className="sm:hidden">HEALTH</span>
+              </TabsTrigger>
+              
+              <TabsTrigger 
+                value="dev-patterns"
+                disabled
+                className="cursor-not-allowed opacity-50 text-[#666] font-bold text-xs tracking-wider rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
+              >
+                <Activity className="w-4 h-4 mr-1.5" />
+                PATTERNS
+              </TabsTrigger>
+              
+              <TabsTrigger 
+                value="career"
+                disabled
+                className="cursor-not-allowed opacity-50 text-[#666] font-bold text-xs tracking-wider rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
+              >
+                <Target className="w-4 h-4 mr-1.5" />
+                CAREER
+              </TabsTrigger>
+              
+            </TabsList>
+          </div>
 
-  {/* Code Quality Tab */}
-  <TabsContent value="code-quality" className="space-y-6 mt-6">
-    <CodeQualityCard />
-  </TabsContent>
+          {/* Code Quality Tab */}
+          <TabsContent value="code-quality" className="space-y-6 mt-6">
+            <CodeQualityCard />
+          </TabsContent>
 
-  {/* Repository Health Tab */}
-  <TabsContent value="repo-health" className="space-y-6 mt-6">
-    <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-12 text-center">
-      <Shield className="w-16 h-16 text-[#666] mx-auto mb-4" />
-      <h3 className="text-xl font-bold text-[#e0e0e0] mb-2">Repository Health</h3>
-      <p className="text-[#666]">Coming soon...</p>
-    </div>
-  </TabsContent>
+          {/* Repository Health Tab - GERÇEK COMPONENT */}
+          <TabsContent value="repo-health" className="space-y-6 mt-6">
+            <RepoHealthCard />
+          </TabsContent>
 
-  {/* Developer Patterns Tab */}
-  <TabsContent value="dev-patterns" className="space-y-6 mt-6">
-    <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-12 text-center">
-      <Activity className="w-16 h-16 text-[#666] mx-auto mb-4" />
-      <h3 className="text-xl font-bold text-[#e0e0e0] mb-2">Developer Patterns</h3>
-      <p className="text-[#666]">Coming soon...</p>
-    </div>
-  </TabsContent>
+          {/* Developer Patterns Tab */}
+          <TabsContent value="dev-patterns" className="space-y-6 mt-6">
+            <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-12 text-center">
+              <Activity className="w-16 h-16 text-[#666] mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-[#e0e0e0] mb-2">Developer Patterns</h3>
+              <p className="text-[#666]">Coming soon...</p>
+            </div>
+          </TabsContent>
 
-  {/* Career Tab */}
-  <TabsContent value="career" className="space-y-6 mt-6">
-    <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-12 text-center">
-      <Target className="w-16 h-16 text-[#666] mx-auto mb-4" />
-      <h3 className="text-xl font-bold text-[#e0e0e0] mb-2">Career Insights</h3>
-      <p className="text-[#666]">Coming soon...</p>
-    </div>
-  </TabsContent>
-</Tabs>
+          {/* Career Tab */}
+          <TabsContent value="career" className="space-y-6 mt-6">
+            <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-12 text-center">
+              <Target className="w-16 h-16 text-[#666] mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-[#e0e0e0] mb-2">Career Insights</h3>
+              <p className="text-[#666]">Coming soon...</p>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     );
   }

@@ -934,6 +934,495 @@ async analyzeReadmeQuality(username: string): Promise<{
     throw error;
   }
 }
+// Repository Health Analysis
+async analyzeRepositoryHealth(username: string): Promise<{
+  overallScore: number;
+  grade: string;
+  metrics: {
+    maintenance: {
+      score: number;
+      commitFrequency: number; // commits per week (last 6 months)
+      lastCommitDays: number;
+      activeDaysRatio: number; // % of days with commits
+    };
+    issueManagement: {
+      score: number;
+      averageResolutionDays: number;
+      openClosedRatio: number;
+      totalIssues: number;
+      closedIssues: number;
+    };
+    pullRequests: {
+      score: number;
+      mergeRate: number; // % of merged PRs
+      averageMergeDays: number;
+      totalPRs: number;
+      mergedPRs: number;
+    };
+    activity: {
+      score: number;
+      contributorCount: number;
+      staleBranches: number;
+      stalePRs: number;
+    };
+  };
+  insights: {
+    strengths: string[];
+    concerns: string[];
+    recommendations: string[];
+  };
+  trend: 'improving' | 'stable' | 'declining';
+}> {
+  try {
+    console.log(`🏥 Analyzing repository health for: ${username}`);
+
+    // Get all repos (non-fork)
+    const reposResponse = await this.octokit.request('GET /users/{username}/repos', {
+      username,
+      per_page: 100,
+      sort: 'updated',
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+    });
+
+    const repos = reposResponse.data.filter((repo: any) => !repo.fork);
+
+    if (repos.length === 0) {
+      throw new Error('No repositories found');
+    }
+
+    // ==========================================
+    // 1. MAINTENANCE SCORE
+    // ==========================================
+    
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+    let totalCommits = 0;
+    let recentCommits = 0;
+    let activeDays = new Set<string>();
+    let lastCommitDate = new Date(0);
+
+    // Analyze commits for each repo
+    for (const repo of repos.slice(0, 20)) { // Limit to 20 repos to avoid rate limit
+      try {
+        const commitsResponse = await this.octokit.request(
+          'GET /repos/{owner}/{repo}/commits',
+          {
+            owner: username,
+            repo: repo.name,
+            since: sixMonthsAgo.toISOString(),
+            per_page: 100,
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          }
+        );
+
+        const commits = commitsResponse.data;
+        totalCommits += commits.length;
+
+        commits.forEach((commit: any) => {
+          const commitDate = new Date(commit.commit.author.date);
+          recentCommits++;
+          
+          // Track active days
+          const dayKey = commitDate.toISOString().split('T')[0];
+          activeDays.add(dayKey);
+
+          // Track last commit
+          if (commitDate > lastCommitDate) {
+            lastCommitDate = commitDate;
+          }
+        });
+      } catch (error) {
+        console.log(`Skipping commits for ${repo.name}`);
+        continue;
+      }
+    }
+
+    const weeksInPeriod = 26; // 6 months
+    const commitFrequency = recentCommits / weeksInPeriod;
+    const lastCommitDays = Math.floor((Date.now() - lastCommitDate.getTime()) / (1000 * 60 * 60 * 24));
+    const activeDaysRatio = (activeDays.size / 180) * 100; // 180 days in 6 months
+
+    // Maintenance scoring (0-100)
+    let maintenanceScore = 0;
+    
+    // Commit frequency score (40 points)
+    if (commitFrequency >= 10) maintenanceScore += 40;
+    else if (commitFrequency >= 5) maintenanceScore += 30;
+    else if (commitFrequency >= 2) maintenanceScore += 20;
+    else if (commitFrequency >= 1) maintenanceScore += 10;
+    
+    // Recency score (30 points)
+    if (lastCommitDays <= 7) maintenanceScore += 30;
+    else if (lastCommitDays <= 14) maintenanceScore += 25;
+    else if (lastCommitDays <= 30) maintenanceScore += 20;
+    else if (lastCommitDays <= 60) maintenanceScore += 10;
+    
+    // Active days ratio score (30 points)
+    if (activeDaysRatio >= 30) maintenanceScore += 30;
+    else if (activeDaysRatio >= 20) maintenanceScore += 20;
+    else if (activeDaysRatio >= 10) maintenanceScore += 10;
+
+    // ==========================================
+    // 2. ISSUE MANAGEMENT SCORE
+    // ==========================================
+    
+    let totalIssues = 0;
+    let closedIssues = 0;
+    let totalResolutionTime = 0;
+    let resolvedIssuesCount = 0;
+
+    for (const repo of repos.slice(0, 10)) {
+      try {
+        // Get closed issues
+        const closedIssuesResponse = await this.octokit.request(
+          'GET /repos/{owner}/{repo}/issues',
+          {
+            owner: username,
+            repo: repo.name,
+            state: 'closed',
+            per_page: 50,
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          }
+        );
+
+        const closed = closedIssuesResponse.data.filter((issue: any) => !issue.pull_request);
+        closedIssues += closed.length;
+
+        // Calculate resolution time
+        closed.forEach((issue: any) => {
+          if (issue.closed_at && issue.created_at) {
+            const created = new Date(issue.created_at).getTime();
+            const closedAt = new Date(issue.closed_at).getTime();
+            const resolutionDays = (closedAt - created) / (1000 * 60 * 60 * 24);
+            totalResolutionTime += resolutionDays;
+            resolvedIssuesCount++;
+          }
+        });
+
+        // Get open issues
+        const openIssuesResponse = await this.octokit.request(
+          'GET /repos/{owner}/{repo}/issues',
+          {
+            owner: username,
+            repo: repo.name,
+            state: 'open',
+            per_page: 50,
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          }
+        );
+
+        const open = openIssuesResponse.data.filter((issue: any) => !issue.pull_request);
+        totalIssues += open.length + closed.length;
+      } catch (error) {
+        console.log(`Skipping issues for ${repo.name}`);
+        continue;
+      }
+    }
+
+    const averageResolutionDays = resolvedIssuesCount > 0 
+      ? totalResolutionTime / resolvedIssuesCount 
+      : 0;
+    const openClosedRatio = totalIssues > 0 
+      ? (closedIssues / totalIssues) * 100 
+      : 100;
+
+    // Issue management scoring (0-100)
+    let issueScore = 0;
+    
+    // Resolution time score (50 points)
+    if (averageResolutionDays === 0) issueScore += 25; // No issues or very fast
+    else if (averageResolutionDays <= 7) issueScore += 50;
+    else if (averageResolutionDays <= 14) issueScore += 40;
+    else if (averageResolutionDays <= 30) issueScore += 30;
+    else if (averageResolutionDays <= 60) issueScore += 20;
+    
+    // Open/closed ratio score (50 points)
+    if (openClosedRatio >= 80) issueScore += 50;
+    else if (openClosedRatio >= 60) issueScore += 40;
+    else if (openClosedRatio >= 40) issueScore += 30;
+    else if (openClosedRatio >= 20) issueScore += 20;
+
+    // ==========================================
+    // 3. PULL REQUEST SCORE
+    // ==========================================
+    
+    let totalPRs = 0;
+    let mergedPRs = 0;
+    let totalMergeTime = 0;
+    let mergedPRsCount = 0;
+
+    for (const repo of repos.slice(0, 10)) {
+      try {
+        const prsResponse = await this.octokit.request(
+          'GET /repos/{owner}/{repo}/pulls',
+          {
+            owner: username,
+            repo: repo.name,
+            state: 'all',
+            per_page: 50,
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          }
+        );
+
+        const prs = prsResponse.data;
+        totalPRs += prs.length;
+
+        prs.forEach((pr: any) => {
+          if (pr.merged_at) {
+            mergedPRs++;
+            const created = new Date(pr.created_at).getTime();
+            const merged = new Date(pr.merged_at).getTime();
+            const mergeDays = (merged - created) / (1000 * 60 * 60 * 24);
+            totalMergeTime += mergeDays;
+            mergedPRsCount++;
+          }
+        });
+      } catch (error) {
+        console.log(`Skipping PRs for ${repo.name}`);
+        continue;
+      }
+    }
+
+    const mergeRate = totalPRs > 0 ? (mergedPRs / totalPRs) * 100 : 0;
+    const averageMergeDays = mergedPRsCount > 0 ? totalMergeTime / mergedPRsCount : 0;
+
+    // PR scoring (0-100)
+    let prScore = 0;
+    
+    // Merge rate score (60 points)
+    if (mergeRate >= 80) prScore += 60;
+    else if (mergeRate >= 60) prScore += 50;
+    else if (mergeRate >= 40) prScore += 40;
+    else if (mergeRate >= 20) prScore += 30;
+    
+    // Merge time score (40 points)
+    if (averageMergeDays === 0) prScore += 20; // No PRs
+    else if (averageMergeDays <= 1) prScore += 40;
+    else if (averageMergeDays <= 3) prScore += 35;
+    else if (averageMergeDays <= 7) prScore += 30;
+    else if (averageMergeDays <= 14) prScore += 20;
+
+    // ==========================================
+    // 4. ACTIVITY SCORE
+    // ==========================================
+    
+    // Count unique contributors across repos
+    const contributors = new Set<string>();
+    let staleBranches = 0;
+    let stalePRs = 0;
+
+    for (const repo of repos.slice(0, 10)) {
+      try {
+        // Get contributors
+        const contributorsResponse = await this.octokit.request(
+          'GET /repos/{owner}/{repo}/contributors',
+          {
+            owner: username,
+            repo: repo.name,
+            per_page: 100,
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          }
+        );
+
+        contributorsResponse.data.forEach((contributor: any) => {
+          contributors.add(contributor.login);
+        });
+
+        // Count stale branches (no commits in 3+ months)
+        const branchesResponse = await this.octokit.request(
+          'GET /repos/{owner}/{repo}/branches',
+          {
+            owner: username,
+            repo: repo.name,
+            per_page: 100,
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          }
+        );
+
+        const threeMonthsAgo = new Date();
+        threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+
+        for (const branch of branchesResponse.data) {
+          try {
+            const commitResponse = await this.octokit.request(
+              'GET /repos/{owner}/{repo}/commits/{ref}',
+              {
+                owner: username,
+                repo: repo.name,
+                ref: branch.commit.sha,
+                headers: {
+                  'X-GitHub-Api-Version': '2022-11-28',
+                },
+              }
+            );
+        
+            // SAFE ACCESS
+            const commitAuthor = (commitResponse.data as any)?.commit?.author;
+            if (commitAuthor?.date) {
+              const lastCommitDate = new Date(commitAuthor.date);
+              if (lastCommitDate < threeMonthsAgo) {
+                staleBranches++;
+              }
+            }
+          } catch (error) {
+            continue;
+          }
+        }
+
+        // Count stale PRs (open for 3+ months)
+        const openPRsResponse = await this.octokit.request(
+          'GET /repos/{owner}/{repo}/pulls',
+          {
+            owner: username,
+            repo: repo.name,
+            state: 'open',
+            per_page: 100,
+            headers: {
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+          }
+        );
+
+        openPRsResponse.data.forEach((pr: any) => {
+          const createdDate = new Date(pr.created_at);
+          if (createdDate < threeMonthsAgo) {
+            stalePRs++;
+          }
+        });
+      } catch (error) {
+        console.log(`Skipping activity for ${repo.name}`);
+        continue;
+      }
+    }
+
+    const contributorCount = contributors.size;
+
+    // Activity scoring (0-100)
+    let activityScore = 0;
+    
+    // Contributor count score (50 points)
+    if (contributorCount >= 10) activityScore += 50;
+    else if (contributorCount >= 5) activityScore += 40;
+    else if (contributorCount >= 3) activityScore += 30;
+    else if (contributorCount >= 2) activityScore += 20;
+    else activityScore += 10;
+    
+    // Stale content penalty (50 points, deduct for stale items)
+    let staleScore = 50;
+    staleScore -= Math.min(staleBranches * 5, 25); // Max -25
+    staleScore -= Math.min(stalePRs * 5, 25); // Max -25
+    activityScore += Math.max(staleScore, 0);
+
+    // ==========================================
+    // OVERALL SCORE & GRADE
+    // ==========================================
+    
+    const overallScore = Math.round(
+      (maintenanceScore * 0.3 + issueScore * 0.25 + prScore * 0.25 + activityScore * 0.2)
+    );
+
+    let grade = 'F';
+    if (overallScore >= 90) grade = 'A+';
+    else if (overallScore >= 85) grade = 'A';
+    else if (overallScore >= 80) grade = 'A-';
+    else if (overallScore >= 75) grade = 'B+';
+    else if (overallScore >= 70) grade = 'B';
+    else if (overallScore >= 65) grade = 'B-';
+    else if (overallScore >= 60) grade = 'C+';
+    else if (overallScore >= 55) grade = 'C';
+    else if (overallScore >= 50) grade = 'C-';
+    else if (overallScore >= 40) grade = 'D';
+
+    // ==========================================
+    // INSIGHTS & RECOMMENDATIONS
+    // ==========================================
+    
+    const strengths: string[] = [];
+    const concerns: string[] = [];
+    const recommendations: string[] = [];
+
+    // Strengths
+    if (maintenanceScore >= 80) strengths.push('Excellent maintenance with consistent commit activity');
+    if (issueScore >= 80) strengths.push('Strong issue management and quick resolution times');
+    if (prScore >= 80) strengths.push('Efficient PR workflow with high merge rates');
+    if (contributorCount >= 5) strengths.push('Active community with multiple contributors');
+
+    // Concerns
+    if (lastCommitDays > 30) concerns.push('No recent commits in the last month');
+    if (averageResolutionDays > 30) concerns.push('Issues take long to resolve (30+ days average)');
+    if (mergeRate < 50) concerns.push('Low PR merge rate indicates workflow issues');
+    if (staleBranches > 5) concerns.push(`${staleBranches} stale branches need cleanup`);
+    if (stalePRs > 3) concerns.push(`${stalePRs} stale PRs need attention`);
+
+    // Recommendations
+    if (commitFrequency < 2) recommendations.push('Increase commit frequency to show active development');
+    if (averageResolutionDays > 14) recommendations.push('Set up issue triaging to improve response times');
+    if (staleBranches > 0) recommendations.push('Clean up stale branches to maintain repository hygiene');
+    if (contributorCount === 1) recommendations.push('Encourage community contributions with good documentation');
+
+    // Trend detection (simple heuristic)
+    let trend: 'improving' | 'stable' | 'declining' = 'stable';
+    if (maintenanceScore >= 70 && lastCommitDays <= 14) trend = 'improving';
+    else if (lastCommitDays > 60 || maintenanceScore < 40) trend = 'declining';
+
+    return {
+      overallScore,
+      grade,
+      metrics: {
+        maintenance: {
+          score: maintenanceScore,
+          commitFrequency: Math.round(commitFrequency * 10) / 10,
+          lastCommitDays,
+          activeDaysRatio: Math.round(activeDaysRatio * 10) / 10,
+        },
+        issueManagement: {
+          score: issueScore,
+          averageResolutionDays: Math.round(averageResolutionDays * 10) / 10,
+          openClosedRatio: Math.round(openClosedRatio * 10) / 10,
+          totalIssues,
+          closedIssues,
+        },
+        pullRequests: {
+          score: prScore,
+          mergeRate: Math.round(mergeRate * 10) / 10,
+          averageMergeDays: Math.round(averageMergeDays * 10) / 10,
+          totalPRs,
+          mergedPRs,
+        },
+        activity: {
+          score: activityScore,
+          contributorCount,
+          staleBranches,
+          stalePRs,
+        },
+      },
+      insights: {
+        strengths,
+        concerns,
+        recommendations,
+      },
+      trend,
+    };
+  } catch (error) {
+    console.error('Repository health analysis error:', error);
+    throw error;
+  }
+}
   
 }
 

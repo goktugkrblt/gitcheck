@@ -40,6 +40,11 @@ export default function DashboardPage() {
   // DEV MODE - Mock plan state
   const [devMockPlan, setDevMockPlan] = useState<"FREE" | "PRO" | null>(null);
 
+  // DEV MODE: Override plan if dev mock is active
+  const effectivePlan = process.env.NODE_ENV === 'development' && devMockPlan 
+    ? devMockPlan 
+    : userPlan;
+
   useEffect(() => {
     fetchProfile();
   }, []);
@@ -83,12 +88,21 @@ export default function DashboardPage() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, []);
 
+  // Background PRO Analysis Trigger
+  useEffect(() => {
+    if (effectivePlan === "PRO") {
+      // Trigger background analysis (fire and forget)
+      fetch('/api/pro/analyze-background', { method: 'POST' })
+        .then(() => console.log('✅ Background PRO analysis triggered'))
+        .catch(() => console.log('⚠️ Background analysis failed to trigger'));
+    }
+  }, [effectivePlan]);
+
   const fetchProfile = async () => {
     try {
       const res = await fetch("/api/profile");
       const data = await res.json();
       if (data.profile) {
-
         setProfileData(data.profile);
         setHasProfile(true);
         
@@ -122,19 +136,6 @@ export default function DashboardPage() {
       setLoading(false);
     }
   };
-
-  if (initialLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-[#919191] font-mono text-sm">LOADING...</div>
-      </div>
-    );
-  }
-
-  // DEV MODE: Override plan if dev mock is active
-  const effectivePlan = process.env.NODE_ENV === 'development' && devMockPlan 
-    ? devMockPlan 
-    : userPlan;
 
   const displayData = profileData ? {
     score: profileData.score || 0,
@@ -197,6 +198,14 @@ export default function DashboardPage() {
     gistsCount: 0,
     accountAge: 0,
   };
+
+  if (initialLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="text-[#919191] font-mono text-sm">LOADING...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -459,7 +468,7 @@ export default function DashboardPage() {
             </TabsContent>            
             <TabsContent value="pro" className="space-y-6 mt-6">
               <div className="bg-[#252525] rounded-xl border border-[#2a2a2a] p-8 text-center">
-                {process.env.NEXT_PUBLIC_ENABLE_PRO_TAB === 'false' ? (                  
+                {process.env.NEXT_PUBLIC_ENABLE_PRO_TAB === 'true' ? (                  
                   <ProTab 
                     isPro={effectivePlan === "PRO"} 
                     onPurchaseComplete={() => {
