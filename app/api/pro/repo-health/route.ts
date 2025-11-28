@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { GitHubService } from "@/lib/github";
-import { CacheService } from "@/lib/cache";
+import { CacheService, CacheKeys } from "@/lib/cache"; // ✅ CacheKeys import et
 
 export async function GET() {
   try {
@@ -12,7 +12,6 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get user and check PRO status
     const user = await prisma.user.findUnique({
       where: { email: session.user.email },
     });
@@ -21,56 +20,42 @@ export async function GET() {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Check PRO plan
     if (user.plan !== "PRO") {
-      return NextResponse.json(
-        { error: "PRO plan required" },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: "PRO plan required" }, { status: 403 });
     }
 
-    // Check if user has GitHub token
     if (!user.githubToken || !user.githubUsername) {
-      return NextResponse.json(
-        { error: "GitHub account not connected" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "GitHub account not connected" }, { status: 404 });
     }
 
-    const cacheKey = `pro-analysis-${user.githubUsername}`;
-    const cached = CacheService.get(cacheKey);
+    const username = user.githubUsername;
+    const cacheKey = CacheKeys.repoHealth(username); // ✅ DOĞRU KEY
 
-    // If cached, return immediately
-    if (cached?.repoHealth) {
-      console.log(`📦 Returning cached repo health for: ${user.githubUsername}`);
+    // 🔥 CHECK CACHE
+    const cached = CacheService.get(cacheKey);
+    if (cached) {
+      console.log(`✅ Cache HIT for repo health: ${username}`);
       return NextResponse.json({
         success: true,
-        data: {
-          repoHealth: cached.repoHealth,
-        },
+        data: { repoHealth: cached },
       });
     }
 
-    // If not cached, analyze now
-    console.log(`🏥 No cache, analyzing repository health for: ${user.githubUsername}`);
-
-    // Initialize GitHub Service
+    // Cache miss - analyze
+    console.log(`🔍 Cache MISS, analyzing repo health for: ${username}`);
     const githubService = new GitHubService(user.githubToken);
+    const repoHealth = await githubService.analyzeRepositoryHealth(username);
 
-    // Analyze Repository Health
-    const repoHealth = await githubService.analyzeRepositoryHealth(user.githubUsername);
+    // ✅ CACHE'E YAZ
+    CacheService.set(cacheKey, repoHealth);
+    console.log(`💾 Repo health cached for: ${username}`);
 
     return NextResponse.json({
       success: true,
-      data: {
-        repoHealth,
-      },
+      data: { repoHealth },
     });
   } catch (error) {
     console.error("Repository health analysis error:", error);
-    return NextResponse.json(
-      { error: "Failed to analyze repository health" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to analyze repository health" }, { status: 500 });
   }
 }

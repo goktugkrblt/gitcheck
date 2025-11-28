@@ -469,8 +469,9 @@ export default function DashboardPage() {
             <TabsContent value="pro" className="space-y-6 mt-6">
               <div className="bg-[#252525] rounded-xl border border-[#2a2a2a] p-8 text-center">
                 {process.env.NEXT_PUBLIC_ENABLE_PRO_TAB === 'true' ? (                  
-                  <ProTab 
-                    isPro={effectivePlan === "PRO"} 
+                     <ProTab 
+                     isPro={effectivePlan === "PRO"}
+                     username={displayData.username}
                     onPurchaseComplete={() => {
                       fetchProfile();
                     }}

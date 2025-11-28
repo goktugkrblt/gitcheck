@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Code, CheckCircle, AlertCircle, Loader2, Sparkles, TrendingUp, FileText, Link, Hash, MessageSquare, Image, Table, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ClientCache, ProCacheKeys } from "@/lib/client-cache";
 
 interface ReadmeQuality {
   score: number;
@@ -38,12 +39,26 @@ interface CodeQualityData {
   readmeQuality: ReadmeQuality;
 }
 
-export function CodeQualityCard() {
-  const [loading, setLoading] = useState(false);
+interface CodeQualityCardProps {
+  username: string;
+}
+
+export function CodeQualityCard({ username }: CodeQualityCardProps) {
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState<CodeQualityData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const fetchCodeQuality = async () => {
+    // 🚀 ÖNCE SESSION STORAGE'DAN YÜKLE
+    const cached = ClientCache.get<CodeQualityData>(ProCacheKeys.codeQuality(username));
+    if (cached) {
+      console.log("⚡ INSTANT LOAD: Code Quality from session storage!");
+      setData(cached);
+      setLoading(false);
+      return;
+    }
+
+    // Cache yoksa API'den çek
     setLoading(true);
     setError(null);
     
@@ -56,6 +71,10 @@ export function CodeQualityCard() {
       }
 
       setData(result.data);
+      
+      // 💾 SESSION STORAGE'A KAYDET
+      ClientCache.set(ProCacheKeys.codeQuality(username), result.data);
+      
     } catch (err: any) {
       setError(err.message);
       console.error('Code quality fetch error:', err);
@@ -65,8 +84,10 @@ export function CodeQualityCard() {
   };
 
   useEffect(() => {
-    fetchCodeQuality();
-  }, []);
+    if (username) {
+      fetchCodeQuality();
+    }
+  }, [username]);
 
   if (loading) {
     return (
@@ -282,25 +303,25 @@ export function CodeQualityCard() {
 
           {/* Metrics Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-  {metrics.map((metric, index) => (
-    <div 
-      key={index}
-      className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-4 hover:border-[#333] transition-colors"
-    >
-      <div className="flex items-center justify-between mb-3">
-        <metric.icon className="w-4 h-4 text-[#666]" />
-        <div className="flex items-center gap-1">
-          <span className="text-xl font-black text-[#e0e0e0]">{metric.score}</span>
-          <span className="text-sm text-[#666]">/10</span>
-        </div>
-      </div>
-      <div className="text-xs font-bold text-[#666] mb-1 tracking-wider">{metric.label.toUpperCase()}</div>
-      <div className="text-sm text-[#919191]">
-        <span className="font-bold text-[#e0e0e0]">{metric.value}</span> {metric.unit}
-      </div>
-    </div>
-  ))}
-</div>
+            {metrics.map((metric, index) => (
+              <div 
+                key={index}
+                className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-4 hover:border-[#333] transition-colors"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <metric.icon className="w-4 h-4 text-[#666]" />
+                  <div className="flex items-center gap-1">
+                    <span className="text-xl font-black text-[#e0e0e0]">{metric.score}</span>
+                    <span className="text-sm text-[#666]">/10</span>
+                  </div>
+                </div>
+                <div className="text-xs font-bold text-[#666] mb-1 tracking-wider">{metric.label.toUpperCase()}</div>
+                <div className="text-sm text-[#919191]">
+                  <span className="font-bold text-[#e0e0e0]">{metric.value}</span> {metric.unit}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

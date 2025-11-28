@@ -18,6 +18,7 @@ import {
   Activity
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ClientCache, ProCacheKeys } from "@/lib/client-cache";
 
 interface RepoHealthData {
   overallScore: number;
@@ -58,12 +59,26 @@ interface RepoHealthData {
   trend: 'improving' | 'stable' | 'declining';
 }
 
-export function RepoHealthCard() {
-  const [loading, setLoading] = useState(false);
+interface RepoHealthCardProps {
+  username: string;
+}
+
+export function RepoHealthCard({ username }: RepoHealthCardProps) {
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState<RepoHealthData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const fetchRepoHealth = async () => {
+    // 🚀 ÖNCE SESSION STORAGE'DAN YÜKLE
+    const cached = ClientCache.get<RepoHealthData>(ProCacheKeys.repoHealth(username));
+    if (cached) {
+      console.log("⚡ INSTANT LOAD: Repo Health from session storage!");
+      setData(cached);
+      setLoading(false);
+      return;
+    }
+
+    // Cache yoksa API'den çek
     setLoading(true);
     setError(null);
     
@@ -76,6 +91,10 @@ export function RepoHealthCard() {
       }
 
       setData(result.data.repoHealth);
+      
+      // 💾 SESSION STORAGE'A KAYDET
+      ClientCache.set(ProCacheKeys.repoHealth(username), result.data.repoHealth);
+      
     } catch (err: any) {
       setError(err.message);
       console.error('Repository health fetch error:', err);
@@ -85,8 +104,10 @@ export function RepoHealthCard() {
   };
 
   useEffect(() => {
-    fetchRepoHealth();
-  }, []);
+    if (username) {
+      fetchRepoHealth();
+    }
+  }, [username]);
 
   if (loading) {
     return (

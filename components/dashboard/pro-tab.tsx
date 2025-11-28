@@ -8,14 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect } from "react";
 import { CodeQualityCard } from "@/components/dashboard/code-quality-card";
-import { RepoHealthCard } from "@/components/dashboard/repo-health-card"; // EKLE
+import { RepoHealthCard } from "@/components/dashboard/repo-health-card";
 
 interface ProTabProps {
   isPro?: boolean;
+  username?: string; // ✅ USERNAME PROP EKLE
   onPurchaseComplete?: () => void;
 }
 
-export function ProTab({ isPro = false, onPurchaseComplete }: ProTabProps) {
+export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabProps) {
   const [showFeaturesModal, setShowFeaturesModal] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
 
@@ -133,14 +134,26 @@ export function ProTab({ isPro = false, onPurchaseComplete }: ProTabProps) {
             </TabsList>
           </div>
 
-          {/* Code Quality Tab */}
+          {/* Code Quality Tab - USERNAME PROP GEÇ */}
           <TabsContent value="code-quality" className="space-y-6 mt-6">
-            <CodeQualityCard />
+            {username ? (
+              <CodeQualityCard username={username} />
+            ) : (
+              <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-12 text-center">
+                <p className="text-[#666]">No username provided</p>
+              </div>
+            )}
           </TabsContent>
 
-          {/* Repository Health Tab - GERÇEK COMPONENT */}
+          {/* Repository Health Tab - USERNAME PROP GEÇ */}
           <TabsContent value="repo-health" className="space-y-6 mt-6">
-            <RepoHealthCard />
+            {username ? (
+              <RepoHealthCard username={username} />
+            ) : (
+              <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-12 text-center">
+                <p className="text-[#666]">No username provided</p>
+              </div>
+            )}
           </TabsContent>
 
           {/* Developer Patterns Tab */}
