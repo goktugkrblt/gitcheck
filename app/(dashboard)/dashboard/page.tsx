@@ -468,7 +468,7 @@ export default function DashboardPage() {
             </TabsContent>            
             <TabsContent value="pro" className="space-y-6 mt-6">
               <div className="bg-[#252525] rounded-xl border border-[#2a2a2a] p-8 text-center">
-                {process.env.NEXT_PUBLIC_ENABLE_PRO_TAB === 'true' ? (                  
+                {process.env.NEXT_PUBLIC_ENABLE_PRO_TAB === 'false' ? (                  
                   <ProTab 
                     isPro={effectivePlan === "PRO"} 
                     onPurchaseComplete={() => {
