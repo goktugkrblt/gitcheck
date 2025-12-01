@@ -74,7 +74,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
                 <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </div>
-              <div>
+              <div className="text-left">
                 <h2 className="text-xl md:text-2xl font-black text-[#e0e0e0] tracking-tighter">
                   Premium Analytics
                 </h2>

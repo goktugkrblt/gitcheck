@@ -1406,6 +1406,7 @@ return {
 }
 
 async analyzeDeveloperPatterns(username: string): Promise<{
+  
   overallScore: number;
   grade: string;
   patterns: {
@@ -1475,6 +1476,8 @@ async analyzeDeveloperPatterns(username: string): Promise<{
     });
 
     const repos = reposResponse.data.filter((repo: any) => !repo.fork);
+    console.log(`📦 Total repos found: ${repos.length}`);
+    console.log(`📦 First 20 repos:`, repos.slice(0, 20).map(r => r.name));
 
     if (repos.length === 0) {
       throw new Error('No repositories found');
@@ -1498,8 +1501,7 @@ async analyzeDeveloperPatterns(username: string): Promise<{
           'GET /repos/{owner}/{repo}/commits',
           {
             owner: username,
-            repo: repo.name,
-            author: username,
+            repo: repo.name,            
             per_page: 100,
             headers: {
               'X-GitHub-Api-Version': '2022-11-28',
@@ -1529,6 +1531,11 @@ async analyzeDeveloperPatterns(username: string): Promise<{
         continue;
       }
     }
+
+    console.log(`🎯 FINAL RESULTS:`);
+    console.log(`  Total commits analyzed: ${totalCommits}`);
+    console.log(`  Hourly activity:`, hourlyActivity);
+    console.log(`  Peak hours:`, hourlyActivity.map((count, hour) => ({ hour, count })).sort((a, b) => b.count - a.count).slice(0, 3));
 
     const maxHourlyActivity = Math.max(...hourlyActivity);
     const normalizedHourly = hourlyActivity.map(count => 
