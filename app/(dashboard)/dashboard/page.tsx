@@ -88,15 +88,8 @@ export default function DashboardPage() {
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, []);
 
-  // Background PRO Analysis Trigger
-  useEffect(() => {
-    if (effectivePlan === "PRO") {
-      // Trigger background analysis (fire and forget)
-      fetch('/api/pro/analyze-background', { method: 'POST' })
-        .then(() => console.log('✅ Background PRO analysis triggered'))
-        .catch(() => console.log('⚠️ Background analysis failed to trigger'));
-    }
-  }, [effectivePlan]);
+  // 🗑️ REMOVED: Background PRO Analysis Trigger
+  // Artık on-demand loading yapıyoruz, background analysis gereksiz!
 
   const fetchProfile = async () => {
     try {
@@ -465,13 +458,15 @@ export default function DashboardPage() {
               <div className="bg-[#252525] rounded-xl border border-[#2a2a2a] p-8 text-center">
                 <CompareTab userProfile={profileData} />
               </div>
-            </TabsContent>            
+            </TabsContent>
+            
+            {/* PRO TAB - Session Storage ile optimize edilmiş! */}
             <TabsContent value="pro" className="space-y-6 mt-6">
               <div className="bg-[#252525] rounded-xl border border-[#2a2a2a] p-8 text-center">
                 {process.env.NEXT_PUBLIC_ENABLE_PRO_TAB === 'true' ? (                  
-                     <ProTab 
-                     isPro={effectivePlan === "PRO"}
-                     username={displayData.username}
+                  <ProTab 
+                    isPro={effectivePlan === "PRO"}
+                    username={displayData.username}
                     onPurchaseComplete={() => {
                       fetchProfile();
                     }}

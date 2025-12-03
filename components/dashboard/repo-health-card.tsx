@@ -415,7 +415,9 @@ export function RepoHealthCard({ username }: RepoHealthCardProps) {
       </div>
 
       {/* Insights */}
-      <div className="grid md:grid-cols-3 gap-6">
+     {/* Insights - 3 BÖLÜM */}
+     <div className="grid md:grid-cols-3 gap-6">
+        {/* Strengths - YENİ EKLENEN */}
         {data.insights.strengths.length > 0 && (
           <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
             <div className="flex items-center gap-2 mb-4">
@@ -433,6 +435,7 @@ export function RepoHealthCard({ username }: RepoHealthCardProps) {
           </div>
         )}
 
+        {/* Concerns */}
         {data.insights.concerns.length > 0 && (
           <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
             <div className="flex items-center gap-2 mb-4">
@@ -450,6 +453,7 @@ export function RepoHealthCard({ username }: RepoHealthCardProps) {
           </div>
         )}
 
+        {/* Recommendations */}
         {data.insights.recommendations.length > 0 && (
           <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">
             <div className="flex items-center gap-2 mb-4">
