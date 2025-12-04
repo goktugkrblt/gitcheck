@@ -33,9 +33,9 @@ export default function HomePage() {
                   y: ["-100%", "100%"]
                 }}
                 transition={{
-                  duration: 4 + Math.random() * 2, // ✅ 8 → 4 (2x hızlı)
+                  duration: 4 + Math.random() * 2,
                   repeat: Infinity,
-                  delay: Math.random() * 4, // ✅ 8 → 4
+                  delay: Math.random() * 4,
                   ease: "linear"
                 }}
               />
@@ -87,27 +87,42 @@ export default function HomePage() {
             <div className="space-y-8">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}>
   <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#e0e0e0] leading-none tracking-tighter">
-    GITHUB
+    YOUR GITHUB
     <br />
-    <motion.span className="inline-block relative" whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300 }}>
-      {"QUANTIFIED".split("").map((char, i) => (
-        <motion.span
-          key={i}
-          className="inline-block"
-          animate={{
-            y: [0, -10, 0]
-          }}
-          transition={{
-            duration: 0.6,
-            delay: 0.5 + (i * 0.08),
-            repeat: Infinity,
-            repeatDelay: 5 // ✅ 2 → 5 saniye (daha geç tekrar ediyor)
-          }}
-        >
-          {char}
-        </motion.span>
-      ))}
-    </motion.span>
+    <span className="inline-flex items-center gap-4">
+      <motion.span
+        className="text-green-400"
+        initial={{ scale: 0, rotate: -180 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ 
+          delay: 0.8, 
+          type: "spring", 
+          stiffness: 200,
+          damping: 10
+        }}
+      >
+        ✓
+      </motion.span>
+      <motion.span className="inline-block relative" whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300 }}>
+        {"CHECKED".split("").map((char, i) => (
+          <motion.span
+            key={i}
+            className="inline-block"
+            animate={{
+              y: [0, -10, 0]
+            }}
+            transition={{
+              duration: 0.6,
+              delay: 0.5 + (i * 0.08),
+              repeat: Infinity,
+              repeatDelay: 5
+            }}
+          >
+            {char}
+          </motion.span>
+        ))}
+      </motion.span>
+    </span>
   </h1>
 </motion.div>
 
@@ -276,30 +291,47 @@ export default function HomePage() {
               </div>
             </Link>
           </div>
-          <div className="text-center text-xs font-mono text-[#666] mt-12">
-                      © 2025 • BUILT FOR{" "}
-                      <a 
-                        href="https://goktug.info" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-block group relative"
-                      >
-                        <motion.span
-                          className="text-[#919191] font-bold relative z-10"
-                          whileHover={{ scale: 1.05 }}
-                          transition={{ type: "spring", stiffness: 400 }}
-                        >
-                          DEVELOPER
-                        </motion.span>
-                        <motion.span
-                          className="absolute inset-0 bg-[#919191] blur-md opacity-0 group-hover:opacity-20"
-                          initial={{ scale: 0.8 }}
-                          whileHover={{ scale: 1.2 }}
-                          transition={{ duration: 0.3 }}
-                        />
-                      </a>
-                      {" "}BY DEVELOPERS
-                    </div>
+
+          {/* Legal Links */}
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-mono text-[#666] mt-12 mb-6">
+            <Link href="/privacy" className="hover:text-[#919191] transition-colors">
+              Privacy Policy
+            </Link>
+            <span className="text-[#444]">•</span>
+            <Link href="/terms" className="hover:text-[#919191] transition-colors">
+              Terms of Service
+            </Link>
+            <span className="text-[#444]">•</span>
+            <Link href="/data-usage" className="hover:text-[#919191] transition-colors">
+              Data Usage
+            </Link>
+          </div>
+
+          {/* Copyright */}
+          <div className="text-center text-xs font-mono text-[#666]">
+            © 2025 • BUILT FOR{" "}
+            <a 
+              href="https://goktug.info" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-block group relative"
+            >
+              <motion.span
+                className="text-[#919191] font-bold relative z-10"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 400 }}
+              >
+                DEVELOPER
+              </motion.span>
+              <motion.span
+                className="absolute inset-0 bg-[#919191] blur-md opacity-0 group-hover:opacity-20"
+                initial={{ scale: 0.8 }}
+                whileHover={{ scale: 1.2 }}
+                transition={{ duration: 0.3 }}
+              />
+            </a>
+            {" "}BY DEVELOPERS
+          </div>
         </div>
       </footer>
     </div>

@@ -3,7 +3,7 @@
 <div align="center">
   <img src="public/logo.svg" alt="GitCheck Logo" width="50" height="50">
   
-  ### GitHub Quantified
+  ### Your GitHub Checked ✅
   
   Transform your code contributions into quantifiable career metrics.
   

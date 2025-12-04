@@ -14,10 +14,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "GitCheck - GitHub Quantified",
+    default: "GitCheck - Your GitHub Checked",
     template: "%s | GitCheck"
   },
-  description: "Transform your GitHub contributions into quantifiable career metrics. Real-time analytics, developer scoring, and insights powered by advanced algorithms.",
+  description: "Analyze your GitHub profile with advanced developer analytics. Real-time metrics, developer scoring, and comprehensive insights powered by intelligent algorithms.",
   keywords: [
     "GitHub analytics",
     "developer tools",
@@ -26,7 +26,10 @@ export const metadata: Metadata = {
     "code metrics",
     "GitHub stats",
     "contribution tracking",
-    "developer portfolio"
+    "developer portfolio",
+    "gitcheck",
+    "github verified",
+    "github checked"
   ],
   authors: [{ name: "Goktug Karabulut", url: "https://goktug.info" }],
   creator: "Goktug Karabulut",
@@ -39,8 +42,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://gitcheck.me",
-    title: "GitCheck - GitHub Quantified",
-    description: "Transform your GitHub contributions into quantifiable career metrics with real-time analytics and developer scoring.",
+    title: "GitCheck - Your GitHub Checked",
+    description: "Analyze your GitHub profile with advanced developer analytics. Real-time metrics, scoring, and comprehensive insights.",
     siteName: "GitCheck",
     images: [
       {
@@ -53,10 +56,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "GitCheck - GitHub Quantified",
-    description: "Transform your GitHub contributions into quantifiable career metrics.",
+    title: "GitCheck - Your GitHub Checked",
+    description: "Analyze your GitHub profile with advanced developer analytics and real-time insights.",
     images: ["/og-image.png"], 
-    creator: "@yourtwitterhandle" 
+    creator: "@goktugkrblt"
   },
   robots: {
     index: true,

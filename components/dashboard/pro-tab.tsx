@@ -201,7 +201,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                   className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
                 >
                   <Code className="w-4 h-4 mr-1.5" />
-                  CODE QUALITY
+                  README QUALITY
                 </TabsTrigger>
                 
                 <TabsTrigger 
