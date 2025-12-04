@@ -276,7 +276,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
             </div>
 
             {/* Features Grid */}
-            <div className="grid md:grid-cols-2 gap-4 mb-6">
+            <div className="grid md:grid-cols-2 gap-4 mb-6 text-left">
               {[
                 { icon: Code, title: "Code Quality Score", desc: "README, tests, CI/CD analysis" },
                 { icon: Shield, title: "Repository Health", desc: "Maintenance & community metrics" },
@@ -347,7 +347,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
             {/* Learn More Button */}
             <button
               onClick={() => setShowFeaturesModal(true)}
-              className="text-sm text-purple-400 hover:text-purple-300 transition-colors mx-auto block font-medium"
+              className="text-sm text-purple-400 hover:text-purple-300 transition-colors mx-auto block font-medium cursor-pointer"
             >
               Learn more about features →
             </button>

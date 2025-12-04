@@ -309,6 +309,7 @@ export default function DashboardPage() {
               <ScoreDisplay
                 score={displayData.score}
                 percentile={displayData.percentile}
+                username={displayData.username}
               />
             </motion.div>
           </div>
