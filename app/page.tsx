@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Github, ArrowRight, Sparkles, Code2, Activity, Layers } from "lucide-react";
+import { Github, ArrowRight, Sparkles, Code2, Activity, Layers, Shield, Target } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function HomePage() {
@@ -87,22 +87,9 @@ export default function HomePage() {
             <div className="space-y-8">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}>
   <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#e0e0e0] leading-none tracking-tighter">
-    YOUR GITHUB
+     GITHUB
     <br />
-    <span className="inline-flex items-center gap-4">
-      <motion.span
-        className="text-green-400"
-        initial={{ scale: 0, rotate: -180 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{ 
-          delay: 0.8, 
-          type: "spring", 
-          stiffness: 200,
-          damping: 10
-        }}
-      >
-        ✓
-      </motion.span>
+    <span className="inline-flex items-center gap-4">     
       <motion.span className="inline-block relative" whileHover={{ scale: 1.02 }} transition={{ type: "spring", stiffness: 300 }}>
         {"CHECKED".split("").map((char, i) => (
           <motion.span
@@ -178,7 +165,7 @@ export default function HomePage() {
             whileInView={{ opacity: 1, y: 0 }} 
             viewport={{ once: true, margin: "-100px" }} 
             transition={{ duration: 0.6 }}
-            className="text-center mb-24"
+            className="text-center mb-12"
           >
             <div className="inline-block px-4 py-2 rounded-full border border-[#2a2a2a] bg-[#252525] text-xs text-[#666] font-mono tracking-widest mb-8">
               CORE FEATURES
@@ -236,6 +223,130 @@ export default function HomePage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* PRO Features Section */}
+      <section className="relative py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            viewport={{ once: true, margin: "-100px" }} 
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-purple-500/20 bg-gradient-to-r from-purple-500/10 to-pink-500/10 text-xs font-mono tracking-widest mb-8">
+              <Sparkles className="w-3 h-3 text-purple-400" />
+              <span className="text-purple-400">PREMIUM ANALYTICS</span>
+            </div>
+            <h2 className="text-4xl mb-8 md:text-7xl lg:text-6xl font-black text-[#e0e0e0] leading-none tracking-tighter">
+              Unlock<br className="md:hidden lg:hidden" /> Deep Insights
+            </h2>
+            <p className="text-[#919191] text-lg max-w-2xl mx-auto">
+              Advanced analysis with<br className="md:hidden lg:hidden" /> lifetime access for <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 font-bold">$4.99</span>
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {[
+              { 
+                icon: Code2, 
+                title: "README Quality Analysis", 
+                description: "Comprehensive documentation scoring based on structure, completeness, and professional presentation",
+                weight: "20%",
+                color: "from-blue-500 to-cyan-500"
+              },
+              { 
+                icon: Shield, 
+                title: "Repository Health", 
+                description: "Maintenance frequency, issue response times, security checks, and community engagement metrics",
+                weight: "25%",
+                color: "from-green-500 to-emerald-500"
+              },
+              { 
+                icon: Activity, 
+                title: "Developer Patterns", 
+                description: "Commit patterns by hour, productivity peaks, collaboration style, and consistency analysis",
+                weight: "30%",
+                color: "from-purple-500 to-pink-500"
+              },
+              { 
+                icon: Target, 
+                title: "Career Insights", 
+                description: "Experience level indicators, specialization scoring, and professional growth trajectory",
+                weight: "25%",
+                color: "from-orange-500 to-red-500"
+              },
+            ].map((feature, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ 
+                  delay: i * 0.15,
+                  duration: 0.6,
+                }}
+                className="group"
+              >
+                <div className="relative bg-[#252525] border border-[#2a2a2a] rounded-2xl p-8 hover:border-purple-500/30 transition-all duration-500 h-full">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${feature.color} flex items-center justify-center flex-shrink-0`}>
+                      <feature.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-xl font-bold text-[#e0e0e0]">
+                          {feature.title}
+                        </h3>
+                        <span className="text-xs font-mono text-purple-400 bg-purple-500/10 px-2 py-1 rounded">
+                          {feature.weight}
+                        </span>
+                      </div>
+                      <p className="text-[#919191] text-sm leading-relaxed">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* PRO CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            <div className="inline-block bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-2xl p-8">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="text-left">
+                  <h3 className="text-2xl font-black text-[#e0e0e0] mb-2">
+                    Get Lifetime PRO Access
+                  </h3>
+                  <p className="text-[#919191]">
+                    One-time payment • No subscription • Instant unlock
+                  </p>
+                </div>
+                <Link href="/login">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button 
+                      size="lg" 
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold px-8 py-6 text-base rounded-xl shadow-lg shadow-purple-500/50"
+                    >
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      Upgrade for $4.99
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </Button>
+                  </motion.div>
+                </Link>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
