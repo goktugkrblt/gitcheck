@@ -1,6 +1,6 @@
 {
-    "name": "Gitrack",
-    "short_name": "Gitrack",
+    "name": "GitCheck",
+    "short_name": "GitCheck",
     "description": "GitHub Profile Analytics",
     "start_url": "/",
     "display": "standalone",

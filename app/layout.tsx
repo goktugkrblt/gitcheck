@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Gitrack - GitHub Quantified",
-    template: "%s | Gitrack"
+    default: "GitCheck - GitHub Quantified",
+    template: "%s | GitCheck"
   },
   description: "Transform your GitHub contributions into quantifiable career metrics. Real-time analytics, developer scoring, and insights powered by advanced algorithms.",
   keywords: [
@@ -30,30 +30,30 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Goktug Karabulut", url: "https://goktug.info" }],
   creator: "Goktug Karabulut",
-  publisher: "Gitrack",
-  metadataBase: new URL("https://gitrack.me"),
+  publisher: "GitCheck",
+  metadataBase: new URL("https://gitcheck.me"),
   alternates: {
-    canonical: "https://gitrack.me"
+    canonical: "https://gitcheck.me"
   },
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://gitrack.me",
-    title: "Gitrack - GitHub Quantified",
+    url: "https://gitcheck.me",
+    title: "GitCheck - GitHub Quantified",
     description: "Transform your GitHub contributions into quantifiable career metrics with real-time analytics and developer scoring.",
-    siteName: "Gitrack",
+    siteName: "GitCheck",
     images: [
       {
         url: "/og-image.jpg", 
         width: 1200,
         height: 630,
-        alt: "Gitrack - GitHub Analytics Platform"
+        alt: "GitCheck - GitHub Analytics Platform"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "Gitrack - GitHub Quantified",
+    title: "GitCheck - GitHub Quantified",
     description: "Transform your GitHub contributions into quantifiable career metrics.",
     images: ["/og-image.png"], 
     creator: "@yourtwitterhandle" 

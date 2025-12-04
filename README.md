@@ -1,7 +1,7 @@
-# Gitrack
+# GitCheck
 
 <div align="center">
-  <img src="public/logo.svg" alt="gitrack Logo" width="50" height="50">
+  <img src="public/logo.svg" alt="GitCheck Logo" width="50" height="50">
   
   ### GitHub Quantified
   
@@ -12,7 +12,7 @@
   [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-316192?style=flat-square&logo=postgresql)](https://neon.tech/)
   [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-black?style=flat-square&logo=vercel)](https://vercel.com/)
   
-  [Live Demo](https://gitrack.me) · [Report Bug](https://github.com/goktugkrblt/gitrack/issues) · [Request Feature](https://github.com/goktugkrblt/gitrack/issues)
+  [Live Demo](https://gitcheck.me) · [Report Bug](https://github.com/goktugkrblt/gitcheck/issues) · [Request Feature](https://github.com/goktugkrblt/gitcheck/issues)
 </div>
 
 ---
@@ -36,9 +36,9 @@
 
 ## 🎯 About The Project
 
-Gitrack is a comprehensive GitHub profile analyzer that transforms your code contributions into quantifiable career metrics. Built for developers who want to showcase their impact, track their growth, and understand their coding patterns through advanced analytics and beautiful visualizations.
+GitCheck is a comprehensive GitHub profile analyzer that transforms your code contributions into quantifiable career metrics. Built for developers who want to showcase their impact, track their growth, and understand their coding patterns through advanced analytics and beautiful visualizations.
 
-### Why Gitrack?
+### Why GitCheck?
 
 - **Quantifiable Metrics**: Convert abstract GitHub activity into concrete, career-relevant numbers
 - **Developer Score**: Proprietary algorithm that evaluates your overall GitHub impact
@@ -118,8 +118,8 @@ Gitrack is a comprehensive GitHub profile analyzer that transforms your code con
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/goktugkrblt/gitrack.git
-   cd gitrack
+   git clone https://github.com/goktugkrblt/gitcheck.git
+   cd GitCheck
    ```
 
 2. **Install dependencies**
@@ -174,7 +174,7 @@ Gitrack is a comprehensive GitHub profile analyzer that transforms your code con
 ## 📁 Project Structure
 
 ```
-gitrack/
+GitCheck/
 ├── app/
 │   ├── api/
 │   │   ├── auth/              # NextAuth configuration
@@ -243,7 +243,7 @@ gitrack/
 
 ## 📊 Scoring Algorithm
 
-Gitrack uses a proprietary algorithm to calculate your Developer Score (0-100):
+GitCheck uses a proprietary algorithm to calculate your Developer Score (0-100):
 
 ### Score Components
 
@@ -292,7 +292,7 @@ Score = (
 
 ### Percentile Ranking
 
-Your score is compared against all Gitrack users to determine your percentile:
+Your score is compared against all GitCheck users to determine your percentile:
 - **Top 1%**: Score 90-100
 - **Top 5%**: Score 80-89
 - **Top 10%**: Score 70-79
@@ -423,9 +423,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 **Goktug** - [goktug.info](https://goktug.info)
 
-Project Link: [https://github.com/goktugkrblt/gitrack](https://github.com/goktugkrblt/gitrack)
+Project Link: [https://github.com/goktugkrblt/gitcheck](https://github.com/goktugkrblt/gitcheck)
 
-Live Demo: [https://gitrack.me](https://gitrack.me)
+Live Demo: [https://gitcheck.me](https://gitcheck.me)
 
 ---
 
@@ -446,6 +446,6 @@ Live Demo: [https://gitrack.me](https://gitrack.me)
   
   Made with ❤️ by [Goktug](https://goktug.info)
   
-  © 2025 gitrack.me
+  © 2025 gitcheck.me
   
 </div>

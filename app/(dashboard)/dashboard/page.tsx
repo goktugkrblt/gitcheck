@@ -37,6 +37,9 @@ export default function DashboardPage() {
   const [initialLoading, setInitialLoading] = useState(true);
   const [userPlan, setUserPlan] = useState<string>("FREE");
   
+  // ✅ NEW: Controlled tab state
+  const [activeTab, setActiveTab] = useState("overview");
+  
   // DEV MODE - Mock plan state
   const [devMockPlan, setDevMockPlan] = useState<"FREE" | "PRO" | null>(null);
 
@@ -47,6 +50,20 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchProfile();
+  }, []);
+
+  // ✅ NEW: Listen for navigateToProTab event
+  useEffect(() => {
+    const handleNavigateToProTab = () => {
+      console.log('📥 Received navigateToProTab event - switching to PRO tab');
+      setActiveTab('pro');
+    };
+    
+    window.addEventListener('navigateToProTab', handleNavigateToProTab);
+    
+    return () => {
+      window.removeEventListener('navigateToProTab', handleNavigateToProTab);
+    };
   }, []);
 
   // DEV MODE - Keyboard shortcut (Ctrl+Shift+P)
@@ -87,9 +104,6 @@ export default function DashboardPage() {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, []);
-
-  // 🗑️ REMOVED: Background PRO Analysis Trigger
-  // Artık on-demand loading yapıyoruz, background analysis gereksiz!
 
   const fetchProfile = async () => {
     try {
@@ -314,8 +328,8 @@ export default function DashboardPage() {
             </motion.div>
           </div>
 
-          {/* Tabs Section */}
-          <Tabs defaultValue="overview" className="w-full">
+          {/* Tabs Section - ✅ NOW CONTROLLED */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <TabsList className="bg-[#1a1a1a] border border-[#2a2a2a] p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-6 rounded-xl h-auto">
                 

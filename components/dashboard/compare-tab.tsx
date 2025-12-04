@@ -221,7 +221,7 @@ export function CompareTab({ userProfile }: CompareTabProps) {
           How You Stack Up
         </h2>
         <p className="text-[#666]">
-          Benchmarked against <span className="text-[#e0e0e0] font-bold">{data.totalUsers.toLocaleString()}</span> developers on Gitrack
+          Benchmarked against <span className="text-[#e0e0e0] font-bold">{data.totalUsers.toLocaleString()}</span> developers on GitCheck
         </p>
       </div>
 

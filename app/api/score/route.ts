@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { calculateDeveloperScore, calculateBasicScore } from "@/lib/scoring/developer-score";
+import { calculateDeveloperScore } from "@/lib/scoring/developer-score";
 import { CacheService, CacheKeys } from "@/lib/cache";
 
 // ✅ PRO Analysis Cache Type
@@ -31,13 +31,13 @@ interface ProAnalysisCache {
 
 /**
  * GET /api/score
- * Calculate comprehensive developer score
+ * Calculate comprehensive developer score from PRO analysis
  * 
- * LOGIC:
- * 1. Check if user has PRO plan
- * 2. If PRO: Use PRO analysis data for accurate scoring
- * 3. If FREE: Use basic GitHub metrics for approximate scoring
- * 4. Cache results for 1 hour
+ * NEW STRATEGY:
+ * - Score is ONLY calculated from PRO analysis (no basic scoring)
+ * - FREE users: Get "locked" status, must upgrade to see score
+ * - PRO users: Must complete PRO analysis to get score
+ * - This creates clear value proposition and consistent scoring
  */
 export async function GET(request: Request) {
   try {
@@ -74,42 +74,47 @@ export async function GET(request: Request) {
 
     const username = user.githubUsername;
 
-    // Check cache first
+    // Check if user has PRO plan
+    if (user.plan !== "PRO") {
+      console.log(`🔒 [SCORE] FREE user - score locked: ${username}`);
+      
+      return NextResponse.json({
+        success: true,
+        locked: true,
+        isPro: false,
+        message: "Upgrade to PRO to unlock your developer score",
+      });
+    }
+
+    // Check PRO analysis cache
     const cacheKey = CacheKeys.proAnalysis(username);
     const cached = CacheService.get(cacheKey) as ProAnalysisCache | null;
 
-    let scoreResult;
-
-    // PRO USER: Calculate from PRO analysis
-    if (user.plan === "PRO" && cached) {
-      console.log(`✅ [SCORE] Calculating PRO score for ${username}`);
+    if (!cached) {
+      console.log(`⚠️ [SCORE] PRO user but no analysis yet: ${username}`);
       
-      scoreResult = calculateDeveloperScore({
-        readmeQuality: cached.readmeQuality,
-        repoHealth: cached.repoHealth,
-        devPatterns: cached.devPatterns,
-        careerInsights: cached.careerInsights,
+      return NextResponse.json({
+        success: true,
+        locked: false,
+        analysisRequired: true,
+        isPro: true,
+        message: "Visit PRO tab to run analysis and get your score",
       });
-
-      console.log(`📊 [SCORE] PRO Score: ${scoreResult.overallScore}/100 (${scoreResult.grade})`);
-    } 
-    // FREE USER or PRO without cache: Calculate from basic metrics
-    else {
-      console.log(`✅ [SCORE] Calculating basic score for ${username}`);
-      
-      scoreResult = calculateBasicScore({
-        totalCommits: profile.totalCommits,
-        totalRepos: profile.totalRepos,
-        totalStars: profile.totalStars,
-        currentStreak: profile.currentStreak,
-        followersCount: profile.followersCount,
-        totalPRs: profile.totalPRs,
-      });
-
-      console.log(`📊 [SCORE] Basic Score: ${scoreResult.overallScore}/100 (${scoreResult.grade})`);
     }
 
-    // Update profile with new score
+    // Calculate score from PRO analysis
+    console.log(`✅ [SCORE] Calculating PRO score for ${username}`);
+    
+    const scoreResult = calculateDeveloperScore({
+      readmeQuality: cached.readmeQuality,
+      repoHealth: cached.repoHealth,
+      devPatterns: cached.devPatterns,
+      careerInsights: cached.careerInsights,
+    });
+
+    console.log(`📊 [SCORE] PRO Score: ${scoreResult.overallScore}/100 (${scoreResult.grade})`);
+
+    // Update profile with score
     await prisma.profile.update({
       where: { id: profile.id },
       data: {
@@ -122,11 +127,11 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       success: true,
+      locked: false,
+      analysisRequired: false,
       score: scoreResult,
-      isPro: user.plan === "PRO" && cached !== null,
-      message: user.plan === "PRO" && cached
-        ? "Score calculated from PRO analysis" 
-        : "Basic score - Upgrade to PRO for detailed analysis",
+      isPro: true,
+      message: "Score calculated from PRO analysis",
     });
 
   } catch (error: any) {

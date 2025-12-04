@@ -60,7 +60,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
     if (!username) return;
   
     // Check session storage first
-    const cached = ClientCache.get<{    // ✅ BURAYA EKLE
+    const cached = ClientCache.get<{
       readmeQuality: any;
       repoHealth: any;
       devPatterns: any;
@@ -85,6 +85,10 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
       }
 
       setProData(result.data);
+      
+      // ✅ NEW: Trigger event to refresh score display
+      window.dispatchEvent(new Event('proAnalysisComplete'));
+      console.log('✅ PRO analysis complete - event dispatched to ScoreDisplay');
       
       // Save to session storage
       ClientCache.set(ProCacheKeys.allAnalysis(username), result.data);
