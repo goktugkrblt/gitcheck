@@ -487,7 +487,7 @@ export default function DashboardPage() {
             {/* PRO TAB - Session Storage ile optimize edilmiş! */}
             <TabsContent value="pro" className="space-y-6 mt-6">
               <div className="bg-[#252525] rounded-xl border border-[#2a2a2a] p-1 text-center">
-                {process.env.NEXT_PUBLIC_ENABLE_PRO_TAB === 'false' ? (                  
+                {process.env.NEXT_PUBLIC_ENABLE_PRO_TAB === 'true' ? (                  
                   <ProTab 
                     isPro={effectivePlan === "PRO"}
                     username={displayData.username}
