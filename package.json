@@ -10,6 +10,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
     "@octokit/graphql": "^9.0.3",
     "@octokit/rest": "^22.0.1",
     "@prisma/client": "^5.22.0",
@@ -24,7 +25,9 @@
     "next-auth": "^5.0.0-beta.30",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
+    "react-markdown": "^10.1.0",
     "recharts": "^3.5.0",
+    "remark-gfm": "^4.0.1",
     "stripe": "^20.0.0",
     "tailwind-merge": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",

@@ -1,4 +1,4 @@
-// lib/pro/dev-patterns.ts - OPTIMIZED
+// lib/pro/dev-patterns.ts - FIXED WITH OUTLIER DETECTION
 import { Octokit } from "@octokit/rest";
 
 export async function analyzeDeveloperPatterns(
@@ -81,8 +81,8 @@ export async function analyzeDeveloperPatterns(
     }
 
     // 🚀 SMART SAMPLING: İlk 5 repo tam analiz, geri kalanı hafif
-    const primaryRepos = repos.slice(0, 5);   // Tam analiz
-    const secondaryRepos = repos.slice(5, 10); // Hafif analiz
+    const primaryRepos = repos.slice(0, 5);
+    const secondaryRepos = repos.slice(5, 10);
 
     // ==========================================
     // 1. COMMIT PATTERNS ANALYSIS (OPTIMIZED)
@@ -105,7 +105,7 @@ export async function analyzeDeveloperPatterns(
           {
             owner: username,
             repo: repo.name,
-            per_page: 100, // Tam analiz
+            per_page: 100,
             headers: {
               'X-GitHub-Api-Version': '2022-11-28',
             },
@@ -145,7 +145,7 @@ export async function analyzeDeveloperPatterns(
           {
             owner: username,
             repo: repo.name,
-            per_page: 30, // Hafif analiz
+            per_page: 30,
             headers: {
               'X-GitHub-Api-Version': '2022-11-28',
             },
@@ -227,7 +227,7 @@ export async function analyzeDeveloperPatterns(
     console.log(`  ⏱️  [Commit Patterns] ${((Date.now() - t1) / 1000).toFixed(2)}s - ${totalCommits} commits`);
 
     // ==========================================
-    // 2. CODE QUALITY ANALYSIS (ULTRA OPTIMIZED - NO COMMIT DETAILS!)
+    // 2. CODE QUALITY ANALYSIS (FIXED - REAL DATA WITH OUTLIER DETECTION!)
     // ==========================================
 
     const t2 = Date.now();
@@ -236,89 +236,296 @@ export async function analyzeDeveloperPatterns(
     let hasTests = 0;
     let hasDocs = 0;
 
-    // Sadece ilk 10 repo için hafif kontroller
-    for (const repo of repos.slice(0, 10)) {
+    // 🆕 REAL COMMIT SIZE ANALYSIS WITH OUTLIER DETECTION
+    const commitSizes: number[] = [];
+    const fileCounts: number[] = [];
+    let commitsAnalyzed = 0;
+
+    // 🆕 REAL REVIEW ENGAGEMENT
+    let totalPRsCreated = 0;
+    let totalPRsReviewed = 0;
+    let totalComments = 0;
+
+    // ==========================================
+    // 🚀 PARALLEL EXECUTION - Analyze all repos concurrently!
+    // ==========================================
+    const repoAnalysisPromises = repos.slice(0, 5).map(async (repo) => {
+      const repoData = {
+        commitSizes: [] as number[],
+        fileCounts: [] as number[],
+        commitsCount: 0,
+        prsCreated: 0,
+        prsReviewed: 0,
+        comments: 0,
+        branches: 0,
+        hasReadme: false,
+        hasTests: false,
+        hasDocs: false,
+      };
+
       try {
-        // Branches
-        const branchesResponse = await octokit.request(
-          'GET /repos/{owner}/{repo}/branches',
-          {
+        // ==========================================
+        // 🔥 PARALLEL FETCH for this repo
+        // ==========================================
+        const [commitsResponse, userPRsResponse, branchesResponse] = await Promise.all([
+          // Commits
+          octokit.request('GET /repos/{owner}/{repo}/commits', {
             owner: username,
             repo: repo.name,
-            per_page: 10, // Sadece ilk 10 branch
-            headers: {
-              'X-GitHub-Api-Version': '2022-11-28',
-            },
-          }
-        );
-        branchCount += branchesResponse.data.length;
+            per_page: 30,
+            headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+          }).catch(() => ({ data: [] })),
+          
+          // PRs
+          octokit.request('GET /repos/{owner}/{repo}/pulls', {
+            owner: username,
+            repo: repo.name,
+            state: 'all',
+            per_page: 50,
+            headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+          }).catch(() => ({ data: [] })),
+          
+          // Branches
+          octokit.request('GET /repos/{owner}/{repo}/branches', {
+            owner: username,
+            repo: repo.name,
+            per_page: 10,
+            headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+          }).catch(() => ({ data: [] })),
+        ]);
 
-        // README check
-        try {
-          await octokit.request('GET /repos/{owner}/{repo}/readme', {
-            owner: username,
-            repo: repo.name,
-            headers: {
-              'X-GitHub-Api-Version': '2022-11-28',
-            },
+        repoData.branches = branchesResponse.data.length;
+
+        // ==========================================
+        // COMMIT SIZE ANALYSIS (with outlier detection)
+        // ==========================================
+        const commitDetailPromises = commitsResponse.data
+          .slice(0, 20)
+          .filter((commit: any) => {
+            const commitAuthor = commit.author?.login || commit.commit.author?.name?.toLowerCase();
+            return commitAuthor === username || commitAuthor?.includes(username.toLowerCase());
+          })
+          .map(async (commit: any) => {
+            try {
+              const commitDetail = await octokit.request(
+                'GET /repos/{owner}/{repo}/commits/{ref}',
+                {
+                  owner: username,
+                  repo: repo.name,
+                  ref: commit.sha,
+                  headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+                }
+              );
+
+              if (commitDetail.data.stats) {
+                return {
+                  lines: (commitDetail.data.stats.additions || 0) + (commitDetail.data.stats.deletions || 0),
+                  files: commitDetail.data.files?.length || 0,
+                };
+              }
+            } catch {
+              return null;
+            }
+            return null;
           });
-          hasReadme++;
-        } catch {}
 
-        // Contents check (tests/docs)
+        const commitDetails = (await Promise.all(commitDetailPromises)).filter(Boolean);
+        commitDetails.forEach((detail: any) => {
+          repoData.commitSizes.push(detail.lines);
+          repoData.fileCounts.push(detail.files);
+          repoData.commitsCount++;
+        });
+
+        // ==========================================
+        // REVIEW ENGAGEMENT ANALYSIS
+        // ==========================================
+        const userCreatedPRs = userPRsResponse.data.filter((pr: any) => 
+          pr.user?.login === username
+        );
+        repoData.prsCreated = userCreatedPRs.length;
+
+        // Fetch issues and PR comments in parallel
         try {
-          const contentsResponse = await octokit.request(
-            'GET /repos/{owner}/{repo}/contents',
+          const issuesResponse = await octokit.request(
+            'GET /repos/{owner}/{repo}/issues',
             {
               owner: username,
               repo: repo.name,
-              headers: {
-                'X-GitHub-Api-Version': '2022-11-28',
-              },
+              state: 'all',
+              per_page: 50,
+              headers: { 'X-GitHub-Api-Version': '2022-11-28' },
             }
           );
           
-          const hasTestFolder = contentsResponse.data.some((item: any) => 
+          const prReviews = issuesResponse.data.filter((issue: any) => 
+            issue.pull_request && issue.user?.login !== username
+          );
+          
+          // Parallel comment fetching
+          const commentPromises = prReviews.slice(0, 10).map(async (pr: any) => {
+            try {
+              const commentsResponse = await octokit.request(
+                'GET /repos/{owner}/{repo}/issues/{issue_number}/comments',
+                {
+                  owner: username,
+                  repo: repo.name,
+                  issue_number: pr.number,
+                  headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+                }
+              );
+              
+              const userComments = commentsResponse.data.filter(
+                (comment: any) => comment.user?.login === username
+              );
+              
+              return {
+                comments: userComments.length,
+                reviewed: userComments.length > 0,
+              };
+            } catch {
+              return { comments: 0, reviewed: false };
+            }
+          });
+
+          const commentResults = await Promise.all(commentPromises);
+          repoData.comments = commentResults.reduce((sum, r) => sum + r.comments, 0);
+          repoData.prsReviewed = commentResults.filter(r => r.reviewed).length;
+        } catch {
+          // If issues API fails, continue
+        }
+
+        // ==========================================
+        // README/TESTS/DOCS - Parallel check
+        // ==========================================
+        const [readmeCheck, contentsResponse] = await Promise.all([
+          octokit.request('GET /repos/{owner}/{repo}/readme', {
+            owner: username,
+            repo: repo.name,
+            headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+          }).then(() => true).catch(() => false),
+          
+          octokit.request('GET /repos/{owner}/{repo}/contents', {
+            owner: username,
+            repo: repo.name,
+            headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+          }).catch(() => ({ data: [] })),
+        ]);
+
+        repoData.hasReadme = readmeCheck;
+        
+        if (Array.isArray(contentsResponse.data)) {
+          repoData.hasTests = contentsResponse.data.some((item: any) => 
             item.name.toLowerCase().includes('test') || 
             item.name.toLowerCase().includes('spec')
           );
-          if (hasTestFolder) hasTests++;
-
-          const hasDocsFolder = contentsResponse.data.some((item: any) => 
+          repoData.hasDocs = contentsResponse.data.some((item: any) => 
             item.name.toLowerCase() === 'docs' || 
             item.name.toLowerCase() === 'documentation'
           );
-          if (hasDocsFolder) hasDocs++;
-        } catch {}
+        }
 
       } catch (error) {
-        continue;
+        // Repo analysis failed, return empty data
       }
-    }
 
-    const avgBranchesPerRepo = repos.length > 0 ? branchCount / Math.min(repos.length, 10) : 1;
+      return repoData;
+    });
+
+    // ==========================================
+    // 🎯 Wait for all repo analyses to complete
+    // ==========================================
+    const allRepoData = await Promise.all(repoAnalysisPromises);
+
+    // Aggregate results
+    allRepoData.forEach(repoData => {
+      commitSizes.push(...repoData.commitSizes);
+      fileCounts.push(...repoData.fileCounts);
+      commitsAnalyzed += repoData.commitsCount;
+      totalPRsCreated += repoData.prsCreated;
+      totalPRsReviewed += repoData.prsReviewed;
+      totalComments += repoData.comments;
+      branchCount += repoData.branches;
+      if (repoData.hasReadme) hasReadme++;
+      if (repoData.hasTests) hasTests++;
+      if (repoData.hasDocs) hasDocs++;
+    });
+
+    // ==========================================
+    // CALCULATE SCORES (REAL DATA WITH OUTLIER FILTERING!)
+    // ==========================================
+
+    // Branch Management
+    const avgBranchesPerRepo = repos.length > 0 ? branchCount / Math.min(repos.length, 5) : 1;
     let branchManagement = 50;
     if (avgBranchesPerRepo >= 2 && avgBranchesPerRepo <= 5) branchManagement = 90;
     else if (avgBranchesPerRepo > 5 && avgBranchesPerRepo <= 10) branchManagement = 70;
     else if (avgBranchesPerRepo > 10) branchManagement = 40;
     else branchManagement = 60;
 
-    // Simplified commit size (baseline assumption)
-    const commitSize = 75;
+    // ✅ COMMIT SIZE (REAL CALCULATION WITH OUTLIER DETECTION!)
+    let commitSize = 50;
+    if (commitsAnalyzed > 0 && commitSizes.length > 0) {
+      // Sort and calculate median
+      const sortedSizes = [...commitSizes].sort((a, b) => a - b);
+      const median = sortedSizes[Math.floor(sortedSizes.length / 2)] || 100;
+      
+      // Filter outliers (10x median'dan büyük olanları at)
+      const filteredSizes = commitSizes.filter(size => size < median * 10);
+      const filteredFiles = fileCounts.filter((_, i) => commitSizes[i] < median * 10);
+      
+      const avgLinesPerCommit = filteredSizes.length > 0
+        ? Math.round(filteredSizes.reduce((a, b) => a + b, 0) / filteredSizes.length)
+        : Math.round(commitSizes.reduce((a, b) => a + b, 0) / commitSizes.length);
+        
+      const avgFilesPerCommit = filteredFiles.length > 0
+        ? Math.round((filteredFiles.reduce((a, b) => a + b, 0) / filteredFiles.length) * 10) / 10
+        : Math.round((fileCounts.reduce((a, b) => a + b, 0) / fileCounts.length) * 10) / 10;
+      
+      // Score based on commit size (smaller, focused commits = better)
+      if (avgLinesPerCommit < 50 && avgFilesPerCommit < 3) {
+        commitSize = 95; // Excellent: Small, focused commits
+      } else if (avgLinesPerCommit < 100 && avgFilesPerCommit < 5) {
+        commitSize = 85; // Good: Reasonable size
+      } else if (avgLinesPerCommit < 200 && avgFilesPerCommit < 10) {
+        commitSize = 70; // Average: Medium commits
+      } else if (avgLinesPerCommit < 500) {
+        commitSize = 55; // Below average: Large commits
+      } else {
+        commitSize = 35; // Poor: Very large commits
+      }
+      
+      console.log(`  Commit Size: ${avgLinesPerCommit} lines/commit (median: ${median}), ${avgFilesPerCommit} files/commit → Score: ${commitSize}`);
+      console.log(`    (Filtered ${commitSizes.length - filteredSizes.length} outliers)`);
+    }
 
-    const reviewEngagement = 75;
+    // ✅ REVIEW ENGAGEMENT (REAL CALCULATION)
+    let reviewEngagement = 50;
+    if (totalPRsCreated > 0 || totalPRsReviewed > 0) {
+      const prCreationScore = Math.min(totalPRsCreated * 2, 40);
+      const prReviewScore = Math.min(totalPRsReviewed * 3, 40);
+      const commentScore = Math.min(totalComments * 1, 20);
+      
+      reviewEngagement = Math.min(prCreationScore + prReviewScore + commentScore, 100);
+      
+      console.log(`  Review Engagement: ${totalPRsCreated} PRs created, ${totalPRsReviewed} PRs reviewed, ${totalComments} comments → Score: ${reviewEngagement}`);
+    }
 
-    const reposAnalyzed = Math.min(repos.length, 10);
+    // Documentation Habits
+    const reposAnalyzed = Math.min(repos.length, 5);
     const readmeRatio = reposAnalyzed > 0 ? (hasReadme / reposAnalyzed) * 100 : 0;
     const testRatio = reposAnalyzed > 0 ? (hasTests / reposAnalyzed) * 100 : 0;
     const docsRatio = reposAnalyzed > 0 ? (hasDocs / reposAnalyzed) * 100 : 0;
     const documentationHabits = Math.round((readmeRatio * 0.5 + testRatio * 0.3 + docsRatio * 0.2));
 
+    // ✅ OVERALL CODE QUALITY SCORE (with real data!)
     const codeQualityScore = Math.round(
-      ((branchManagement * 0.25 + commitSize * 0.25 + reviewEngagement * 0.25 + documentationHabits * 0.25) / 10) * 10
+      ((branchManagement * 0.20 + 
+        commitSize * 0.25 + 
+        reviewEngagement * 0.30 + 
+        documentationHabits * 0.25) / 10) * 10
     ) / 10;
 
-    console.log(`  ⏱️  [Code Quality] ${((Date.now() - t2) / 1000).toFixed(2)}s`);
+    console.log(`  ⏱️  [Code Quality] ${((Date.now() - t2) / 1000).toFixed(2)}s - Score: ${codeQualityScore}/10`);
 
     // ==========================================
     // 3. WORK-LIFE BALANCE ANALYSIS
@@ -373,20 +580,18 @@ export async function analyzeDeveloperPatterns(
     let prCount = 0;
     let contributorCounts: number[] = [];
 
-    // Sadece ilk 10 repo
     for (const repo of repos.slice(0, 10)) {
       try {
         if (repo.fork) forkedRepos++;
         else ownedRepos++;
 
-        // PRs
         const prsResponse = await octokit.request(
           'GET /repos/{owner}/{repo}/pulls',
           {
             owner: username,
             repo: repo.name,
             state: 'all',
-            per_page: 50, // 100'den 50'ye düştü
+            per_page: 50,
             headers: {
               'X-GitHub-Api-Version': '2022-11-28',
             },
@@ -394,13 +599,12 @@ export async function analyzeDeveloperPatterns(
         );
         prCount += prsResponse.data.length;
 
-        // Contributors
         const contributorsResponse = await octokit.request(
           'GET /repos/{owner}/{repo}/contributors',
           {
             owner: username,
             repo: repo.name,
-            per_page: 50, // 100'den 50'ye düştü
+            per_page: 50,
             headers: {
               'X-GitHub-Api-Version': '2022-11-28',
             },
@@ -452,7 +656,6 @@ export async function analyzeDeveloperPatterns(
     const modernTech = new Set<string>();
     const legacyTech = new Set<string>();
 
-    // Sadece ilk 10 repo
     for (const repo of repos.slice(0, 10)) {
       try {
         const packageResponse = await octokit.request(

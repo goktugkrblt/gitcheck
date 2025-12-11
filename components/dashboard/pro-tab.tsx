@@ -1,7 +1,7 @@
 "use client";
 
 import { 
-  Code, Shield, Activity, Target, 
+  Code, Shield, Activity, Target, Brain,
   Sparkles, ArrowRight, Check, X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { CodeQualityCard } from "@/components/dashboard/code-quality-card";
 import { RepoHealthCard } from "@/components/dashboard/repo-health-card";
 import { DevPatternsCard } from "@/components/dashboard/dev-patterns-card";
 import { CareerInsightsCard } from "@/components/dashboard/career-insights-card";
+import { AIAnalysisCard } from "@/components/dashboard/ai-analysis-card";
 import { ClientCache, ProCacheKeys } from "@/lib/client-cache";
 
 interface ProTabProps {
@@ -23,7 +24,6 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
   const [showFeaturesModal, setShowFeaturesModal] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
   
-  // 🆕 SINGLE STATE for all PRO data with proper typing
   const [proData, setProData] = useState<{
     readmeQuality: any;
     repoHealth: any;
@@ -55,11 +55,9 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
     }
   };
 
-  // 🆕 SINGLE API CALL for all PRO features
   const fetchAllProData = useCallback(async () => {
     if (!username) return;
   
-    // Check session storage first
     const cached = ClientCache.get<{
       readmeQuality: any;
       repoHealth: any;
@@ -86,11 +84,9 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
 
       setProData(result.data);
       
-      // ✅ NEW: Trigger event to refresh score display
       window.dispatchEvent(new Event('proAnalysisComplete'));
       console.log('✅ PRO analysis complete - event dispatched to ScoreDisplay');
       
-      // Save to session storage
       ClientCache.set(ProCacheKeys.allAnalysis(username), result.data);
       console.log("💾 All PRO data cached in session storage");
 
@@ -102,7 +98,6 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
     }
   }, [username]);
 
-  // Handle refresh
   const handleRefresh = useCallback(() => {
     if (username) {
       ClientCache.remove(ProCacheKeys.allAnalysis(username));
@@ -110,7 +105,6 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
     }
   }, [username, fetchAllProData]);
 
-  // Fetch on mount
   useEffect(() => {
     if (isPro && username) {
       fetchAllProData();
@@ -159,9 +153,6 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
             </div>
             
             <div className="flex items-center gap-3">
-              {/* Cache indicator */}
-                           
-              
               <div className="px-4 md:px-5 py-1.5 md:py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50">
                 <span className="text-xs md:text-sm font-black text-white tracking-wider">
                   ✨ PRO MEMBER
@@ -194,14 +185,14 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
         {proData && (
           <Tabs defaultValue="code-quality" className="w-full">
             <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              <TabsList className="bg-[#1a1a1a] border border-[#2a2a2a] p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-4 rounded-xl h-auto">
+              <TabsList className="bg-[#1a1a1a] border border-[#2a2a2a] p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-5 rounded-xl h-auto">
                 
                 <TabsTrigger 
                   value="code-quality" 
                   className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
                 >
                   <Code className="w-4 h-4 mr-1.5" />
-                  README QUALITY
+                  README
                 </TabsTrigger>
                 
                 <TabsTrigger 
@@ -209,8 +200,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                   className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
                 >
                   <Shield className="w-4 h-4 mr-1.5" />
-                  <span className="hidden sm:inline">REPO HEALTH</span>
-                  <span className="sm:hidden">HEALTH</span>
+                  HEALTH
                 </TabsTrigger>
                 
                 <TabsTrigger 
@@ -228,6 +218,14 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                   <Target className="w-4 h-4 mr-1.5" />
                   CAREER
                 </TabsTrigger>
+
+                <TabsTrigger 
+                  value="ai-analysis"
+                  className="cursor-pointer data-[state=active]:bg-[#2a2a2a] data-[state=active]:text-[#e0e0e0] text-[#666] hover:text-[#919191] font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap relative"
+                >
+                  <Brain className="w-4 h-4 mr-1.5" />
+                  AI                
+                </TabsTrigger>
                 
               </TabsList>
             </div>
@@ -239,17 +237,22 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
 
             {/* Repository Health Tab */}
             <TabsContent value="repo-health" className="space-y-6 mt-6">
-            <RepoHealthCard data={proData.repoHealth} />
+              <RepoHealthCard data={proData.repoHealth} />
             </TabsContent>
 
             {/* Developer Patterns Tab */}
             <TabsContent value="dev-patterns" className="space-y-6 mt-6">
-            <DevPatternsCard data={proData.devPatterns} />
+              <DevPatternsCard data={proData.devPatterns} />
             </TabsContent>
 
             {/* Career Tab */}
             <TabsContent value="career" className="space-y-6 mt-6">
               <CareerInsightsCard data={proData.careerInsights} />
+            </TabsContent>
+
+            {/* AI Analysis Tab */}
+            <TabsContent value="ai-analysis" className="space-y-6 mt-6">
+              <AIAnalysisCard username={username || ''} />
             </TabsContent>
           </Tabs>
         )}
@@ -307,10 +310,10 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                   <span className="text-5xl font-black text-[#e0e0e0]">$4.99</span>
                 </div>
                 <p className="text-xs text-[#666]">
-  Lifetime access 
-  <br className="block sm:hidden" />
-  Pay once, use forever
-</p>
+                  Lifetime access 
+                  <br className="block sm:hidden" />
+                  Pay once, use forever
+                </p>
               </div>
 
               <div className="space-y-2 mb-4 text-left">
@@ -348,9 +351,9 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
               </Button>
               
               <p className="text-xs text-center text-[#666] mt-3">
-              💳 Secure payment via Stripe 
-              <br className="block sm:hidden" />
-  ❌ No recurring charges
+                💳 Secure payment via Stripe 
+                <br className="block sm:hidden" />
+                ❌ No recurring charges
               </p>
             </div>
 
@@ -367,7 +370,6 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
         {/* Blurred Background Content */}
         <div className="blur-sm pointer-events-none select-none opacity-40">
           <div className="space-y-6">
-            {/* Header */}
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-3xl font-black text-[#e0e0e0] tracking-tighter">
@@ -380,7 +382,6 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
               </div>
             </div>
 
-            {/* Mock Cards */}
             <div className="grid md:grid-cols-3 gap-6">
               {[
                 { icon: Code, title: "Code Quality", value: "8.5", subtitle: "Excellent", color: "from-blue-500 to-cyan-500" },
@@ -398,7 +399,6 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
               ))}
             </div>
 
-            {/* More Mock Content */}
             <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
@@ -430,7 +430,6 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
             className="w-full max-w-3xl bg-[#1f1f1f] border-2 border-purple-500/30 rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal Header */}
             <div className="sticky top-0 bg-[#1f1f1f] border-b border-[#2a2a2a] p-6 flex items-center justify-between z-10">
               <div className="text-left ml-4">
                 <h3 className="text-2xl font-black text-[#e0e0e0]">Premium Features</h3>
@@ -444,7 +443,6 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
               </button>
             </div>
 
-            {/* Modal Content */}
             <div className="p-6 space-y-6">
               <div>
                 <h4 className="font-bold text-[#e0e0e0] mb-3 flex items-center gap-2 text-lg">
@@ -499,7 +497,6 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
               </div>
             </div>
 
-            {/* Modal Footer */}
             <div className="sticky bottom-0 bg-[#1f1f1f] border-t border-[#2a2a2a] p-6 z-10">
               <Button
                 onClick={() => {

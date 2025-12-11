@@ -446,25 +446,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
         </div>
         
         </div>
-        {/* Legend */}
-  <div className="flex items-center justify-between mt-4 pt-4 border-t border-[#2a2a2a]">
-    <div className="flex items-center gap-2 text-sm text-[#666]">
-      <div className="w-4 h-4 rounded bg-[#1f1f1f]" />
-      <span>No activity</span>
-    </div>
-    <div className="flex items-center gap-2 text-sm text-[#666]">
-      <div className="w-4 h-4 rounded bg-purple-500/30" />
-      <span>Low</span>
-    </div>
-    <div className="flex items-center gap-2 text-sm text-[#666]">
-      <div className="w-4 h-4 rounded bg-purple-500/60" />
-      <span>Medium</span>
-    </div>
-    <div className="flex items-center gap-2 text-sm text-[#666]">
-      <div className="w-4 h-4 rounded bg-purple-500" />
-      <span>High</span>
-    </div>
-  </div>
+        {/* Legend */}  
 </div>
      {/* 24-Hour Activity Heatmap - TAM GENİŞLİK */}
 <div className="bg-[#252525] border border-[#2a2a2a] rounded-xl p-6">

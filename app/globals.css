@@ -140,3 +140,7 @@
   width: 50px;
   height: auto;
 }
+
+.contains-task-list .task-list-item{
+  text-align: left;
+}

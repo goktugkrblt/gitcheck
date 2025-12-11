@@ -411,28 +411,28 @@ export async function analyzeRepositoryHealth(
     else if (overallScore >= 4.0) grade = 'D-';
 
     // ==========================================
-    // INSIGHTS & RECOMMENDATIONS (DÜZELTME!)
+    // INSIGHTS & RECOMMENDATIONS
     // ==========================================
 
     const strengths: string[] = [];
     const concerns: string[] = [];
     const recommendations: string[] = [];
 
-    // Strengths - Güçlü yönler
+    // Strengths
     if (maintenanceScore >= 70) strengths.push('Consistent maintenance with regular commits');
     if (issueScore >= 70) strengths.push('Effective issue resolution process');
     if (prScore >= 70) strengths.push('Strong pull request workflow with high merge rate');
     if (activityScore >= 70) strengths.push('Active community with multiple contributors');
     if (activeDaysRatio > 50) strengths.push('High activity ratio shows consistent engagement');
 
-    // Concerns - Endişeler
+    // Concerns
     if (lastCommitDays > 60) concerns.push('Repository appears inactive with stale commits');
     if (openClosedRatio < 30) concerns.push('Low issue resolution rate may indicate maintenance challenges');
     if (mergeRate < 40) concerns.push('Low PR merge rate indicates workflow issues');
     if (staleBranches > 10) concerns.push('High number of stale branches needs cleanup');
     if (stalePRs > 5) concerns.push('Multiple stale pull requests need attention');
 
-    // Recommendations - Öneriler
+    // Recommendations
     if (lastCommitDays > 30) recommendations.push('Consider more frequent commits to show active development');
     if (staleBranches > 5) recommendations.push('Clean up stale branches to maintain repository hygiene');
     if (averageResolutionDays > 14) recommendations.push('Improve issue response time for better community engagement');

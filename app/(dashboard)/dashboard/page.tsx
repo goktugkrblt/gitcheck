@@ -30,6 +30,9 @@ import { LanguageChart } from "@/components/dashboard/language-chart";
 import { TopRepos } from "@/components/dashboard/top-repos";
 import { motion } from "framer-motion";
 
+// 🚀 NEW: Background PRO Analysis Hook
+import { useBackgroundProAnalysis } from "@/hooks/use-background-pro-analysis";
+
 export default function DashboardPage() {
   const [hasProfile, setHasProfile] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -37,7 +40,7 @@ export default function DashboardPage() {
   const [initialLoading, setInitialLoading] = useState(true);
   const [userPlan, setUserPlan] = useState<string>("FREE");
   
-  // ✅ NEW: Controlled tab state
+  // ✅ Controlled tab state
   const [activeTab, setActiveTab] = useState("overview");
   
   // DEV MODE - Mock plan state
@@ -48,11 +51,17 @@ export default function DashboardPage() {
     ? devMockPlan 
     : userPlan;
 
+  // 🚀 BACKGROUND PRO ANALYSIS - Starts automatically for PRO users!
+  const backgroundAnalysis = useBackgroundProAnalysis(
+    hasProfile && effectivePlan === "PRO", // Only for PRO users with profile
+    3000 // Wait 3 seconds (let Overview tab render first)
+  );
+
   useEffect(() => {
     fetchProfile();
   }, []);
 
-  // ✅ NEW: Listen for navigateToProTab event
+  // ✅ Listen for navigateToProTab event
   useEffect(() => {
     const handleNavigateToProTab = () => {
       console.log('📥 Received navigateToProTab event - switching to PRO tab');
@@ -221,7 +230,7 @@ export default function DashboardPage() {
         <div className="fixed top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 font-bold text-sm">
           🔧 DEV: {devMockPlan} MODE
         </div>
-      )}
+      )}     
 
       {/* Header */}
       <motion.div
@@ -376,10 +385,10 @@ export default function DashboardPage() {
                 {/* PRO TAB - Her zaman görünür */}
                 <TabsTrigger 
                   value="pro" 
-                  className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-300 text-purple-400/60 hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
+                  className="relative cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-300 text-purple-400/60 hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
                 >
                   <Sparkles className="w-4 h-4 mr-1.5" />
-                  PRO
+                  PRO                  
                 </TabsTrigger>
               </TabsList>
             </div>

@@ -1,11 +1,11 @@
-// lib/pro/readme-quality.ts - OPTIMIZED (zaten hızlıydı, sadece küçük iyileştirmeler)
+// lib/pro/readme-quality.ts - OPTIMIZED
 import { Octokit } from "@octokit/rest";
 
 export async function analyzeReadmeQuality(
   octokit: Octokit,
   username: string
 ): Promise<{
-    overallScore: number;
+  overallScore: number;
   grade: string;
   details: {
     length: number;
@@ -39,7 +39,7 @@ export async function analyzeReadmeQuality(
   try {
     const reposResponse = await octokit.request('GET /users/{username}/repos', {
       username,
-      per_page: 50, // 100'den 50'ye düştü (en önemli 50 repo yeter)
+      per_page: 50,
       sort: 'updated',
       headers: {
         'X-GitHub-Api-Version': '2022-11-28',
@@ -51,7 +51,7 @@ export async function analyzeReadmeQuality(
     let bestReadme = '';
     let bestReadmeRepo = '';
     
-    // Sadece ilk 20 repo'yu kontrol et (yeterli)
+    // Sadece ilk 20 repo'yu kontrol et
     for (const repo of repos.slice(0, 20)) {
       if (repo.fork) continue;
       
@@ -230,7 +230,7 @@ export async function analyzeReadmeQuality(
     console.log(`✅ [README] Complete in ${duration}s - Score: ${finalScore}/10`);
     
     return {
-        overallScore: finalScore,
+      overallScore: finalScore,
       grade,
       details: {
         length,
