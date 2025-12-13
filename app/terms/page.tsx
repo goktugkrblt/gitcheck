@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] relative overflow-hidden">
+    <div className="min-h-screen bg-[#1f1f1f] relative overflow-hidden">
       {/* Advanced Grid Background - SAME AS HOMEPAGE */}
       <div className="fixed inset-0 pointer-events-none z-0">
         {/* Main Grid */}
