@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Trophy, Star } from "lucide-react";
-import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, useInView, useReducedMotion } from "framer-motion";
 
 export default function HomePage() {
   const { data: session, status } = useSession();
@@ -15,10 +15,14 @@ export default function HomePage() {
   const [profileCount, setProfileCount] = useState(6);
   const [mounted, setMounted] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
   
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+
+  // Reduced motion for accessibility
+  const prefersReducedMotion = useReducedMotion();
 
   const headerY = useTransform(smoothProgress, [0, 0.3], [0, -100]);
   const headerOpacity = useTransform(smoothProgress, [0, 0.2], [1, 0]);
@@ -47,10 +51,22 @@ export default function HomePage() {
 
   useEffect(() => {
     setMounted(true);
+    
+    // Detect mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Mouse tracking for interactive grid
+  // Mouse tracking for interactive grid (only on desktop)
   useEffect(() => {
+    if (isMobile || prefersReducedMotion) return;
+    
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ 
         x: (e.clientX / window.innerWidth) * 2 - 1,
@@ -60,23 +76,23 @@ export default function HomePage() {
     
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [isMobile, prefersReducedMotion]);
 
   return (
     <div ref={containerRef} className="min-h-screen relative overflow-hidden">
       
-      {/* ✨ ADVANCED ANIMATED BACKGROUND */}
+      {/* ✨ OPTIMIZED ANIMATED BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none z-0">
         
-        {/* Gradient Mesh Animation - 3 renkli blobs */}
+        {/* Gradient Mesh Animation - Reduced on mobile */}
         <div className="absolute inset-0">
           <motion.div
             className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px]"
-            animate={{
+            animate={!isMobile && !prefersReducedMotion ? {
               x: [0, 100, -50, 0],
               y: [0, -50, 100, 0],
               scale: [1, 1.2, 0.8, 1],
-            }}
+            } : {}}
             transition={{
               duration: 20,
               repeat: Infinity,
@@ -85,11 +101,11 @@ export default function HomePage() {
           />
           <motion.div
             className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px]"
-            animate={{
+            animate={!isMobile && !prefersReducedMotion ? {
               x: [0, -100, 50, 0],
               y: [0, 50, -100, 0],
               scale: [1, 0.8, 1.2, 1],
-            }}
+            } : {}}
             transition={{
               duration: 25,
               repeat: Infinity,
@@ -98,11 +114,11 @@ export default function HomePage() {
           />
           <motion.div
             className="absolute top-1/2 left-1/2 w-96 h-96 bg-pink-500/10 rounded-full blur-[120px]"
-            animate={{
+            animate={!isMobile && !prefersReducedMotion ? {
               x: [0, -80, 80, 0],
               y: [0, 80, -80, 0],
               scale: [1, 1.1, 0.9, 1],
-            }}
+            } : {}}
             transition={{
               duration: 18,
               repeat: Infinity,
@@ -111,21 +127,23 @@ export default function HomePage() {
           />
         </div>
 
-        {/* Interactive Grid - Mouse ile hareket eder */}
-        <motion.div 
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-              linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)
-            `,
-            backgroundSize: '80px 80px',
-            transform: `perspective(1000px) rotateX(${mousePosition.y * 5}deg) rotateY(${mousePosition.x * 5}deg)`
-          }}
-        />
+        {/* Interactive Grid - Desktop only */}
+        {!isMobile && (
+          <motion.div 
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)
+              `,
+              backgroundSize: '80px 80px',
+              transform: `perspective(1000px) rotateX(${mousePosition.y * 5}deg) rotateY(${mousePosition.x * 5}deg)`
+            }}
+          />
+        )}
 
-        {/* Floating Geometric Shapes */}
-        {mounted && [...Array(15)].map((_, i) => (
+        {/* Reduced shapes on mobile */}
+        {mounted && !prefersReducedMotion && [...Array(isMobile ? 5 : 15)].map((_, i) => (
           <motion.div
             key={`shape-${i}`}
             className="absolute"
@@ -152,8 +170,8 @@ export default function HomePage() {
           />
         ))}
 
-        {/* Particle Network - SVG ile */}
-        {mounted && (
+        {/* Particle Network - Desktop only */}
+        {mounted && !isMobile && (
           <svg className="absolute inset-0 w-full h-full opacity-20">
             <defs>
               <radialGradient id="particle-gradient">
@@ -188,8 +206,8 @@ export default function HomePage() {
           </svg>
         )}
 
-        {/* Animated Lines - Yatay akan çizgiler */}
-        {mounted && [...Array(6)].map((_, i) => (
+        {/* Animated Lines - Desktop only */}
+        {mounted && !isMobile && [...Array(6)].map((_, i) => (
           <motion.div
             key={`line-${i}`}
             className="absolute h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
@@ -210,9 +228,6 @@ export default function HomePage() {
           />
         ))}
 
-        {/* Morphing Blobs - SVG gooey effect */}
-       
-
         {/* Scan Lines - Retro CRT effect */}
         <div className="absolute inset-0 opacity-[0.02]">
           <div className="absolute inset-0" style={{
@@ -220,16 +235,18 @@ export default function HomePage() {
           }} />
         </div>
 
-        {/* Vignette - Kenar karartma */}
+        {/* Vignette */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
         
-        {/* Noise Texture - Film grain */}
-        <div 
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          }}
-        />
+        {/* Noise Texture - Desktop only */}
+        {!isMobile && (
+          <div 
+            className="absolute inset-0 opacity-[0.02]"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+            }}
+          />
+        )}
       </div>
 
       {/* Scroll Progress */}
@@ -242,14 +259,14 @@ export default function HomePage() {
       <div className="relative z-10">
         
         {/* HEADER SECTION */}
-        <div className="max-w-4xl mx-auto px-6 py-12">
+        <div className="max-w-4xl mx-auto px-6 py-8 md:py-12">
           <motion.header 
-            className="flex flex-col lg:flex-row gap-8 items-end justify-between mb-20"
-            style={{ 
+            className="flex flex-col lg:flex-row gap-8 items-end justify-between mb-12 md:mb-20"
+            style={!isMobile ? { 
               y: headerY,
               opacity: headerOpacity,
               scale: headerScale
-            }}
+            } : {}}
           >
             {/* LEFT SIDE - MAIN CONTENT */}
             <div className="flex flex-col justify-center flex-1 max-w-2xl">
@@ -259,13 +276,13 @@ export default function HomePage() {
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 transition={{ duration: 1, type: "spring" }}
               >
-                <Link href="/" className="inline-flex items-center gap-2 group mb-12">
+                <Link href="/" className="inline-flex items-center gap-2 group mb-8 md:mb-12">
                   <motion.div
-                    whileHover={{ 
+                    whileHover={!isMobile ? { 
                       rotate: [0, -10, 10, -10, 10, 0],
                       scale: 1.3,
                       y: [0, -5, 0, -3, 0]
-                    }}
+                    } : {}}
                     transition={{ duration: 0.6 }}
                     className="relative"
                   >
@@ -294,7 +311,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.6 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-8 backdrop-blur-sm w-fit"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-6 md:mb-8 backdrop-blur-sm w-fit"
               >
                 <Sparkles className="h-3.5 w-3.5 text-white/60" />
                 <span className="text-xs text-white/60 font-mono uppercase tracking-widest">
@@ -307,7 +324,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
-                className="text-6xl md:text-8xl font-bold text-white mb-6"
+                className="text-5xl md:text-6xl lg:text-8xl font-bold text-white mb-4 md:mb-6"
               >
                 GitHub
                 <br />
@@ -319,7 +336,7 @@ export default function HomePage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.65 }}
-                className="text-sm text-white/40 font-mono mb-6"
+                className="text-sm text-white/40 font-mono mb-4 md:mb-6"
               >
                 <span className="text-white/30">$</span> analyze --profile --repos --activity
               </motion.div>
@@ -329,7 +346,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7, duration: 0.8 }}
-                className="text-lg text-white/60 mb-10 max-w-xl leading-relaxed"
+                className="text-base md:text-lg text-white/60 mb-8 md:mb-10 max-w-xl leading-relaxed"
               >
                 Quantifiable metrics from your GitHub activity.
                 <br className="hidden lg:block" />
@@ -341,28 +358,28 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.9, duration: 0.8 }}
-                className="flex items-center gap-6"
+                className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
               >
                 {isAuthenticated ? (
-                  <Link href="/dashboard">
+                  <Link href="/dashboard" className="w-full sm:w-auto">
                     <motion.div 
-                      whileHover={{ scale: 1.05 }} 
+                      whileHover={!isMobile ? { scale: 1.05 } : {}} 
                       whileTap={{ scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="relative group"
+                      className="relative group w-full sm:w-auto"
                     >
                       <motion.div
                         className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
                         animate={{ opacity: [0.5, 0.8, 0.5] }}
                         transition={{ duration: 2, repeat: Infinity }}
                       />
-                      <Button className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 overflow-hidden">
+                      <Button className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto overflow-hidden">
                         <motion.div
                           className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
                           animate={{ x: ["-200%", "200%"] }}
                           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                         />
-                        <span className="relative z-10 flex items-center gap-2">
+                        <span className="relative z-10 flex items-center justify-center gap-2">
                           View Dashboard
                           <motion.span
                             animate={{ x: [0, 5, 0] }}
@@ -375,12 +392,12 @@ export default function HomePage() {
                     </motion.div>
                   </Link>
                 ) : (
-                  <Link href="/login">
+                  <Link href="/login" className="w-full sm:w-auto">
                     <motion.div 
-                      whileHover={{ scale: 1.05 }} 
+                      whileHover={!isMobile ? { scale: 1.05 } : {}} 
                       whileTap={{ scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="relative group"
+                      className="relative group w-full sm:w-auto"
                     >
                       <motion.div
                         className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
@@ -389,14 +406,14 @@ export default function HomePage() {
                       />
                       <Button 
                         disabled={isLoading}
-                        className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 disabled:opacity-50 overflow-hidden"
+                        className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto disabled:opacity-50 overflow-hidden"
                       >
                         <motion.div
                           className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
                           animate={{ x: ["-200%", "200%"] }}
                           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                         />
-                        <span className="relative z-10 flex items-center gap-2">
+                        <span className="relative z-10 flex items-center justify-center gap-2">
                           {isLoading ? "Loading..." : "Analyze Profile"}
                           <motion.span
                             animate={{ x: [0, 5, 0] }}
@@ -420,86 +437,26 @@ export default function HomePage() {
               </motion.div>
             </div>
 
-            {/* RIGHT SIDE - TOP 10 ULTRA COMPACT */}
+            {/* RIGHT SIDE - LEADERBOARD (DESKTOP ONLY) */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 1.2, duration: 0.8 }}
               className="hidden lg:block w-[260px] flex-shrink-0"
             >
-              <div className="border border-white/[0.08] rounded-xl bg-white/[0.02] p-4 backdrop-blur-sm">
-                {/* Header */}
-                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/[0.06]">
-                  <Trophy className="h-3.5 w-3.5 text-white/60" />
-                  <h3 className="text-[10px] font-mono text-white/60 uppercase tracking-widest">
-                    Top Developers
-                  </h3>
-                </div>
-
-                {/* List */}
-                <div className="space-y-1.5">
-                  {topProfiles.map((profile, i) => (
-                    <motion.div
-                      key={profile.username}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 1.4 + (i * 0.05), duration: 0.3 }}
-                      whileHover={{ x: 2, backgroundColor: "rgba(255,255,255,0.03)" }}
-                      className="flex items-center gap-2 p-1.5 rounded-lg transition-all duration-200 cursor-pointer group"
-                    >
-                      {/* Rank */}
-                      <div className={`
-                        w-5 h-5 flex items-center justify-center rounded-full text-[10px] font-bold flex-shrink-0
-                        ${profile.rank === 1 ? 'bg-yellow-500/20 text-yellow-500' : ''}
-                        ${profile.rank === 2 ? 'bg-gray-400/20 text-gray-400' : ''}
-                        ${profile.rank === 3 ? 'bg-orange-600/20 text-orange-600' : ''}
-                        ${profile.rank > 3 ? 'bg-white/5 text-white/40' : ''}
-                      `}>
-                        {profile.rank}
-                      </div>
-
-                      {/* Avatar */}
-                      <img 
-                        src={profile.avatar} 
-                        alt={profile.username}
-                        className="w-6 h-6 rounded-full border border-white/10 flex-shrink-0"
-                      />
-
-                      {/* Username */}
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[11px] text-white/90 font-medium truncate">
-                          {profile.username}
-                        </div>
-                      </div>
-
-                      {/* Score */}
-                      <div className="flex items-center gap-1 flex-shrink-0">
-                        <Star className="h-2.5 w-2.5 text-white/40 group-hover:text-white/60 transition-colors" />
-                        <span className="text-[10px] font-mono text-white/60 group-hover:text-white/80 transition-colors">
-                          {profile.score}
-                        </span>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Footer */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 2 }}
-                  className="mt-4 pt-3 border-t border-white/[0.06] text-center"
-                >
-                  <p className="text-[9px] text-white/40 font-mono leading-tight">
-                    Updated daily
-                    <br />
-                    Based on GitCheck scores
-                  </p>
-                </motion.div>
-              </div>
+              <LeaderboardCard profiles={topProfiles} />
             </motion.div>
-
           </motion.header>
+
+          {/* MOBILE LEADERBOARD */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.8 }}
+            className="lg:hidden mb-12"
+          >
+            <LeaderboardCard profiles={topProfiles} />
+          </motion.div>
         </div>
 
         {/* REST OF CONTENT */}
@@ -511,7 +468,7 @@ export default function HomePage() {
               About GitCheck
             </h2>
 
-            <div className="space-y-4 text-white/60 leading-relaxed">
+            <div className="space-y-4 text-sm md:text-base text-white/60 leading-relaxed">
               <p>
                 GitCheck transforms your GitHub profile into a comprehensive analytics dashboard. We analyze your repositories, contributions, and coding patterns to provide actionable insights that help you understand and improve your developer journey.
               </p>
@@ -533,7 +490,7 @@ export default function HomePage() {
               Core Features
             </h2>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-4 md:gap-6">
               {[
                 { title: "Code Analysis", desc: "Repository quality assessment and documentation scoring" },
                 { title: "Live Tracking", desc: "Real-time metrics with contribution pattern analysis" },
@@ -549,14 +506,14 @@ export default function HomePage() {
                     duration: 0.6,
                     type: "spring"
                   }}
-                  whileHover={{ 
+                  whileHover={!isMobile ? { 
                     y: -5,
                     transition: { duration: 0.2 }
-                  }}
-                  className="p-6 rounded-xl border border-white/[0.08] bg-white/[0.02] hover:border-white/15 transition-all duration-200"
+                  } : {}}
+                  className="p-4 md:p-6 rounded-xl border border-white/[0.08] bg-white/[0.02] hover:border-white/15 transition-all duration-200"
                 >
-                  <h3 className="text-base font-bold text-white/90 mb-3">{feature.title}</h3>
-                  <p className="text-sm text-white/60 leading-relaxed">{feature.desc}</p>
+                  <h3 className="text-sm md:text-base font-bold text-white/90 mb-2 md:mb-3">{feature.title}</h3>
+                  <p className="text-xs md:text-sm text-white/60 leading-relaxed">{feature.desc}</p>
                 </motion.div>
               ))}
             </div>
@@ -576,8 +533,8 @@ export default function HomePage() {
               transition={{ duration: 0.8, type: "spring" }}
             >
               <motion.span 
-                className="text-6xl font-bold text-white"
-                whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
+                className="text-5xl md:text-6xl font-bold text-white"
+                whileHover={!isMobile ? { scale: 1.1, rotate: [0, -5, 5, 0] } : {}}
                 transition={{ duration: 0.4 }}
               >
                 $2.99
@@ -600,7 +557,7 @@ export default function HomePage() {
                   transition={{ delay: i * 0.1, duration: 0.6 }}
                   className="flex items-center justify-between p-4 border border-white/[0.08] rounded-xl bg-white/[0.02] transition-colors duration-200"
                 >
-                  <span className="text-sm text-white/90">{item.name}</span>
+                  <span className="text-xs md:text-sm text-white/90">{item.name}</span>
                   <span className="text-xs font-mono text-white/40">{item.weight}</span>
                 </motion.div>
               ))}
@@ -613,37 +570,37 @@ export default function HomePage() {
                 className="md:col-span-2 flex items-center justify-between p-4 border-2 border-white/20 rounded-xl bg-white/[0.05]"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-sm text-white/90 font-bold">AI Career Analysis</span>
+                  <span className="text-xs md:text-sm text-white/90 font-bold">AI Career Analysis</span>
                   <span className="text-xs font-mono text-white/50 bg-white/10 px-2 py-1 rounded">BONUS</span>
                 </div>
               </motion.div>
             </div>
 
             {isAuthenticated ? (
-              <Link href="/dashboard">
+              <Link href="/dashboard" className="w-full sm:w-auto">
                 <motion.div 
-                  whileHover={{ scale: 1.05 }} 
+                  whileHover={!isMobile ? { scale: 1.05 } : {}} 
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="relative group w-fit"
+                  className="relative group w-full sm:w-fit"
                 >
                   <motion.div
                     className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
                     animate={{ opacity: [0.5, 0.8, 0.5] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   />
-                  <Button className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6">
+                  <Button className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto">
                     View Dashboard →
                   </Button>
                 </motion.div>
               </Link>
             ) : (
-              <Link href="/login">
+              <Link href="/login" className="w-full sm:w-auto">
                 <motion.div 
-                  whileHover={{ scale: 1.05 }} 
+                  whileHover={!isMobile ? { scale: 1.05 } : {}} 
                   whileTap={{ scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="relative group w-fit"
+                  className="relative group w-full sm:w-fit"
                 >
                   <motion.div
                     className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
@@ -652,7 +609,7 @@ export default function HomePage() {
                   />
                   <Button 
                     disabled={isLoading}
-                    className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 disabled:opacity-50"
+                    className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto disabled:opacity-50"
                   >
                     {isLoading ? "Loading..." : "Unlock PRO for $2.99 →"}
                   </Button>
@@ -723,21 +680,21 @@ export default function HomePage() {
                   className="border-l-2 border-white/10 pl-6"
                 >
                   <h3 className="text-sm font-bold text-white/90 mb-2">{faq.q}</h3>
-                  <p className="text-sm text-white/60 leading-relaxed">{faq.a}</p>
+                  <p className="text-xs md:text-sm text-white/60 leading-relaxed">{faq.a}</p>
                 </div>
               ))}
             </div>
           </ScrollRevealSection>
 
           {/* Footer */}
-          <footer className="pt-20 border-t border-white/[0.06] mt-20 mb-20">
+          <footer className="pt-12 md:pt-20 border-t border-white/[0.06] mt-12 md:mt-20 mb-12 md:mb-20">
             <motion.div 
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
             >
-              <div className="flex items-center gap-6 text-xs text-white/40">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 text-xs text-white/40">
                 {[
                   { label: "Privacy", href: "/privacy" },
                   { label: "Terms", href: "/terms" },
@@ -774,18 +731,95 @@ export default function HomePage() {
   );
 }
 
+// Leaderboard Card Component
+function LeaderboardCard({ profiles }: { profiles: any[] }) {
+  return (
+    <div className="border border-white/[0.08] rounded-xl bg-white/[0.02] p-4 backdrop-blur-sm">
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/[0.06]">
+        <Trophy className="h-3.5 w-3.5 text-white/60" />
+        <h3 className="text-[10px] font-mono text-white/60 uppercase tracking-widest">
+          Top Developers
+        </h3>
+      </div>
+
+      {/* List */}
+      <div className="space-y-1.5">
+        {profiles.map((profile, i) => (
+          <motion.div
+            key={profile.username}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 + (i * 0.05), duration: 0.3 }}
+            whileHover={{ x: 2, backgroundColor: "rgba(255,255,255,0.03)" }}
+            className="flex items-center gap-2 p-1.5 rounded-lg transition-all duration-200 cursor-pointer group"
+          >
+            {/* Rank */}
+            <div className={`
+              w-5 h-5 flex items-center justify-center rounded-full text-[10px] font-bold flex-shrink-0
+              ${profile.rank === 1 ? 'bg-yellow-500/20 text-yellow-500' : ''}
+              ${profile.rank === 2 ? 'bg-gray-400/20 text-gray-400' : ''}
+              ${profile.rank === 3 ? 'bg-orange-600/20 text-orange-600' : ''}
+              ${profile.rank > 3 ? 'bg-white/5 text-white/40' : ''}
+            `}>
+              {profile.rank}
+            </div>
+
+            {/* Avatar */}
+            <img 
+              src={profile.avatar} 
+              alt={profile.username}
+              className="w-6 h-6 rounded-full border border-white/10 flex-shrink-0"
+            />
+
+            {/* Username */}
+            <div className="flex-1 min-w-0">
+              <div className="text-[11px] text-white/90 font-medium truncate">
+                {profile.username}
+              </div>
+            </div>
+
+            {/* Score */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <Star className="h-2.5 w-2.5 text-white/40 group-hover:text-white/60 transition-colors" />
+              <span className="text-[10px] font-mono text-white/60 group-hover:text-white/80 transition-colors">
+                {profile.score}
+              </span>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Footer */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8 }}
+        className="mt-4 pt-3 border-t border-white/[0.06] text-center"
+      >
+        <p className="text-[9px] text-white/40 font-mono leading-tight">
+          Updated daily
+          <br />
+          Based on GitCheck scores
+        </p>
+      </motion.div>
+    </div>
+  );
+}
+
 // ScrollRevealSection Component
 function ScrollRevealSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const prefersReducedMotion = useReducedMotion();
 
   return (
     <motion.section
       ref={ref}
-      initial={{ opacity: 0, y: 100 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 100 }}
-      transition={{ duration: 0.8, delay, type: "spring", stiffness: 50 }}
-      className="mb-20 pt-20 border-t border-white/[0.06]"
+      initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: prefersReducedMotion ? 0 : 50 }}
+      transition={{ duration: 0.6, delay, type: "spring", stiffness: 50 }}
+      className="mb-12 md:mb-20 pt-12 md:pt-20 border-t border-white/[0.06]"
     >
       {children}
     </motion.section>
