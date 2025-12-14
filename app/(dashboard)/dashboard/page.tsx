@@ -286,7 +286,7 @@ export default function DashboardPage() {
       {/* ✅ NEW: Analysis Progress Indicator */}
       {proAnalysisStatus === 'running' && (
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl p-4"
         >
@@ -314,15 +314,17 @@ export default function DashboardPage() {
         </motion.div>
       )}
 
+      {/* ✅ CHANGED: Animations only on large screens */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0 }}
+        className="lg:motion-safe:animate-fadeIn"
       >
-        <h1 className="text-3xl font-black text-white tracking-tighter">
+        <h1 className="text-3xl font-black text-white tracking-tighter px-4 md:px-0">
           DASHBOARD
         </h1>
-        <p className="text-white/40 text-sm mt-1">
+        <p className="text-white/40 text-sm mt-1 px-4 md:px-0">
           Track your GitHub metrics and developer growth
           {process.env.NODE_ENV === 'development' && (
             <span className="ml-2 text-purple-400 text-xs">
@@ -333,12 +335,7 @@ export default function DashboardPage() {
       </motion.div>
 
       {!hasProfile ? (
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="bg-white/5 rounded-2xl p-16 border border-white/10 text-center backdrop-blur-sm"
-        >
+        <div className="bg-white/5 rounded-2xl p-8 md:p-16 border border-white/10 text-center backdrop-blur-sm mx-4 md:mx-0">
           <div className="max-w-md mx-auto space-y-6">
             <div className="w-20 h-20 rounded-full border-2 border-white/10 flex items-center justify-center mx-auto mb-6">
               <TrendingUp className="h-10 w-10 text-white/60" />
@@ -361,17 +358,14 @@ export default function DashboardPage() {
               ✓ FREE SCAN • NO LIMITS
             </p>
           </div>
-        </motion.div>
+        </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              className="bg-[#050307] rounded-xl border border-white/10 p-6 md:p-8 flex items-center backdrop-blur-sm"
-            >
-              <div className="flex items-center gap-4 md:gap-8 w-full">
+          {/* ✅ CHANGED: Stacked layout instead of grid */}
+          <div className="space-y-6 px-4 md:px-0">
+            {/* Profile Card - Full width */}
+            <div className="bg-[#050307] rounded-xl border border-white/10 p-6 md:p-8 backdrop-blur-sm lg:motion-safe:animate-slideInLeft">
+              <div className="flex items-center gap-4 md:gap-8 w-full max-w-4xl">
                 <div className="relative flex-shrink-0">
                   <img 
                     src={displayData.avatarUrl} 
@@ -400,14 +394,10 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
-            {/* ✅ CHANGED: Only show score after analysis completes */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
+            {/* ✅ CHANGED: Score Display - Full width, separate from profile */}
+            <div className="lg:motion-safe:animate-slideInRight">
               {shouldShowScore ? (
                 <ScoreDisplay
                   score={displayData.score}
@@ -428,10 +418,12 @@ export default function DashboardPage() {
                   </div>
                 </div>
               )}
-            </motion.div>
+            </div>
           </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          {/* ✅ Tabs section with padding */}
+          <div className="px-4 md:px-0">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <TabsList className="bg-white/5 border border-white/10 p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-6 rounded-xl h-auto backdrop-blur-sm">
                 
@@ -485,7 +477,7 @@ export default function DashboardPage() {
               </TabsList>
             </div>
 
-            <TabsContent value="overview" className="space-y-6 mt-6">
+            <TabsContent value="overview" className="space-y-6 mt-6 px-4 md:px-0">
               <div>
                 <h2 className="text-3xl font-black text-white tracking-tighter mb-2">
                   Overview
@@ -552,25 +544,25 @@ export default function DashboardPage() {
               </div>
             </TabsContent>
 
-            <TabsContent value="activity" className="space-y-6 mt-6">
+            <TabsContent value="activity" className="space-y-6 mt-6 px-4 md:px-0">
               <ActivityTab profileData={profileData} />
             </TabsContent>
 
-            <TabsContent value="skills" className="space-y-6 mt-6">
+            <TabsContent value="skills" className="space-y-6 mt-6 px-4 md:px-0">
               <SkillsTab profileData={profileData} />
             </TabsContent>
 
-            <TabsContent value="repositories" className="space-y-6 mt-6">
+            <TabsContent value="repositories" className="space-y-6 mt-6 px-4 md:px-0">
               <RepositoriesTab profileData={profileData} />
             </TabsContent>
 
-            <TabsContent value="compare" className="space-y-6 mt-6">
+            <TabsContent value="compare" className="space-y-6 mt-6 px-4 md:px-0">
               <div className="bg-white/5 rounded-xl border border-white/10 p-8 text-center backdrop-blur-sm">
                 <CompareTab userProfile={profileData} />
               </div>
             </TabsContent>
             
-            <TabsContent value="pro" className="space-y-6 mt-6">
+            <TabsContent value="pro" className="space-y-6 mt-6 px-4 md:px-0">
               <div className="bg-white/5 rounded-xl border border-white/10 p-1 text-center backdrop-blur-sm">
                 {process.env.NEXT_PUBLIC_ENABLE_PRO_TAB === 'true' ? (                  
                   <ProTab 
@@ -593,7 +585,8 @@ export default function DashboardPage() {
                 )}
               </div>
             </TabsContent>
-          </Tabs>                    
+          </Tabs>
+          </div> {/* ✅ Close tabs wrapper */}
         </>
       )}
     </div>

@@ -17,6 +17,7 @@ interface ComponentScore {
   source: 'pro' | 'fallback';
   description: string;
   details?: string;
+  subScores?: { [key: string]: number | string }; // ✅ Added
 }
 
 export function ScoreDisplay({ score, percentile, username }: ScoreDisplayProps) {
@@ -147,14 +148,24 @@ export function ScoreDisplay({ score, percentile, username }: ScoreDisplayProps)
         </div>
 
         <div className="flex flex-col items-center gap-4 mb-6">
-          {/* Score Display */}
+          {/* ✅ UPDATED: Score Display with /100 and decimals */}
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5, type: "spring" }}
-            className="text-6xl md:text-7xl font-black text-white tracking-tighter"
+            className="flex flex-col items-center"
           >
-            {score}
+            <div className="flex items-baseline gap-2">
+              <span className="text-6xl md:text-7xl font-black text-white tracking-tighter">
+                {score.toFixed(2)}
+              </span>
+              <span className="text-3xl md:text-4xl font-bold text-white/40">
+                /100
+              </span>
+            </div>
+            <p className="text-xs text-white/40 mt-2 font-mono uppercase tracking-widest">
+              Precision Score
+            </p>
           </motion.div>
 
           {/* ✅ FIXED: Grade Badge with proper styling */}
@@ -183,7 +194,7 @@ export function ScoreDisplay({ score, percentile, username }: ScoreDisplayProps)
               onClick={() => setShowBreakdown(!showBreakdown)}
               className="w-full flex items-center justify-center gap-2 text-sm text-white/60 hover:text-white transition-colors group"
             >
-              <span className="font-medium cursor-pointer">Why this score?</span>
+              <span className="font-medium">Why this score?</span>
               {showBreakdown ? (
                 <ChevronUp className="w-4 h-4 group-hover:transform group-hover:-translate-y-0.5 transition-transform" />
               ) : (
@@ -212,25 +223,23 @@ export function ScoreDisplay({ score, percentile, username }: ScoreDisplayProps)
                             <div className="flex items-center gap-2 flex-1">
                               <span className="text-xl">{config.icon}</span>
                               <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2">
-                                  <h4 className={`text-sm font-bold ${config.color}`}>
-                                    {config.name}
-                                  </h4>
-                                  <span className={`text-xs font-black ${componentGrade.color}`}>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  {/* ✅ CHANGED: Show actual metrics from description instead of component name */}
+                                  <p className="text-xs text-white/80 font-medium">
+                                    {component.description}
+                                  </p>
+                                  <span className={`text-xs font-black ${componentGrade.color} flex-shrink-0`}>
                                     {componentGrade.grade}
                                   </span>
                                 </div>
-                                <p className="text-xs text-white/40 mt-0.5">
-                                  {component.description}
-                                </p>
                               </div>
                             </div>
                             <div className="text-right flex-shrink-0 ml-3">
                               <div className="text-lg font-black text-white">
-                                {component.score}
+                                {component.score.toFixed(2)}
                               </div>
                               <div className="text-xs text-white/40">
-                                {component.weight}% weight
+                                {component.weight}%
                               </div>
                             </div>
                           </div>
@@ -245,6 +254,46 @@ export function ScoreDisplay({ score, percentile, username }: ScoreDisplayProps)
                             />
                           </div>
 
+                          {/* ✅ NEW: Generic scoring explanation instead of user's scores */}
+                          <div className="mt-3 pt-3 border-t border-white/10">
+                            <p className="text-xs text-white/60 font-semibold mb-2 uppercase tracking-wider">
+                              📊 How This Is Calculated:
+                            </p>
+                            <div className="text-xs text-white/50 leading-relaxed space-y-1">
+                              {key === 'readmeQuality' && (
+                                <>
+                                  <p>• Repository documentation completeness & quality</p>
+                                  <p>• Code examples, structure, and technical writing</p>
+                                  <p>• README presence, formatting, and usefulness</p>
+                                </>
+                              )}
+                              {key === 'repoHealth' && (
+                                <>
+                                  <p>• Active maintenance and commit frequency</p>
+                                  <p>• Issue management and resolution speed</p>
+                                  <p>• Pull request workflow and merge patterns</p>
+                                  <p>• Repository activity and contributor engagement</p>
+                                </>
+                              )}
+                              {key === 'devPatterns' && (
+                                <>
+                                  <p>• Coding consistency and commit regularity</p>
+                                  <p>• Work-life balance and sustainable pace</p>
+                                  <p>• Code quality indicators and best practices</p>
+                                  <p>• Collaboration patterns and team engagement</p>
+                                </>
+                              )}
+                              {key === 'careerInsights' && (
+                                <>
+                                  <p>• Professional profile strength and visibility</p>
+                                  <p>• Technical skills breadth and depth</p>
+                                  <p>• Community engagement and contributions</p>
+                                  <p>• Portfolio quality and project diversity</p>
+                                </>
+                              )}
+                            </div>
+                          </div>
+
                           {/* Source indicator */}
                           {component.source === 'fallback' && component.details && (
                             <p className="text-xs text-purple-400/60 mt-2 italic">
@@ -255,14 +304,54 @@ export function ScoreDisplay({ score, percentile, username }: ScoreDisplayProps)
                       );
                     })}
 
-                    {/* Calculation Formula */}
+                    {/* ✅ NEW: Mathematical Formula */}
                     <div className="mt-4 p-3 bg-white/5 border border-white/10 rounded-lg">
-                      <p className="text-xs text-white/40 text-center">
-                        Final Score = {components.readmeQuality && `(${components.readmeQuality.score} × 20%)`}
-                        {components.repoHealth && ` + (${components.repoHealth.score} × 25%)`}
-                        {components.devPatterns && ` + (${components.devPatterns.score} × 30%)`}
-                        {components.careerInsights && ` + (${components.careerInsights.score} × 25%)`}
+                      <p className="text-xs text-white/60 font-semibold mb-2 uppercase tracking-wider">
+                        🧮 Final Calculation:
                       </p>
+                      <p className="text-xs text-white/40 font-mono leading-relaxed">
+                        {components.readmeQuality && `(${components.readmeQuality.score.toFixed(2)} × 20%)`}
+                        {components.repoHealth && ` + (${components.repoHealth.score.toFixed(2)} × 25%)`}
+                        {components.devPatterns && ` + (${components.devPatterns.score.toFixed(2)} × 30%)`}
+                        {components.careerInsights && ` + (${components.careerInsights.score.toFixed(2)} × 25%)`}
+                        {` = ${score.toFixed(2)}`}
+                      </p>
+                    </div>
+
+                    {/* ✅ UPDATED: Scoring Method & Formula Explanation */}
+                    <div className="mt-2 p-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-lg">
+                      <p className="text-xs text-white/60 font-semibold mb-2 uppercase tracking-wider">
+                        🧮 Scoring Methodology:
+                      </p>
+                      <div className="text-xs text-white/50 space-y-2">
+                        <p>
+                          Your score is calculated using a weighted formula across four key areas:
+                        </p>
+                        <div className="grid grid-cols-2 gap-2 my-2">
+                          <div className="bg-white/5 rounded px-2 py-1">
+                            <span className="text-white/70 font-semibold">Documentation:</span>
+                            <span className="text-white/50 ml-1">20%</span>
+                          </div>
+                          <div className="bg-white/5 rounded px-2 py-1">
+                            <span className="text-white/70 font-semibold">Repository Health:</span>
+                            <span className="text-white/50 ml-1">25%</span>
+                          </div>
+                          <div className="bg-white/5 rounded px-2 py-1">
+                            <span className="text-white/70 font-semibold">Dev Patterns:</span>
+                            <span className="text-white/50 ml-1">30%</span>
+                          </div>
+                          <div className="bg-white/5 rounded px-2 py-1">
+                            <span className="text-white/70 font-semibold">Career Insights:</span>
+                            <span className="text-white/50 ml-1">25%</span>
+                          </div>
+                        </div>
+                        <p className="text-white/40 italic">
+                          {scoringMethod === 'pro' 
+                            ? 'Analyzed using advanced algorithms with logarithmic scaling and consistency checks.'
+                            : `Estimated from GitHub activity metrics. Upgrade to PRO for detailed analysis.`
+                          }
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
