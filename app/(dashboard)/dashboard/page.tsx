@@ -22,14 +22,14 @@ import {
   BarChart3,
   Activity,
   Target,
-  Sparkles
+  Sparkles,
+  Brain
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LanguageChart } from "@/components/dashboard/language-chart";
 import { TopRepos } from "@/components/dashboard/top-repos";
 import { motion } from "framer-motion";
-import { useBackgroundProAnalysis } from "@/hooks/use-background-pro-analysis";
 
 export default function DashboardPage() {
   const [hasProfile, setHasProfile] = useState(false);
@@ -39,18 +39,44 @@ export default function DashboardPage() {
   const [userPlan, setUserPlan] = useState<string>("FREE");
   const [activeTab, setActiveTab] = useState("overview");
   const [devMockPlan, setDevMockPlan] = useState<"FREE" | "PRO" | null>(null);
+  
+  // ✅ NEW: PRO Analysis state
+  const [proAnalysisStatus, setProAnalysisStatus] = useState<'idle' | 'running' | 'complete'>('idle');
+  const [analysisProgress, setAnalysisProgress] = useState(0);
 
   const effectivePlan = process.env.NODE_ENV === 'development' && devMockPlan 
     ? devMockPlan 
     : userPlan;
 
-  const backgroundAnalysis = useBackgroundProAnalysis(
-    hasProfile && effectivePlan === "PRO",
-    3000
-  );
+  // ✅ CHANGED: Show score only after analysis completes
+  const shouldShowScore = proAnalysisStatus === 'complete';
 
   useEffect(() => {
     fetchProfile();
+  }, []);
+
+  // ✅ NEW: Auto-start PRO analysis in background
+  useEffect(() => {
+    if (hasProfile && proAnalysisStatus === 'idle') {
+      startBackgroundAnalysis();
+    }
+  }, [hasProfile, proAnalysisStatus]);
+
+  // ✅ NEW: Listen for analysis completion
+  useEffect(() => {
+    const handleAnalysisComplete = () => {
+      console.log('✅ PRO analysis complete event received');
+      setProAnalysisStatus('complete');
+      setAnalysisProgress(100);
+      // Refresh profile to get updated score
+      fetchProfile();
+    };
+    
+    window.addEventListener('proAnalysisComplete', handleAnalysisComplete);
+    
+    return () => {
+      window.removeEventListener('proAnalysisComplete', handleAnalysisComplete);
+    };
   }, []);
 
   useEffect(() => {
@@ -102,6 +128,47 @@ export default function DashboardPage() {
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, []);
+
+  // ✅ NEW: Start background PRO analysis
+  const startBackgroundAnalysis = async () => {
+    setProAnalysisStatus('running');
+    setAnalysisProgress(0);
+    
+    console.log('🚀 Starting background PRO analysis...');
+    
+    try {
+      // Simulate progress
+      const progressInterval = setInterval(() => {
+        setAnalysisProgress(prev => {
+          if (prev >= 90) return 90; // Stop at 90%, wait for actual completion
+          return prev + 5;
+        });
+      }, 1000);
+
+      const response = await fetch('/api/pro/analyze-all');
+      const result = await response.json();
+
+      clearInterval(progressInterval);
+
+      if (result.success) {
+        console.log('✅ Background PRO analysis complete');
+        setProAnalysisStatus('complete');
+        setAnalysisProgress(100);
+        
+        // Dispatch event for other components
+        window.dispatchEvent(new Event('proAnalysisComplete'));
+        
+        // Refresh profile data
+        await fetchProfile();
+      } else {
+        console.error('❌ PRO analysis failed:', result.error);
+        setProAnalysisStatus('complete'); // Still show score even if analysis fails
+      }
+    } catch (error) {
+      console.error('❌ Background analysis error:', error);
+      setProAnalysisStatus('complete'); // Still show score even on error
+    }
+  };
 
   const fetchProfile = async () => {
     try {
@@ -214,7 +281,38 @@ export default function DashboardPage() {
         <div className="fixed top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 font-bold text-sm">
           🔧 DEV: {devMockPlan} MODE
         </div>
-      )}     
+      )}
+
+      {/* ✅ NEW: Analysis Progress Indicator */}
+      {proAnalysisStatus === 'running' && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl p-4"
+        >
+          <div className="flex items-center gap-4">
+            <div className="animate-spin w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full flex-shrink-0"></div>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-white font-bold text-sm">
+                  <Brain className="w-4 h-4 inline mr-2" />
+                  Analyzing your GitHub profile...
+                </p>
+                <span className="text-purple-400 text-xs font-mono">{analysisProgress}%</span>
+              </div>
+              <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                <div 
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-full transition-all duration-500"
+                  style={{ width: `${analysisProgress}%` }}
+                />
+              </div>
+              <p className="text-white/40 text-xs mt-2">
+                Please wait, this may take 20-30 seconds. Your score will appear when ready.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -304,16 +402,32 @@ export default function DashboardPage() {
               </div>
             </motion.div>
 
+            {/* ✅ CHANGED: Only show score after analysis completes */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <ScoreDisplay
-                score={displayData.score}
-                percentile={displayData.percentile}
-                username={displayData.username}
-              />
+              {shouldShowScore ? (
+                <ScoreDisplay
+                  score={displayData.score}
+                  percentile={displayData.percentile}
+                  username={displayData.username}
+                />
+              ) : (
+                <div className="bg-[#050307] rounded-xl border border-purple-500/30 p-6 md:p-8 flex items-center justify-center min-h-[200px]">
+                  <div className="text-center">
+                    <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <h3 className="text-lg font-bold text-white mb-2">Calculating Your Score</h3>
+                    <p className="text-white/40 text-sm">
+                      Analyzing {displayData.totalCommits} commits across {displayData.totalRepos} repositories...
+                    </p>
+                    <p className="text-purple-400 text-xs mt-3 font-mono">
+                      {analysisProgress}% complete
+                    </p>
+                  </div>
+                </div>
+              )}
             </motion.div>
           </div>
 

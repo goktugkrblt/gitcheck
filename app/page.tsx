@@ -24,9 +24,10 @@ export default function HomePage() {
   // Reduced motion for accessibility
   const prefersReducedMotion = useReducedMotion();
 
-  const headerY = useTransform(smoothProgress, [0, 0.3], [0, -100]);
-  const headerOpacity = useTransform(smoothProgress, [0, 0.2], [1, 0]);
-  const headerScale = useTransform(smoothProgress, [0, 0.2], [1, 0.95]);
+  // ✅ CHANGED: Disable scroll animations on mobile/tablet
+  const headerY = useTransform(smoothProgress, [0, 0.3], !isMobile && !prefersReducedMotion ? [0, -100] : [0, 0]);
+  const headerOpacity = useTransform(smoothProgress, [0, 0.2], !isMobile && !prefersReducedMotion ? [1, 0] : [1, 1]);
+  const headerScale = useTransform(smoothProgress, [0, 0.2], !isMobile && !prefersReducedMotion ? [1, 0.95] : [1, 1]);
 
   // Top 10 Profiles Mock Data
   const topProfiles = [
@@ -52,9 +53,9 @@ export default function HomePage() {
   useEffect(() => {
     setMounted(true);
     
-    // Detect mobile
+    // Detect mobile (tablet included)
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
+      setIsMobile(window.innerWidth < 1024); // ✅ Changed to 1024px (lg breakpoint)
     };
     
     checkMobile();
@@ -128,7 +129,7 @@ export default function HomePage() {
         </div>
 
         {/* Interactive Grid - Desktop only */}
-        {!isMobile && (
+        {!isMobile && !prefersReducedMotion && (
           <motion.div 
             className="absolute inset-0"
             style={{
@@ -142,7 +143,7 @@ export default function HomePage() {
           />
         )}
 
-        {/* Reduced shapes on mobile */}
+        {/* Reduced shapes on mobile/tablet */}
         {mounted && !prefersReducedMotion && [...Array(isMobile ? 5 : 15)].map((_, i) => (
           <motion.div
             key={`shape-${i}`}
@@ -171,7 +172,7 @@ export default function HomePage() {
         ))}
 
         {/* Particle Network - Desktop only */}
-        {mounted && !isMobile && (
+        {mounted && !isMobile && !prefersReducedMotion && (
           <svg className="absolute inset-0 w-full h-full opacity-20">
             <defs>
               <radialGradient id="particle-gradient">
@@ -207,7 +208,7 @@ export default function HomePage() {
         )}
 
         {/* Animated Lines - Desktop only */}
-        {mounted && !isMobile && [...Array(6)].map((_, i) => (
+        {mounted && !isMobile && !prefersReducedMotion && [...Array(6)].map((_, i) => (
           <motion.div
             key={`line-${i}`}
             className="absolute h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
@@ -260,9 +261,14 @@ export default function HomePage() {
         
         {/* HEADER SECTION */}
         <div className="max-w-4xl mx-auto px-6 py-8 md:py-12">
+          {/* ✅ CHANGED: Disable scroll effects on mobile/tablet */}
           <motion.header 
-            className="flex flex-col lg:flex-row gap-8 items-end justify-between mb-12 md:mb-20"
-            style={!isMobile ? { 
+            className="flex flex-col lg:flex-row gap-8
+  items-end justify-between
+  mb-12 md:mb-20
+  md:items-start
+  md:pl-[40px]"
+            style={!isMobile && !prefersReducedMotion ? { 
               y: headerY,
               opacity: headerOpacity,
               scale: headerScale
@@ -272,9 +278,9 @@ export default function HomePage() {
             <div className="flex flex-col justify-center flex-1 max-w-2xl">
               {/* Logo */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.5, rotate: -180 }}
+                initial={{ opacity: 0, scale: isMobile ? 1 : 0.5, rotate: isMobile ? 0 : -180 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                transition={{ duration: 1, type: "spring" }}
+                transition={{ duration: isMobile ? 0 : 1, type: "spring" }}
               >
                 <Link href="/" className="inline-flex items-center gap-2 group mb-8 md:mb-12">
                   <motion.div
@@ -288,10 +294,10 @@ export default function HomePage() {
                   >
                     <svg fill="#ffffff" width={40} height={40} xmlns="http://www.w3.org/2000/svg" id="Layer_1" viewBox="0 0 245 245">
                       <motion.path
-                        d="M185.8,232.75c9.45-10.21,14.43-20.71,10.61-35.01-3.06-11.43-16.92-24.07-17.7-32.75-.63-6.99,4.82-11.41,11.39-10.36,3.39.54,7.83,6.36,10.94,1.42,2.68-4.25-2.55-8.92-6.08-10.4-13.81-5.82-28.46,6.66-25.94,21.63,1.6,9.54,10.16,16.72,14.56,24.99,3.82,7.17,7.21,17.59.1,23.85l-.74-.57c-3.08-19.66-14.33-38.23-26.34-53.5-1.01-1.28-7.78-8.71-7.78-9.33,0-.46.35-.74.67-.99,1.18-.91,4.66-2.18,6.32-3.16,5.5-3.27,9.63-7.39,13.21-12.74,14.05,2.14,27.19-7.72,29.33-22.13,2.18-14.68-6.37-25.09-20.84-24.72-.71.02-1.89.65-2.27.03-4.48-29.93-33.71-44.47-61.11-38.79-17.89,3.71-32.53,17.11-37.76,35.12-1.66.48-3.3.38-5.04.82-5.22,1.33-9.45,6.28-10.86,11.48-2.74,10.11,1.79,21.25,11.35,25.29-.48,13.41,9.63,23,20.87,27.66.05.29.11.67-.03.91-.31.54-9.44,5.46-10.74,6.1-2.12,1.05-7.03,3.62-9.15,2.96-4.11-1.28-13.8-13.56-14.39-17.86-.35-2.55.49-5.15.62-7.63.17-3.33.54-12.69-4.38-12.16-2.65.28-2.93,3.72-3.57,5.68-.09.29-.12.93-.64.66-.43-.22-3.10-4.45-3.89-5.33-9.26-10.38-17.82-.52-16.66,10.78.72,6.98,6.47,13.72,12.06,17.24.79.5,2.74,1.1,3.15,1.51.69.68,3.03,6.49,3.82,7.97,3.61,6.79,10.03,15.86,17.07,19.08,5.63,2.58,11.55.6,17.02-1.51,1.22-.47,6.1-3.05,6.71-3.11.42-.04.49.17.75.45-6.25,17.06-10.31,35.22-8.09,53.58l2.76,14.82c-.36.56-.55.08-.96-.01-8.95-2.11-21.45-9.12-29.2-14.29C-4.7,190.53-17.92,106.22,25.83,48.42c49.53-65.43,145.86-64.24,194.47,1.67,42.04,57.01,29.09,139.38-28.69,179.14-.63.43-5.56,3.75-5.81,3.52Z"
-                        initial={{ pathLength: 0 }}
+                        d="M185.8,232.75c9.45-10.21,14.43-20.71,10.61-35.01-3.06-11.43-16.92-24.07-17.7-32.75-.63-6.99,4.82-11.41,11.39-10.36,3.39.54,7.83,6.36,10.94,1.42,2.68-4.25-2.55-8.92-6.08-10.4-13.81-5.82-28.46,6.66-25.94,21.63,1.6,9.54,10.16,16.72,14.56,24.99,3.82,7.17,7.21,17.59.1,23.85l-.74-.57c-3.08-19.66-14.33-38.23-26.34-53.5-1.01-1.28-7.78-8.71-7.78-9.33,0-.46.35-.74.67-.99,1.18-.91,4.66-2.18,6.32-3.16,5.5-3.27,9.63-7.39,13.21-12.74,14.05,2.14,27.19-7.72,29.33-22.13,2.18-14.68-6.37-25.09-20.84-24.72-.71.02-1.89.65-2.27.03-4.48-29.93-33.71-44.47-61.11-38.79-17.89,3.71-32.53,17.11-37.76,35.12-1.66.48-3.30.38-5.04.82-5.22,1.33-9.45,6.28-10.86,11.48-2.74,10.11,1.79,21.25,11.35,25.29-.48,13.41,9.63,23,20.87,27.66.05.29.11.67-.03.91-.31.54-9.44,5.46-10.74,6.1-2.12,1.05-7.03,3.62-9.15,2.96-4.11-1.28-13.8-13.56-14.39-17.86-.35-2.55.49-5.15.62-7.63.17-3.33.54-12.69-4.38-12.16-2.65.28-2.93,3.72-3.57,5.68-.09.29-.12.93-.64.66-.43-.22-3.10-4.45-3.89-5.33-9.26-10.38-17.82-.52-16.66,10.78.72,6.98,6.47,13.72,12.06,17.24.79.5,2.74,1.1,3.15,1.51.69.68,3.03,6.49,3.82,7.97,3.61,6.79,10.03,15.86,17.07,19.08,5.63,2.58,11.55.6,17.02-1.51,1.22-.47,6.10-3.05,6.71-3.11.42-.04.49.17.75.45-6.25,17.06-10.31,35.22-8.09,53.58l2.76,14.82c-.36.56-.55.08-.96-.01-8.95-2.11-21.45-9.12-29.2-14.29C-4.7,190.53-17.92,106.22,25.83,48.42c49.53-65.43,145.86-64.24,194.47,1.67,42.04,57.01,29.09,139.38-28.69,179.14-.63.43-5.56,3.75-5.81,3.52Z"
+                        initial={{ pathLength: isMobile ? 1 : 0 }}
                         animate={{ pathLength: 1 }}
-                        transition={{ duration: 2, ease: "easeInOut" }}
+                        transition={{ duration: isMobile ? 0 : 2, ease: "easeInOut" }}
                       />
                     </svg>
                     <motion.span
@@ -308,9 +314,9 @@ export default function HomePage() {
 
               {/* Badge */}
               <motion.div
-                initial={{ opacity: 0, y: -20 }}
+                initial={{ opacity: 0, y: isMobile ? 0 : -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.6 }}
+                transition={{ delay: isMobile ? 0 : 0.3, duration: isMobile ? 0 : 0.6 }}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-6 md:mb-8 backdrop-blur-sm w-fit"
               >
                 <Sparkles className="h-3.5 w-3.5 text-white/60" />
@@ -321,9 +327,9 @@ export default function HomePage() {
 
               {/* Title */}
               <motion.h1
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
+                transition={{ delay: isMobile ? 0 : 0.5, duration: isMobile ? 0 : 0.8 }}
                 className="text-5xl md:text-6xl lg:text-8xl font-bold text-white mb-4 md:mb-6"
               >
                 GitHub
@@ -335,7 +341,7 @@ export default function HomePage() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.65 }}
+                transition={{ delay: isMobile ? 0 : 0.65 }}
                 className="text-sm text-white/40 font-mono mb-4 md:mb-6"
               >
                 <span className="text-white/30">$</span> analyze --profile --repos --activity
@@ -343,9 +349,9 @@ export default function HomePage() {
 
               {/* Description */}
               <motion.p
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.8 }}
+                transition={{ delay: isMobile ? 0 : 0.7, duration: isMobile ? 0 : 0.8 }}
                 className="text-base md:text-lg text-white/60 mb-8 md:mb-10 max-w-xl leading-relaxed"
               >
                 Quantifiable metrics from your GitHub activity.
@@ -355,9 +361,9 @@ export default function HomePage() {
 
               {/* CTA */}
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9, duration: 0.8 }}
+                transition={{ delay: isMobile ? 0 : 0.9, duration: isMobile ? 0 : 0.8 }}
                 className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
               >
                 {isAuthenticated ? (
@@ -370,19 +376,19 @@ export default function HomePage() {
                     >
                       <motion.div
                         className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
-                        animate={{ opacity: [0.5, 0.8, 0.5] }}
+                        animate={!isMobile ? { opacity: [0.5, 0.8, 0.5] } : {}}
                         transition={{ duration: 2, repeat: Infinity }}
                       />
                       <Button className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto overflow-hidden">
                         <motion.div
                           className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                          animate={{ x: ["-200%", "200%"] }}
+                          animate={!isMobile ? { x: ["-200%", "200%"] } : {}}
                           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                         />
                         <span className="relative z-10 flex items-center justify-center gap-2">
                           View Dashboard
                           <motion.span
-                            animate={{ x: [0, 5, 0] }}
+                            animate={!isMobile ? { x: [0, 5, 0] } : {}}
                             transition={{ duration: 1.5, repeat: Infinity }}
                           >
                             →
@@ -401,7 +407,7 @@ export default function HomePage() {
                     >
                       <motion.div
                         className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
-                        animate={{ opacity: [0.5, 0.8, 0.5] }}
+                        animate={!isMobile ? { opacity: [0.5, 0.8, 0.5] } : {}}
                         transition={{ duration: 2, repeat: Infinity }}
                       />
                       <Button 
@@ -410,13 +416,13 @@ export default function HomePage() {
                       >
                         <motion.div
                           className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                          animate={{ x: ["-200%", "200%"] }}
+                          animate={!isMobile ? { x: ["-200%", "200%"] } : {}}
                           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                         />
                         <span className="relative z-10 flex items-center justify-center gap-2">
                           {isLoading ? "Loading..." : "Analyze Profile"}
                           <motion.span
-                            animate={{ x: [0, 5, 0] }}
+                            animate={!isMobile ? { x: [0, 5, 0] } : {}}
                             transition={{ duration: 1.5, repeat: Infinity }}
                           >
                             →
@@ -429,7 +435,7 @@ export default function HomePage() {
                 
                 <motion.span 
                   className="text-sm text-white/40 font-mono"
-                  animate={{ opacity: [0.4, 0.7, 0.4] }}
+                  animate={!isMobile ? { opacity: [0.4, 0.7, 0.4] } : {}}
                   transition={{ duration: 3, repeat: Infinity }}
                 >
                   {profileCount} analyzed
@@ -439,23 +445,23 @@ export default function HomePage() {
 
             {/* RIGHT SIDE - LEADERBOARD (DESKTOP ONLY) */}
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
+              initial={{ opacity: 0, x: isMobile ? 0 : 50 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.2, duration: 0.8 }}
+              transition={{ delay: isMobile ? 0 : 1.2, duration: isMobile ? 0 : 0.8 }}
               className="hidden lg:block w-[260px] flex-shrink-0"
             >
-              <LeaderboardCard profiles={topProfiles} />
+              <LeaderboardCard profiles={topProfiles} isMobile={isMobile} />
             </motion.div>
           </motion.header>
 
           {/* MOBILE LEADERBOARD */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 0.8 }}
+            transition={{ delay: isMobile ? 0 : 1, duration: isMobile ? 0 : 0.8 }}
             className="lg:hidden mb-12"
           >
-            <LeaderboardCard profiles={topProfiles} />
+            <LeaderboardCard profiles={topProfiles} isMobile={isMobile} />
           </motion.div>
         </div>
 
@@ -463,7 +469,7 @@ export default function HomePage() {
         <main className="max-w-4xl mx-auto px-6">
           
           {/* About Section */}
-          <ScrollRevealSection>
+          <ScrollRevealSection isMobile={isMobile}>
             <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-8">
               About GitCheck
             </h2>
@@ -485,7 +491,7 @@ export default function HomePage() {
           </ScrollRevealSection>
 
           {/* Features Section */}
-          <ScrollRevealSection>
+          <ScrollRevealSection isMobile={isMobile}>
             <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-10">
               Core Features
             </h2>
@@ -498,12 +504,12 @@ export default function HomePage() {
               ].map((feature, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 50 }}
+                  initial={{ opacity: 0, y: isMobile ? 0 : 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ 
-                    delay: i * 0.15, 
-                    duration: 0.6,
+                    delay: isMobile ? 0 : i * 0.15, 
+                    duration: isMobile ? 0 : 0.6,
                     type: "spring"
                   }}
                   whileHover={!isMobile ? { 
@@ -520,17 +526,17 @@ export default function HomePage() {
           </ScrollRevealSection>
 
           {/* PRO Section */}
-          <ScrollRevealSection delay={0.2}>
+          <ScrollRevealSection delay={0.2} isMobile={isMobile}>
             <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-8">
               Premium Analytics
             </h2>
 
             <motion.div 
               className="flex items-baseline gap-4 mb-10"
-              initial={{ opacity: 0, scale: 0.5 }}
+              initial={{ opacity: 0, scale: isMobile ? 1 : 0.5 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, type: "spring" }}
+              transition={{ duration: isMobile ? 0 : 0.8, type: "spring" }}
             >
               <motion.span 
                 className="text-5xl md:text-6xl font-bold text-white"
@@ -551,10 +557,10 @@ export default function HomePage() {
               ].map((item, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, x: -50 }}
+                  initial={{ opacity: 0, x: isMobile ? 0 : -50 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.6 }}
+                  transition={{ delay: isMobile ? 0 : i * 0.1, duration: isMobile ? 0 : 0.6 }}
                   className="flex items-center justify-between p-4 border border-white/[0.08] rounded-xl bg-white/[0.02] transition-colors duration-200"
                 >
                   <span className="text-xs md:text-sm text-white/90">{item.name}</span>
@@ -563,10 +569,10 @@ export default function HomePage() {
               ))}
 
               <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: isMobile ? 1 : 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.5, duration: 0.6 }}
+                transition={{ delay: isMobile ? 0 : 0.5, duration: isMobile ? 0 : 0.6 }}
                 className="md:col-span-2 flex items-center justify-between p-4 border-2 border-white/20 rounded-xl bg-white/[0.05]"
               >
                 <div className="flex items-center gap-3">
@@ -586,7 +592,7 @@ export default function HomePage() {
                 >
                   <motion.div
                     className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
-                    animate={{ opacity: [0.5, 0.8, 0.5] }}
+                    animate={!isMobile ? { opacity: [0.5, 0.8, 0.5] } : {}}
                     transition={{ duration: 2, repeat: Infinity }}
                   />
                   <Button className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto">
@@ -604,7 +610,7 @@ export default function HomePage() {
                 >
                   <motion.div
                     className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
-                    animate={{ opacity: [0.5, 0.8, 0.5] }}
+                    animate={!isMobile ? { opacity: [0.5, 0.8, 0.5] } : {}}
                     transition={{ duration: 2, repeat: Infinity }}
                   />
                   <Button 
@@ -619,7 +625,7 @@ export default function HomePage() {
           </ScrollRevealSection>
 
           {/* FAQ */}
-          <ScrollRevealSection delay={0.3}>
+          <ScrollRevealSection delay={0.3} isMobile={isMobile}>
             <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-10">
               Frequently Asked Questions
             </h2>
@@ -732,7 +738,7 @@ export default function HomePage() {
 }
 
 // Leaderboard Card Component
-function LeaderboardCard({ profiles }: { profiles: any[] }) {
+function LeaderboardCard({ profiles, isMobile }: { profiles: any[], isMobile: boolean }) {
   return (
     <div className="border border-white/[0.08] rounded-xl bg-white/[0.02] p-4 backdrop-blur-sm">
       {/* Header */}
@@ -748,10 +754,10 @@ function LeaderboardCard({ profiles }: { profiles: any[] }) {
         {profiles.map((profile, i) => (
           <motion.div
             key={profile.username}
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: isMobile ? 0 : -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 + (i * 0.05), duration: 0.3 }}
-            whileHover={{ x: 2, backgroundColor: "rgba(255,255,255,0.03)" }}
+            transition={{ delay: isMobile ? 0 : 0.2 + (i * 0.05), duration: isMobile ? 0 : 0.3 }}
+            whileHover={!isMobile ? { x: 2, backgroundColor: "rgba(255,255,255,0.03)" } : {}}
             className="flex items-center gap-2 p-1.5 rounded-lg transition-all duration-200 cursor-pointer group"
           >
             {/* Rank */}
@@ -794,7 +800,7 @@ function LeaderboardCard({ profiles }: { profiles: any[] }) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
+        transition={{ delay: isMobile ? 0 : 0.8 }}
         className="mt-4 pt-3 border-t border-white/[0.06] text-center"
       >
         <p className="text-[9px] text-white/40 font-mono leading-tight">
@@ -808,7 +814,7 @@ function LeaderboardCard({ profiles }: { profiles: any[] }) {
 }
 
 // ScrollRevealSection Component
-function ScrollRevealSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+function ScrollRevealSection({ children, delay = 0, isMobile }: { children: React.ReactNode; delay?: number; isMobile: boolean }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
   const prefersReducedMotion = useReducedMotion();
@@ -816,9 +822,9 @@ function ScrollRevealSection({ children, delay = 0 }: { children: React.ReactNod
   return (
     <motion.section
       ref={ref}
-      initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: prefersReducedMotion ? 0 : 50 }}
-      transition={{ duration: 0.6, delay, type: "spring", stiffness: 50 }}
+      initial={{ opacity: 0, y: (prefersReducedMotion || isMobile) ? 0 : 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: (prefersReducedMotion || isMobile) ? 0 : 50 }}
+      transition={{ duration: isMobile ? 0 : 0.6, delay: isMobile ? 0 : delay, type: "spring", stiffness: 50 }}
       className="mb-12 md:mb-20 pt-12 md:pt-20 border-t border-white/[0.06]"
     >
       {children}

@@ -71,7 +71,7 @@ export default function LoginPage() {
       </Link>
 
       {/* Login Card */}
-      <div className="relative z-10 w-full max-w-md px-4 mt-28 sm:mt-0">
+      <div className="relative z-10 w-full max-w-md px-4 mt-10 sm:mt-0">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -79,7 +79,7 @@ export default function LoginPage() {
           className="relative"
         >
           {/* Card */}
-          <div className="relative bg-black/50 border border-white/10 rounded-3xl p-12 overflow-hidden backdrop-blur-sm">
+          <div className="relative bg-black/50 border border-white/10 rounded-3xl p-6 overflow-hidden backdrop-blur-sm">
             {/* Inner Grid */}
             <div className="absolute inset-0 opacity-[0.02]">
               <div style={{
@@ -99,13 +99,13 @@ export default function LoginPage() {
                 <motion.div animate={{ rotate: [0, 360] }} transition={{ duration: 3, repeat: Infinity, ease: "linear" }}>
                   <Sparkles className="h-3 w-3" />
                 </motion.div>
-                SECURE LOGIN
+                Secure Login
               </motion.div>
 
               {/* Title */}
               <div className="space-y-3">
                 <h1 className="text-4xl font-black text-white tracking-tighter">
-                  {isPending ? "AUTHENTICATING..." : "WELCOME BACK"}
+                  {isPending ? "AUTHENTICATING..." : "Welcome Back"}
                 </h1>
                 <p className="text-white/60 font-light">
                   {isPending 
@@ -133,12 +133,12 @@ export default function LoginPage() {
                         >
                           <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full" />
                         </motion.div>
-                        AUTHENTICATING...
+                        Authenticating...
                       </>
                     ) : (
                       <>
                         <Github style={{ width: '18px', height: '18px' }} />
-                        SIGN IN WITH GITHUB
+                        Sign in with GitHub
                       </>
                     )}
                   </Button>

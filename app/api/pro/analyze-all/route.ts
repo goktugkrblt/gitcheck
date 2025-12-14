@@ -21,9 +21,8 @@ export async function GET() {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    if (user.plan !== "PRO") {
-      return NextResponse.json({ error: "PRO plan required" }, { status: 403 });
-    }
+    // ✅ REMOVED: PRO plan check - all users get analysis now
+    // Score is visible to everyone, but detailed insights require PRO
 
     if (!user.githubToken || !user.githubUsername) {
       return NextResponse.json({ error: "GitHub account not connected" }, { status: 404 });
@@ -51,9 +50,37 @@ export async function GET() {
 
     const analysis = await analyzeAllPro(octokit, username);
 
-    // ✅ CACHE ALL RESULTS
+    // ✅ CACHE ALL RESULTS (Redis)
     CacheService.set(cacheKey, analysis);
     console.log(`💾 Full PRO analysis cached for: ${username}`);
+
+    // ✅ NEW: SAVE TO DATABASE
+    try {
+      console.log(`💾 Saving PRO analysis to database for: ${username}`);
+      
+      await prisma.profile.updateMany({
+        where: { 
+          user: {
+            githubUsername: username
+          }
+        },
+        data: {
+          codeQualityCache: JSON.stringify(analysis),
+          repoHealthCache: JSON.stringify(analysis),
+          testCoverageCache: JSON.stringify(analysis),
+          cicdAnalysisCache: JSON.stringify(analysis),
+          lastCodeQualityScan: new Date(),
+          lastRepoHealthScan: new Date(),
+          lastTestCoverageScan: new Date(),
+          lastCicdAnalysisScan: new Date(),
+        },
+      });
+
+      console.log(`✅ PRO analysis saved to database for: ${username}`);
+    } catch (dbError) {
+      console.error('❌ Failed to save to database:', dbError);
+      // Don't fail the request - Redis cache is still valid
+    }
 
     return NextResponse.json({
       success: true,

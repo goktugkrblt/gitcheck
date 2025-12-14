@@ -1,344 +1,290 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Award, Zap, AlertCircle, Lock, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react";
+import { Lock, TrendingUp, Award, ChevronDown, ChevronUp } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 
 interface ScoreDisplayProps {
   score: number;
-  percentile: number; // Keep for backwards compatibility
-  username?: string;
+  percentile: number;
+  username: string;
 }
 
-interface ScoreData {
-  overallScore: number;
-  grade: string;
-  strengths: string[];
-  improvements: string[];
-  isPro: boolean;
-  locked: boolean;
-  analysisRequired: boolean;
+interface ComponentScore {
+  score: number;
+  weight: number;
+  source: 'pro' | 'fallback';
+  description: string;
+  details?: string;
 }
 
-export function ScoreDisplay({ score: initialScore, percentile: initialPercentile, username }: ScoreDisplayProps) {
-  const [scoreData, setScoreData] = useState<ScoreData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export function ScoreDisplay({ score, percentile, username }: ScoreDisplayProps) {
+  const { data: session } = useSession();
+  const user = session?.user as { plan?: string } | undefined;
+  const [showBreakdown, setShowBreakdown] = useState(false);
+  const [components, setComponents] = useState<{
+    readmeQuality?: ComponentScore;
+    repoHealth?: ComponentScore;
+    devPatterns?: ComponentScore;
+    careerInsights?: ComponentScore;
+  } | null>(null);
+  const [scoringMethod, setScoringMethod] = useState<'pro' | 'fallback'>('fallback');
 
-  // Calculate score on mount
+  // Fetch detailed score components
   useEffect(() => {
-    calculateScore();
-  }, [username]);
-
-  // Listen for PRO analysis completion event
-  useEffect(() => {
-    const handleProAnalysisComplete = () => {
-      console.log('🔔 PRO analysis completed, refreshing score...');
-      calculateScore();
-    };
-
-    // Listen for custom event
-    window.addEventListener('proAnalysisComplete', handleProAnalysisComplete);
-
-    return () => {
-      window.removeEventListener('proAnalysisComplete', handleProAnalysisComplete);
-    };
-  }, [username]);
-
-  const calculateScore = async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      const res = await fetch("/api/score");
-      const data = await res.json();
-
-      if (data.success) {
-        // Check if score is locked (FREE user)
-        if (data.locked) {
-          setScoreData({
-            overallScore: 0,
-            grade: '?',
-            strengths: [],
-            improvements: [],
-            isPro: false,
-            locked: true,
-            analysisRequired: false,
-          });
-          return;
+    const fetchComponents = async () => {
+      try {
+        const response = await fetch('/api/profile');
+        const data = await response.json();
+        if (data.profile?.scoreComponents) {
+          setComponents(data.profile.scoreComponents);
+          setScoringMethod(data.profile.scoringMethod || 'fallback');
         }
-
-        // Check if analysis is required (PRO user without analysis)
-        if (data.analysisRequired) {
-          setScoreData({
-            overallScore: 0,
-            grade: '?',
-            strengths: [],
-            improvements: [],
-            isPro: true,
-            locked: false,
-            analysisRequired: true,
-          });
-          return;
-        }
-
-        // PRO user with analysis - show score
-        setScoreData({
-          overallScore: data.score.overallScore,
-          grade: data.score.grade,
-          strengths: data.score.strengths,
-          improvements: data.score.improvements,
-          isPro: true,
-          locked: false,
-          analysisRequired: false,
-        });
-      } else {
-        throw new Error(data.error || "Failed to calculate score");
+      } catch (error) {
+        console.error('Failed to fetch score components:', error);
       }
-    } catch (err: any) {
-      console.error("Failed to calculate score:", err);
-      setError(err.message);
-      
-      // Fallback to locked state
-      setScoreData({
-        overallScore: 0,
-        grade: '?',
-        strengths: [],
-        improvements: ["Unable to load score"],
-        isPro: false,
-        locked: true,
-        analysisRequired: false,
-      });
-    } finally {
-      setLoading(false);
-    }
+    };
+
+    fetchComponents();
+
+    // Listen for score updates
+    const handleScoreUpdate = () => {
+      fetchComponents();
+    };
+
+    window.addEventListener('proAnalysisComplete', handleScoreUpdate);
+    return () => window.removeEventListener('proAnalysisComplete', handleScoreUpdate);
+  }, []);
+
+  // Determine grade based on score
+  const getGrade = (score: number): { grade: string; color: string; label: string; bgColor: string } => {
+    if (score >= 95) return { 
+      grade: 'S', 
+      color: 'from-yellow-400 to-orange-500', 
+      label: 'Elite',
+      bgColor: 'bg-yellow-500/10'
+    };
+    if (score >= 85) return { 
+      grade: 'A', 
+      color: 'from-green-400 to-emerald-500', 
+      label: 'Excellent',
+      bgColor: 'bg-green-500/10'
+    };
+    if (score >= 70) return { 
+      grade: 'B', 
+      color: 'from-blue-400 to-cyan-500', 
+      label: 'Good',
+      bgColor: 'bg-blue-500/10'
+    };
+    if (score >= 55) return { 
+      grade: 'C', 
+      color: 'from-purple-400 to-pink-500', 
+      label: 'Average',
+      bgColor: 'bg-purple-500/10'
+    };
+    if (score >= 40) return { 
+      grade: 'D', 
+      color: 'from-orange-400 to-red-500', 
+      label: 'Below Average',
+      bgColor: 'bg-orange-500/10'
+    };
+    return { 
+      grade: 'F', 
+      color: 'from-red-400 to-red-600', 
+      label: 'Needs Work',
+      bgColor: 'bg-red-500/10'
+    };
   };
 
-  const getGradeFromScore = (score: number): string => {
-    if (score >= 95) return 'S';
-    if (score >= 85) return 'A';
-    if (score >= 70) return 'B';
-    if (score >= 55) return 'C';
-    if (score >= 40) return 'D';
-    return 'F';
+  const gradeInfo = getGrade(score);
+
+  // Component icons and colors
+  const componentConfig = {
+    readmeQuality: { icon: '📝', name: 'README Quality', color: 'text-blue-400' },
+    repoHealth: { icon: '🏥', name: 'Repository Health', color: 'text-green-400' },
+    devPatterns: { icon: '🔄', name: 'Developer Patterns', color: 'text-purple-400' },
+    careerInsights: { icon: '💼', name: 'Career Insights', color: 'text-yellow-400' },
   };
 
-  const getGradeColor = (grade: string) => {
-    if (grade === 'S') return "text-green-400";
-    if (grade === 'A') return "text-blue-400";
-    if (grade === 'B') return "text-cyan-400";
-    if (grade === 'C') return "text-yellow-400";
-    if (grade === 'D') return "text-orange-400";
-    if (grade === '?') return "text-[#666]";
-    return "text-red-400";
+  const getComponentGrade = (componentScore: number): { grade: string; color: string } => {
+    if (componentScore >= 85) return { grade: 'A', color: 'text-green-400' };
+    if (componentScore >= 70) return { grade: 'B', color: 'text-blue-400' };
+    if (componentScore >= 55) return { grade: 'C', color: 'text-purple-400' };
+    if (componentScore >= 40) return { grade: 'D', color: 'text-orange-400' };
+    return { grade: 'F', color: 'text-red-400' };
   };
-
-  // ✅ Function to navigate to PRO tab
-  const handleUpgradeClick = () => {
-    console.log('🎯 Dispatching navigateToProTab event...');
-    
-    // Dispatch custom event that Dashboard will listen to
-    window.dispatchEvent(new CustomEvent('navigateToProTab'));
-    
-    console.log('✅ Event dispatched');
-  };
-
-  if (loading) {
-    return (
-      <div className="bg-[#050307] border border-[#131c26] rounded-xl p-8 h-full flex items-center justify-center">
-        <div className="text-[#666] font-mono text-sm">CALCULATING SCORE...</div>
-      </div>
-    );
-  }
-
-  const displayScore = scoreData?.overallScore ?? 0;
-  const displayGrade = scoreData?.grade ?? '?';
-  const isLocked = scoreData?.locked ?? false;
-  const analysisRequired = scoreData?.analysisRequired ?? false;
 
   return (
-    <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6 md:p-8 h-full flex flex-col relative">
-      {/* Header */}
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <h3 className="text-xs font-bold text-[#666] tracking-wider mb-1">DEVELOPER SCORE</h3>
-          <p className="text-xs text-[#666]">
-            {scoreData?.isPro ? "PRO Analysis" : "Premium Feature"}
-          </p>
-        </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={calculateScore}
-          disabled={loading || isLocked}
-          className="text-[#666] hover:text-[#e0e0e0] hover:bg-[#131c26] -mr-2"
-          title="Recalculate score"
+    <div className="relative bg-[#050307] border border-white/10 rounded-xl p-6 md:p-8 backdrop-blur-sm overflow-hidden">
+      {/* Background gradient effect */}
+      <div className={`absolute inset-0 bg-gradient-to-br ${gradeInfo.color} opacity-5`} />
+      
+      {/* PRO Badge (only for PRO users) */}
+      {user?.plan === "PRO" && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="absolute top-3 right-3"
         >
-          <Zap className="w-4 h-4" />
-        </Button>
-      </div>
+          <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/40 rounded-full px-3 py-1 backdrop-blur-sm">
+            <span className="text-xs font-bold text-purple-300 tracking-wider">PRO</span>
+          </div>
+        </motion.div>
+      )}
+      
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-xs font-bold text-white/40 tracking-wider mb-1">
+              DEVELOPER SCORE
+            </h3>
+            <p className="text-sm text-white/60">
+              {scoringMethod === 'pro' ? 'Based on PRO analytics' : 'Based on GitHub activity'}
+            </p>
+          </div>
+          <Award className={`w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br ${gradeInfo.color} bg-clip-text text-transparent`} />
+        </div>
 
-      {/* Score Circle */}
-      <div className="flex-1 flex items-center justify-center mb-6 relative">
-        <div className="relative">
-          {/* Background circle */}
-          <svg className="w-40 h-40 md:w-48 md:h-48 -rotate-90">
-            <circle
-              cx="50%"
-              cy="50%"
-              r="45%"
-              stroke="#131c26"
-              strokeWidth="8"
-              fill="none"
-            />
-            {!isLocked && (
-              <motion.circle
-                cx="50%"
-                cy="50%"
-                r="45%"
-                stroke="url(#scoreGradient)"
-                strokeWidth="8"
-                fill="none"
-                strokeLinecap="round"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: displayScore / 100 }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-                style={{
-                  strokeDasharray: "283",
-                  strokeDashoffset: "0",
-                }}
-              />
-            )}
-            {isLocked && (
-              <circle
-                cx="50%"
-                cy="50%"
-                r="45%"
-                stroke="url(#lockedGradient)"
-                strokeWidth="8"
-                fill="none"
-                strokeDasharray="10 5"
-                className="animate-pulse"
-              />
-            )}
-            <defs>
-              <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor={displayScore >= 90 ? "#10b981" : displayScore >= 75 ? "#3b82f6" : displayScore >= 60 ? "#f59e0b" : "#ef4444"} />
-                <stop offset="100%" stopColor={displayScore >= 90 ? "#059669" : displayScore >= 75 ? "#2563eb" : displayScore >= 60 ? "#d97706" : "#dc2626"} />
-              </linearGradient>
-              <linearGradient id="lockedGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#a855f7" />
-                <stop offset="100%" stopColor="#ec4899" />
-              </linearGradient>
-            </defs>
-          </svg>
+        <div className="flex flex-col items-center gap-4 mb-6">
+          {/* Score Display */}
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, type: "spring" }}
+            className="text-6xl md:text-7xl font-black text-white tracking-tighter"
+          >
+            {score}
+          </motion.div>
 
-          {/* Score text - Show blurred XX when locked OR analysis required */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="text-center"
-            >
-              {(isLocked || analysisRequired) ? (
-                <>
-                  <div className="text-4xl md:text-5xl font-black text-[#444] blur-sm select-none">
-                    88
-                  </div>
-                  <div className="text-2xl md:text-3xl font-black text-[#444] blur-sm select-none">
-                    ?
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="text-4xl md:text-5xl font-black text-[#e0e0e0]">
-                    {displayScore}
-                  </div>
-                  <div className={`text-2xl md:text-3xl font-black ${getGradeColor(displayGrade)}`}>
-                    {displayGrade}
-                  </div>
-                </>
-              )}
-            </motion.div>
+          {/* ✅ FIXED: Grade Badge with proper styling */}
+          <div className={`flex items-center gap-3 px-6 py-2.5 rounded-full ${gradeInfo.bgColor} border-2 border-white/20`}>
+            <span className={`text-3xl font-black bg-gradient-to-br ${gradeInfo.color} bg-clip-text text-transparent`}>
+              {gradeInfo.grade}
+            </span>
+            <span className="text-sm font-bold text-white">
+              {gradeInfo.label}
+            </span>
           </div>
         </div>
 
-        {/* Blur overlay for locked state OR analysis required */}
-        {(isLocked || analysisRequired) && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="absolute inset-0 backdrop-blur-2xl bg-gradient-to-br from-[#050307]/95 via-purple-900/20 to-pink-900/20 flex flex-col items-center justify-center rounded-xl border-2 border-purple-500/30"
-          >
-            <div className="text-center px-6">
-              {/* Animated lock icon */}
-              <motion.div
-                animate={{ 
-                  y: [0, -10, 0],
-                }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "reverse" 
-                }}
-                className="mb-4"
-              >
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mx-auto shadow-2xl shadow-purple-500/50">
-                  <Lock className="w-8 h-8 text-white" />
-                </div>
-              </motion.div>
+        {/* Percentile Info */}
+        <div className="flex items-center justify-center gap-2 pt-4 border-t border-white/10">
+          <TrendingUp className="w-4 h-4 text-white/40" />
+          <p className="text-sm text-white/60">
+            Top <span className="font-bold text-white">{100 - percentile}%</span> of developers
+          </p>
+        </div>
 
-              {/* Minimal description */}
-              <p className="text-[#919191] text-xs mb-4">
-                {isLocked ? "Unlock with PRO analysis" : "Run PRO analysis to see your score"}
-              </p>
-              
-              {/* Clickable text instead of button */}
-              <button
-                onClick={handleUpgradeClick}
-                className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 text-sm font-bold hover:from-purple-300 hover:to-pink-300 transition-all cursor-pointer"
-              >
-                {isLocked ? "→ Get PRO Access" : "→ Go to PRO Tab"}
-              </button>
-            </div>
+        {/* ✅ NEW: Score Breakdown Toggle */}
+        {components && (
+          <div className="mt-4 pt-4 border-t border-white/10">
+            <button
+              onClick={() => setShowBreakdown(!showBreakdown)}
+              className="w-full flex items-center justify-center gap-2 text-sm text-white/60 hover:text-white transition-colors group"
+            >
+              <span className="font-medium cursor-pointer">Why this score?</span>
+              {showBreakdown ? (
+                <ChevronUp className="w-4 h-4 group-hover:transform group-hover:-translate-y-0.5 transition-transform" />
+              ) : (
+                <ChevronDown className="w-4 h-4 group-hover:transform group-hover:translate-y-0.5 transition-transform" />
+              )}
+            </button>
+
+            <AnimatePresence>
+              {showBreakdown && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
+                >
+                  <div className="mt-4 space-y-3">
+                    {/* Component Breakdown */}
+                    {Object.entries(components).map(([key, component]) => {
+                      const config = componentConfig[key as keyof typeof componentConfig];
+                      const componentGrade = getComponentGrade(component.score);
+                      
+                      return (
+                        <div key={key} className="bg-white/5 rounded-lg p-3 border border-white/10">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-center gap-2 flex-1">
+                              <span className="text-xl">{config.icon}</span>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <h4 className={`text-sm font-bold ${config.color}`}>
+                                    {config.name}
+                                  </h4>
+                                  <span className={`text-xs font-black ${componentGrade.color}`}>
+                                    {componentGrade.grade}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-white/40 mt-0.5">
+                                  {component.description}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right flex-shrink-0 ml-3">
+                              <div className="text-lg font-black text-white">
+                                {component.score}
+                              </div>
+                              <div className="text-xs text-white/40">
+                                {component.weight}% weight
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Progress Bar */}
+                          <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${component.score}%` }}
+                              transition={{ duration: 0.8, delay: 0.1 }}
+                              className={`h-full bg-gradient-to-r ${gradeInfo.color}`}
+                            />
+                          </div>
+
+                          {/* Source indicator */}
+                          {component.source === 'fallback' && component.details && (
+                            <p className="text-xs text-purple-400/60 mt-2 italic">
+                              💡 {component.details}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+
+                    {/* Calculation Formula */}
+                    <div className="mt-4 p-3 bg-white/5 border border-white/10 rounded-lg">
+                      <p className="text-xs text-white/40 text-center">
+                        Final Score = {components.readmeQuality && `(${components.readmeQuality.score} × 20%)`}
+                        {components.repoHealth && ` + (${components.repoHealth.score} × 25%)`}
+                        {components.devPatterns && ` + (${components.devPatterns.score} × 30%)`}
+                        {components.careerInsights && ` + (${components.careerInsights.score} × 25%)`}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
+
+        {/* Upgrade hint for FREE users */}
+        {user?.plan !== "PRO" && scoringMethod === 'fallback' && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-4 pt-4 border-t border-white/10"
+          >
+            <p className="text-xs text-center text-white/40">
+              Upgrade to <span className="text-purple-400 font-semibold">PRO</span> for detailed analytics
+            </p>
           </motion.div>
         )}
       </div>
-
-      {/* Strengths (only for unlocked PRO users) */}
-      {!isLocked && scoreData?.strengths && scoreData.strengths.length > 0 && (
-        <div className="space-y-2 pt-4 border-t border-[#131c26] mb-4">
-          <div className="text-xs font-bold text-[#666] tracking-wider mb-2">STRENGTHS</div>
-          {scoreData.strengths.slice(0, 2).map((strength, i) => (
-            <div key={i} className="flex items-start gap-2">
-              <Award className="w-3 h-3 text-green-400 mt-0.5 flex-shrink-0" />
-              <span className="text-xs text-[#919191]">{strength}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Error state */}
-      {error && !isLocked && (
-        <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-          <div className="flex items-start gap-2">
-            <AlertCircle className="w-4 h-4 text-red-400 mt-0.5 flex-shrink-0" />
-            <div className="text-xs text-red-400">{error}</div>
-          </div>
-        </div>
-      )}
-
-      {/* CTA Messages - Only show when no overlay is visible */}
-      {!isLocked && !analysisRequired && scoreData?.improvements && scoreData.improvements.length > 0 && (
-        <div className="mt-auto pt-4 p-3 bg-[#131c26] border border-[#333] rounded-lg">
-          <div className="text-xs text-[#919191]">
-            {scoreData.improvements[0]}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
