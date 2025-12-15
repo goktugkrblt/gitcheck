@@ -102,7 +102,7 @@ export async function GET(request: Request) {
       });
     }
 
-    // Calculate score from PRO analysis
+    // ✅ FIXED: Calculate score from PRO analysis WITH basicMetrics
     console.log(`✅ [SCORE] Calculating PRO score for ${username}`);
     
     const scoreResult = calculateDeveloperScore({
@@ -110,6 +110,31 @@ export async function GET(request: Request) {
       repoHealth: cached.repoHealth,
       devPatterns: cached.devPatterns,
       careerInsights: cached.careerInsights,
+      basicMetrics: {
+        totalCommits: profile.totalCommits || 0,
+        totalRepos: profile.totalRepos || 0,
+        totalStars: profile.totalStars || 0,
+        totalForks: profile.totalForks || 0,
+        totalWatchers: profile.totalWatchers || 0,
+        currentStreak: profile.currentStreak || 0,
+        longestStreak: profile.longestStreak || 0,
+        followersCount: profile.followersCount || 0,
+        followingCount: profile.followingCount || 0,
+        organizationsCount: profile.organizationsCount || 0,
+        totalPRs: profile.totalPRs || 0,
+        mergedPRs: profile.mergedPRs || 0,
+        openPRs: profile.openPRs || 0,
+        totalIssuesOpened: profile.totalIssuesOpened || 0,
+        totalOpenIssues: profile.totalOpenIssues || 0,
+        totalReviews: profile.totalReviews || 0,
+        totalContributions: profile.totalContributions || 0,
+        averageCommitsPerDay: profile.averageCommitsPerDay || 0,
+        averageRepoSize: profile.averageRepoSize || 0,
+        gistsCount: profile.gistsCount || 0,
+        accountAge: profile.accountAge || 0,
+        weekendActivity: profile.weekendActivity || 0,
+        mostActiveDay: profile.mostActiveDay || undefined,
+      }
     });
 
     console.log(`📊 [SCORE] PRO Score: ${scoreResult.overallScore}/100 (${scoreResult.grade})`);

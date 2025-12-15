@@ -262,12 +262,8 @@ export default function HomePage() {
         {/* HEADER SECTION */}
         <div className="max-w-4xl mx-auto px-6 py-8 md:py-12">
           {/* ✅ CHANGED: Disable scroll effects on mobile/tablet */}
-          <motion.header 
-            className="flex flex-col lg:flex-row gap-8
-  items-end justify-between
-  mb-12 md:mb-20
-  md:items-start
-  md:pl-[40px]"
+<motion.header
+  className="flex flex-col lg:flex-row gap-8 items-end justify-between mb-12 md:mb-20 md:items-start md:pl-[40px]"
             style={!isMobile && !prefersReducedMotion ? { 
               y: headerY,
               opacity: headerOpacity,
