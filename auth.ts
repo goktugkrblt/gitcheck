@@ -37,8 +37,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return true;
     },
+    
+    // ✅ DÜZELT: redirectTo'yu kullan
     async redirect({ url, baseUrl }) {
-      return `${baseUrl}/dashboard`;
+      // Eğer url baseUrl ile başlıyorsa (internal link), oraya git
+      if (url.startsWith(baseUrl)) {
+        return url;
+      }
+      // Eğer url sadece path ise (/, /dashboard), ekle ve git
+      if (url.startsWith('/')) {
+        return `${baseUrl}${url}`;
+      }
+      // Yoksa homepage
+      return baseUrl;
     },
   },
 })

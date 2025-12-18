@@ -5,31 +5,34 @@ import { Button } from "@/components/ui/button";
 import { Github, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useTransition } from "react";
+import { useTransition, useState, useEffect } from "react";
 
 export default function LoginPage() {
   const [isPending, startTransition] = useTransition();
+  const [callbackUrl, setCallbackUrl] = useState('/');
+  
+  // Get callbackUrl from URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const callback = params.get('callbackUrl');
+    setCallbackUrl(callback || '/');
+  }, []);
 
-  const handleSubmit = () => {
-    startTransition(async () => {
-      await handleSignIn();
-    });
-  };
+const handleSubmit = () => {
+  startTransition(async () => {
+    await handleSignIn(); // ✅ Parametre yok!
+  });
+};
 
   return (
     <div className="min-h-screen relative overflow-hidden flex items-center justify-center">
-      
-      {/* ✨ STATIC BACKGROUND (NO ANIMATION) */}
+      {/* Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        
-        {/* Gradient Mesh - Static */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px]" />
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px]" />
           <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-pink-500/10 rounded-full blur-[120px]" />
         </div>
-
-        {/* Grid Pattern */}
         <div 
           className="absolute inset-0"
           style={{
@@ -40,11 +43,7 @@ export default function LoginPage() {
             backgroundSize: '80px 80px',
           }}
         />
-
-        {/* Vignette */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
-        
-        {/* Noise Texture */}
         <div 
           className="absolute inset-0 opacity-[0.02]"
           style={{
@@ -53,7 +52,7 @@ export default function LoginPage() {
         />
       </div>
 
-      {/* Logo - Top Left */}
+      {/* Logo */}
       <Link href="/">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -63,8 +62,8 @@ export default function LoginPage() {
           whileHover={{ scale: 1.03 }}
         >
           <div className="w-10 h-10 rounded-lg bg-black/50 border border-white/10 flex items-center justify-center group-hover:border-white/20 transition-colors duration-300 backdrop-blur-sm">
-            <svg fill="#ededed" width={40} height={40} className="gitcheck-logo" xmlns="http://www.w3.org/2000/svg" id="Layer_1" viewBox="0 0 245 245">
-              <path d="M185.8,232.75c9.45-10.21,14.43-20.71,10.61-35.01-3.06-11.43-16.92-24.07-17.7-32.75-.63-6.99,4.82-11.41,11.39-10.36,3.39.54,7.83,6.36,10.94,1.42,2.68-4.25-2.55-8.92-6.08-10.4-13.81-5.82-28.46,6.66-25.94,21.63,1.6,9.54,10.16,16.72,14.56,24.99,3.82,7.17,7.21,17.59.1,23.85l-.74-.57c-3.08-19.66-14.33-38.23-26.34-53.5-1.01-1.28-7.78-8.71-7.78-9.33,0-.46.35-.74.67-.99,1.18-.91,4.66-2.18,6.32-3.16,5.5-3.27,9.63-7.39,13.21-12.74,14.05,2.14,27.19-7.72,29.33-22.13,2.18-14.68-6.37-25.09-20.84-24.72-.71.02-1.89.65-2.27.03-4.48-29.93-33.71-44.47-61.11-38.79-17.89,3.71-32.53,17.11-37.76,35.12-1.66.48-3.3.38-5.04.82-5.22,1.33-9.45,6.28-10.86,11.48-2.74,10.11,1.79,21.25,11.35,25.29-.48,13.41,9.63,23,20.87,27.66.05.29.11.67-.03.91-.31.54-9.44,5.46-10.74,6.1-2.12,1.05-7.03,3.62-9.15,2.96-4.11-1.28-13.8-13.56-14.39-17.86-.35-2.55.49-5.15.62-7.63.17-3.33.54-12.69-4.38-12.16-2.65.28-2.93,3.72-3.57,5.68-.09.29-.12.93-.64.66-.43-.22-3.10-4.45-3.89-5.33-9.26-10.38-17.82-.52-16.66,10.78.72,6.98,6.47,13.72,12.06,17.24.79.5,2.74,1.1,3.15,1.51.69.68,3.03,6.49,3.82,7.97,3.61,6.79,10.03,15.86,17.07,19.08,5.63,2.58,11.55.6,17.02-1.51,1.22-.47,6.1-3.05,6.71-3.11.42-.04.49.17.75.45-6.25,17.06-10.31,35.22-8.09,53.58l2.76,14.82c-.36.56-.55.08-.96-.01-8.95-2.11-21.45-9.12-29.2-14.29C-4.7,190.53-17.92,106.22,25.83,48.42c49.53-65.43,145.86-64.24,194.47,1.67,42.04,57.01,29.09,139.38-28.69,179.14-.63.43-5.56,3.75-5.81,3.52Z"/>
+            <svg fill="#ededed" width={40} height={40} xmlns="http://www.w3.org/2000/svg" id="Layer_1" viewBox="0 0 245 245">
+              <path d="M185.8,232.75c9.45-10.21,14.43-20.71,10.61-35.01-3.06-11.43-16.92-24.07-17.7-32.75-.63-6.99,4.82-11.41,11.39-10.36,3.39.54,7.83,6.36,10.94,1.42,2.68-4.25-2.55-8.92-6.08-10.4-13.81-5.82-28.46,6.66-25.94,21.63,1.6,9.54,10.16,16.72,14.56,24.99,3.82,7.17,7.21,17.59.1,23.85l-.74-.57c-3.08-19.66-14.33-38.23-26.34-53.5-1.01-1.28-7.78-8.71-7.78-9.33,0-.46.35-.74.67-.99,1.18-.91,4.66-2.18,6.32-3.16,5.5-3.27,9.63-7.39,13.21-12.74,14.05,2.14,27.19-7.72,29.33-22.13,2.18-14.68-6.37-25.09-20.84-24.72-.71.02-1.89.65-2.27.03-4.48-29.93-33.71-44.47-61.11-38.79-17.89,3.71-32.53,17.11-37.76,35.12-1.66.48-3.3.38-5.04.82-5.22,1.33-9.45,6.28-10.86,11.48-2.74,10.11,1.79,21.25,11.35,25.29-.48,13.41,9.63,23,20.87,27.66.05.29.11.67-.03.91-.31.54-9.44,5.46-10.74,6.1-2.12,1.05-7.03,3.62-9.15,2.96-4.11-1.28-13.8-13.56-14.39-17.86-.35-2.55.49-5.15.62-7.63.17-3.33.54-12.69-4.38-12.16-2.65.28-2.93,3.72-3.57,5.68-.09.29-.12.93-.64.66-.43-.22-3.10-4.45-3.89-5.33-9.26-10.38-17.82-.52-16.66,10.78.72,6.98,6.47,13.72,12.06,17.24.79.5,2.74,1.1,3.15,1.51.69.68,3.03,6.49,3.82,7.97,3.61,6.79,10.03,15.86,17.07,19.08,5.63,2.58,11.55.6,17.02-1.51,1.22-.47,6.10-3.05,6.71-3.11.42-.04.49.17.75.45-6.25,17.06-10.31,35.22-8.09,53.58l2.76,14.82c-.36.56-.55.08-.96-.01-8.95-2.11-21.45-9.12-29.2-14.29C-4.7,190.53-17.92,106.22,25.83,48.42c49.53-65.43,145.86-64.24,194.47,1.67,42.04,57.01,29.09,139.38-28.69,179.14-.63.43-5.56,3.75-5.81,3.52Z"/>
             </svg>                          
           </div>
         </motion.div>
@@ -76,11 +75,8 @@ export default function LoginPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative"
         >
-          {/* Card */}
           <div className="relative bg-black/50 border border-white/10 rounded-3xl p-6 overflow-hidden backdrop-blur-sm">
-            {/* Inner Grid */}
             <div className="absolute inset-0 opacity-[0.02]">
               <div style={{
                 backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)`,
@@ -110,73 +106,71 @@ export default function LoginPage() {
                 <p className="text-white/60 font-light">
                   {isPending 
                     ? "Connecting to GitHub OAuth..." 
-                    : "Sign in to access your GitHub analytics dashboard and track your developer growth."
+                    : "Sign in to access your GitHub analytics dashboard."
                   }
                 </p>
               </div>
 
               {/* Sign In Button */}
-              <div className="space-y-6">
-                <motion.div whileHover={{ scale: isPending ? 1 : 1.02 }} whileTap={{ scale: isPending ? 1 : 0.98 }}>
-                  <Button
-                    onClick={handleSubmit}
-                    size="lg"
-                    disabled={isPending}
-                    className="w-full bg-white text-black hover:bg-white/90 py-7 text-base font-bold rounded-2xl transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              <motion.div whileHover={{ scale: isPending ? 1 : 1.02 }} whileTap={{ scale: isPending ? 1 : 0.98 }}>
+                <Button
+                  onClick={handleSubmit}
+                  size="lg"
+                  disabled={isPending}
+                  className="w-full bg-white text-black hover:bg-white/90 py-7 text-base font-bold rounded-2xl transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isPending ? (
+                    <>
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="mr-2"
+                      >
+                        <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full" />
+                      </motion.div>
+                      Authenticating...
+                    </>
+                  ) : (
+                    <>
+                      <Github className="w-[18px] h-[18px] mr-2" />
+                      Sign in with GitHub
+                    </>
+                  )}
+                </Button>
+              </motion.div>
+
+              {/* Divider */}
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-white/10"></div>
+                </div>
+                <div className="relative flex justify-center text-xs">
+                  <span className="px-4 bg-black/50 text-white/40 font-mono backdrop-blur-sm">
+                    SECURE OAUTH 2.0
+                  </span>
+                </div>
+              </div>
+
+              {/* Features */}
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { label: "FREE FOREVER", icon: "✓" },
+                  { label: "NO CREDIT CARD", icon: "✓" },
+                  { label: "2MIN SETUP", icon: "✓" },
+                  { label: "INSTANT ACCESS", icon: "✓" },
+                ].map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 + i * 0.1 }}
+                    className="flex items-center justify-center gap-2 text-xs font-mono text-white/40"
                   >
-                    {isPending ? (
-                      <>
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                          className="mr-2"
-                        >
-                          <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full" />
-                        </motion.div>
-                        Authenticating...
-                      </>
-                    ) : (
-                      <>
-                        <Github style={{ width: '18px', height: '18px' }} />
-                        Sign in with GitHub
-                      </>
-                    )}
-                  </Button>
-                </motion.div>
-
-                {/* Divider */}
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-white/10"></div>
-                  </div>
-                  <div className="relative flex justify-center text-xs">
-                    <span className="px-4 bg-black/50 text-white/40 font-mono backdrop-blur-sm">
-                      SECURE OAUTH 2.0
-                    </span>
-                  </div>
-                </div>
-
-                {/* Features */}
-                <div className="grid grid-cols-2 gap-4 pt-4">
-                  {[
-                    { label: "FREE FOREVER", icon: "✓" },
-                    { label: "NO CREDIT CARD", icon: "✓" },
-                    { label: "2MIN SETUP", icon: "✓" },
-                    { label: "INSTANT ACCESS", icon: "✓" },
-                  ].map((item, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.4 + i * 0.1 }}
-                      className="flex items-center justify-center gap-2 text-xs font-mono text-white/40"
-                    >
-                      <span className="text-white/60">{item.icon}</span>
-                      {item.label}
-                    </motion.div>
-                  ))}
-                </div>
-              </div>                           
+                    <span className="text-white/60">{item.icon}</span>
+                    {item.label}
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </motion.div>

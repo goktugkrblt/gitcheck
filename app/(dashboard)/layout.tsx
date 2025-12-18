@@ -1,8 +1,9 @@
 "use client";
 
-import { Code2, LayoutDashboard, User, Settings, ArrowLeft, RefreshCw } from "lucide-react";
+import { ArrowLeft, RefreshCw } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { UserMenu } from "@/components/user-menu/page";
 
 export default function DashboardLayout({
   children,
@@ -10,6 +11,19 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [refreshing, setRefreshing] = useState(false);
+  const [hasProfile, setHasProfile] = useState(false);
+
+  // Check if user has profile
+  useEffect(() => {
+    fetch('/api/profile')
+      .then(res => res.json())
+      .then(data => {
+        setHasProfile(!!data.profile);
+      })
+      .catch(() => {
+        setHasProfile(false);
+      });
+  }, []);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -62,23 +76,31 @@ export default function DashboardLayout({
 
             {/* Action Buttons */}
             <div className="flex items-center gap-3">
-              {/* Refresh Button */}
-              <button
-                onClick={handleRefresh}
-                disabled={refreshing}
-                className="flex cursor-pointer items-center gap-2 px-4 py-2 rounded-lg bg-[#050307] border border-[#131c26] text-[#919191] hover:text-[#e0e0e0] hover:border-[#333] transition-all duration-300 text-sm font-mono tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-                {refreshing ? 'REFRESHING...' : 'REFRESH'}
-              </button>
+              {/* Refresh & Back to Home - Only if hasProfile */}
+              {hasProfile && (
+                <>
+                  {/* Refresh Button */}
+                  <button
+                    onClick={handleRefresh}
+                    disabled={refreshing}
+                    className="flex cursor-pointer items-center gap-2 px-4 py-2 rounded-lg bg-[#050307] border border-[#131c26] text-[#919191] hover:text-[#e0e0e0] hover:border-[#333] transition-all duration-300 text-sm font-mono tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+                    {refreshing ? 'REFRESHING...' : 'REFRESH'}
+                  </button>
 
-              {/* Back to Home Button - Sadece Desktop */}
-              <Link href="/" className="hidden md:block">
-                <button className="flex cursor-pointer items-center gap-2 px-4 py-2 rounded-lg bg-[#050307] border border-[#131c26] text-[#919191] hover:text-[#e0e0e0] hover:border-[#333] transition-all duration-300 text-sm font-mono tracking-wider">
-                  <ArrowLeft className="h-4 w-4" />
-                  BACK TO HOME
-                </button>
-              </Link>
+                  {/* Back to Home Button - Desktop Only */}
+                  <Link href="/" className="hidden md:block">
+                    <button className="flex cursor-pointer items-center gap-2 px-4 py-2 rounded-lg bg-[#050307] border border-[#131c26] text-[#919191] hover:text-[#e0e0e0] hover:border-[#333] transition-all duration-300 text-sm font-mono tracking-wider">
+                      <ArrowLeft className="h-4 w-4" />
+                      BACK TO HOME
+                    </button>
+                  </Link>
+                </>
+              )}
+
+              {/* User Menu - Always visible */}
+              <UserMenu />
             </div>
           </div>
         </div>

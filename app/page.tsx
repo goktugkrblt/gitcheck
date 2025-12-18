@@ -1,7 +1,9 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
+import { LogIn, LogOut, User } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
+import { UserMenu } from "@/components/user-menu/page";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Trophy, Star } from "lucide-react";
@@ -87,12 +89,16 @@ export default function HomePage() {
       });
     };
     
+    
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [isMobile, prefersReducedMotion]);
 
   return (
     <div ref={containerRef} className="min-h-screen relative overflow-hidden">
+      <div className="absolute top-6 right-6 z-50">
+          <UserMenu />
+        </div>
       
       {/* ✨ ANIMATED BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none z-0">

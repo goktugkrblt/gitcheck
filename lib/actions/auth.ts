@@ -3,5 +3,6 @@
 import { signIn } from "@/auth";
 
 export async function handleSignIn() {
-  await signIn("github");
+  // ✅ HER ZAMAN HOMEPAGE
+  await signIn("github", { redirectTo: "/" });
 }
