@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { GitHubService } from "@/lib/github";
-import {
-  calculateEnhancedScore,
-  calculateAverageQuality,
-  calculatePercentile,
-} from "@/lib/scoring";
+import { calculateDeveloperScore } from "@/lib/scoring/developer-score";
+import { calculateAverageQuality } from "@/lib/scoring";
 
 export async function POST(req: NextRequest) {
   try {
@@ -42,7 +40,6 @@ export async function POST(req: NextRequest) {
 
     console.log('🚀 Starting GitHub analysis...');
     
-    // Check rate limit
     const rateLimit = await github.getRateLimitInfo();
     console.log(`⚡ Rate Limit: ${rateLimit.remaining}/${rateLimit.limit}`);
     
@@ -53,10 +50,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Get previous profile for cache
     const previousProfile = user.profiles[0];
     
-    // Always fetch fresh data
     console.log('📊 Fetching core GitHub data...');
     const userData = await github.getUserData(user.githubUsername);
     const repos = await github.getRepositories(user.githubUsername);
@@ -67,7 +62,6 @@ export async function POST(req: NextRequest) {
     const totalStars = await github.getTotalStars(repos);
     const totalForks = await github.getTotalForks(repos);
     
-    // Use cached data when possible
     console.log('💾 Checking cache...');
     const languages = await github.getLanguageStatsCached(
       repos,
@@ -96,35 +90,40 @@ export async function POST(req: NextRequest) {
     );
 
     const avgRepoQuality = calculateAverageQuality(repos);
-    
-    const enhancedMetrics = {
-      totalCommits: contributions.totalCommits,
-      totalRepos: repos.length,
-      totalStars,
-      totalForks,
-      avgRepoQuality,
-      languageCount: Object.keys(languages).length,
-      totalPRs: pullRequests.totalPRs,
-      mergedPRs: pullRequests.mergedPRs,
-      totalIssues: contributions.totalIssues,
-      totalReviews: contributions.totalReviews,
-      currentStreak: activity.currentStreak,
-      longestStreak: activity.longestStreak,
-      organizationsCount,
-      gistsCount,
-      followersCount: userData.followers,
-      accountAge,
-    };
 
-    const score = calculateEnhancedScore(enhancedMetrics);
-
-    const allProfiles = await prisma.profile.findMany({
-      select: { score: true },
+    // ✅ TEMPORARY: Use fallback score for initial save
+    const tempScoringResult = calculateDeveloperScore({
+      basicMetrics: {
+        totalCommits: contributions.totalCommits,
+        totalRepos: repos.length,
+        totalStars,
+        totalForks,
+        totalPRs: pullRequests.totalPRs,
+        mergedPRs: pullRequests.mergedPRs,
+        openPRs: pullRequests.openPRs,
+        totalIssuesOpened: contributions.totalIssues,
+        totalReviews: contributions.totalReviews,
+        currentStreak: activity.currentStreak,
+        longestStreak: activity.longestStreak,
+        averageCommitsPerDay: activity.averageCommitsPerDay,
+        weekendActivity: activity.weekendActivity,
+        followersCount: userData.followers,
+        followingCount: userData.following,
+        organizationsCount,
+        gistsCount,
+        accountAge,
+        totalContributions: contributions.contributionCalendar.totalContributions,
+        mostActiveDay: activity.mostActiveDay,
+        averageRepoSize: repos.length > 0 
+          ? Math.round(repos.reduce((sum, repo: any) => sum + (repo.size || 0), 0) / repos.length) 
+          : 0,
+      },
     });
-    const percentile = calculatePercentile(
-      score,
-      allProfiles.map(p => p.score)
-    );
+
+    const tempScore = tempScoringResult.overallScore;
+    const tempPercentile = tempScoringResult.percentile;
+
+    console.log(`🎯 Temporary Score: ${tempScore.toFixed(2)} (${tempPercentile}th percentile)`);
 
     const topReposData = repos
       .filter(r => !r.fork)
@@ -164,8 +163,8 @@ export async function POST(req: NextRequest) {
         userId: user.id 
       },
       update: {
-        score,
-        percentile,
+        score: tempScore,
+        percentile: tempPercentile,
         totalCommits: contributions.totalCommits,
         totalRepos: repos.length,
         totalStars,
@@ -209,7 +208,6 @@ export async function POST(req: NextRequest) {
         topRepos: topReposData,
         contributions: contributionsData,
         
-        // Cache metadata
         cachedRepoCount: repos.length,
         lastLanguageScan: now,
         lastFrameworkScan: now,
@@ -220,8 +218,8 @@ export async function POST(req: NextRequest) {
       create: {
         userId: user.id,
         
-        score,
-        percentile,
+        score: tempScore,
+        percentile: tempPercentile,
         totalCommits: contributions.totalCommits,
         totalRepos: repos.length,
         totalStars,
@@ -265,7 +263,6 @@ export async function POST(req: NextRequest) {
         topRepos: topReposData,
         contributions: contributionsData,
         
-        // Cache metadata
         cachedRepoCount: repos.length,
         lastLanguageScan: now,
         lastFrameworkScan: now,
@@ -278,6 +275,99 @@ export async function POST(req: NextRequest) {
         userId: user.id,
       },
     });
+
+    // ✅ NEW: Clear old PRO cache before fresh analysis
+    console.log('🗑️  Clearing old PRO cache for fresh analysis...');
+    await prisma.profile.update({
+      where: { userId: user.id },
+      data: {
+        codeQualityCache: Prisma.JsonNull,
+        repoHealthCache: Prisma.JsonNull,
+        testCoverageCache: Prisma.JsonNull,
+        cicdAnalysisCache: Prisma.JsonNull,
+        lastCodeQualityScan: null,
+        lastRepoHealthScan: null,
+        lastTestCoverageScan: null,
+        lastCicdAnalysisScan: null,
+      },
+    });
+
+    // ✅ WAIT for PRO analysis and update score
+    console.log('🎯 Running PRO analysis for precision scoring...');
+    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    
+    try {
+      const proResponse = await fetch(`${baseUrl}/api/pro/analyze-all`, {
+        method: 'GET',
+        headers: {
+          'Cookie': req.headers.get('cookie') || '',
+        },
+      });
+      
+      if (proResponse.ok) {
+        console.log('✅ PRO analysis completed');
+        
+        // Wait a moment for database write
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Re-fetch profile with PRO cache
+        const updatedProfile = await prisma.profile.findUnique({
+          where: { userId: user.id },
+        });
+        
+        if (updatedProfile?.codeQualityCache) {
+          const analysisData = typeof updatedProfile.codeQualityCache === 'string' 
+            ? JSON.parse(updatedProfile.codeQualityCache) 
+            : updatedProfile.codeQualityCache;
+          
+          // Recalculate with PRO data
+          const finalScoring = calculateDeveloperScore({
+            readmeQuality: analysisData.readmeQuality,
+            repoHealth: analysisData.repoHealth,
+            devPatterns: analysisData.devPatterns,
+            careerInsights: analysisData.careerInsights,
+            basicMetrics: {
+              totalCommits: contributions.totalCommits,
+              totalRepos: repos.length,
+              totalStars,
+              totalForks,
+              totalPRs: pullRequests.totalPRs,
+              mergedPRs: pullRequests.mergedPRs,
+              openPRs: pullRequests.openPRs,
+              totalIssuesOpened: contributions.totalIssues,
+              totalReviews: contributions.totalReviews,
+              currentStreak: activity.currentStreak,
+              longestStreak: activity.longestStreak,
+              averageCommitsPerDay: activity.averageCommitsPerDay,
+              weekendActivity: activity.weekendActivity,
+              followersCount: userData.followers,
+              followingCount: userData.following,
+              organizationsCount,
+              gistsCount,
+              accountAge,
+              totalContributions: contributions.contributionCalendar.totalContributions,
+              mostActiveDay: activity.mostActiveDay,
+              averageRepoSize: repos.length > 0 
+                ? Math.round(repos.reduce((sum, repo: any) => sum + (repo.size || 0), 0) / repos.length) 
+                : 0,
+            },
+          });
+          
+          // Update with FINAL precision score
+          await prisma.profile.update({
+            where: { userId: user.id },
+            data: {
+              score: finalScoring.overallScore,
+              percentile: finalScoring.percentile,
+            },
+          });
+          
+          console.log(`🎯 Final Precision Score: ${finalScoring.overallScore.toFixed(2)} (${finalScoring.percentile}th percentile)`);
+        }
+      }
+    } catch (err: any) {
+      console.log('⚠️ PRO analysis failed (non-critical):', err.message);
+    }
 
     const finalRateLimit = await github.getRateLimitInfo();
     console.log(`✅ Analysis completed! Rate Limit: ${finalRateLimit.remaining}/${finalRateLimit.limit}`);

@@ -92,23 +92,38 @@ export async function GET() {
       hasCareer: !!analysisData.careerInsights,
     } : 'null');
 
-    const scoringResult = calculateDeveloperScore({
-      // PRO features (directly from root of analysisData)
-      readmeQuality: user.plan === 'PRO' && analysisData?.readmeQuality ? analysisData.readmeQuality : undefined,
-      repoHealth: user.plan === 'PRO' && analysisData?.repoHealth ? analysisData.repoHealth : undefined,
-      devPatterns: user.plan === 'PRO' && analysisData?.devPatterns ? analysisData.devPatterns : undefined,
-      careerInsights: user.plan === 'PRO' && analysisData?.careerInsights ? analysisData.careerInsights : undefined,
-      
-      // Basic metrics for fallback scoring
-      basicMetrics: {
-        totalCommits: profile.totalCommits || 0,
-        totalRepos: profile.totalRepos || 0,
-        totalStars: profile.totalStars || 0,
-        currentStreak: profile.currentStreak || 0,
-        followersCount: profile.followersCount || 0,
-        totalPRs: profile.totalPRs || 0,
-      },
-    });
+const scoringResult = calculateDeveloperScore({
+  // PRO features (cache varsa kullan, plan kontrolü YOK)
+  readmeQuality: analysisData?.readmeQuality || undefined,
+  repoHealth: analysisData?.repoHealth || undefined,
+  devPatterns: analysisData?.devPatterns || undefined,
+  careerInsights: analysisData?.careerInsights || undefined,
+  
+  // Basic metrics for fallback scoring
+  basicMetrics: {
+    totalCommits: profile.totalCommits || 0,
+    totalRepos: profile.totalRepos || 0,
+    totalStars: profile.totalStars || 0,
+    totalForks: profile.totalForks || 0,
+    totalPRs: profile.totalPRs || 0,
+    mergedPRs: profile.mergedPRs || 0,
+    openPRs: profile.openPRs || 0,
+    totalIssuesOpened: profile.totalIssuesOpened || 0,
+    totalReviews: profile.totalReviews || 0,
+    currentStreak: profile.currentStreak || 0,
+    longestStreak: profile.longestStreak || 0,
+    averageCommitsPerDay: profile.averageCommitsPerDay || 0,
+    weekendActivity: profile.weekendActivity || 0,
+    followersCount: profile.followersCount || 0,
+    followingCount: profile.followingCount || 0,
+    organizationsCount: profile.organizationsCount || 0,
+    gistsCount: profile.gistsCount || 0,
+    accountAge: profile.accountAge || 0,
+    totalContributions: profile.totalContributions || 0,
+    mostActiveDay: profile.mostActiveDay || 'Monday',
+    averageRepoSize: profile.averageRepoSize || 0,
+  },
+});
 
     console.log('✅ Score calculated:', {
       score: scoringResult.overallScore,

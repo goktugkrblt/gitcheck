@@ -58,7 +58,7 @@ const leaderboard = profiles.map((profile, index) => ({
     });
 
     // Set cache headers
-    response.headers.set('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
+    response.headers.set('Cache-Control', 'no-store, max-age=0');
 
     return response;
 
