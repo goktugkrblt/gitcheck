@@ -505,39 +505,31 @@ export default function HomePage() {
           </ScrollRevealSection>
 
           {/* Features Section */}
-          <ScrollRevealSection isMobile={isMobile}>
-            <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-10">
-              Core Features
-            </h2>
+         <div className="mb-12 md:mb-20 pt-12 md:pt-20 border-t border-white/[0.06]">
+  <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-10">
+    Core Features
+  </h2>
 
-            <div className="grid md:grid-cols-3 gap-4 md:gap-6">
-              {[
-                { title: "Code Analysis", desc: "Repository quality assessment and documentation scoring" },
-                { title: "Live Tracking", desc: "Real-time metrics with contribution pattern analysis" },
-                { title: "Skill Mapping", desc: "Technical stack breakdown and expertise visualization" },
-              ].map((feature, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: isMobile ? 0 : 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ 
-                    delay: isMobile ? 0 : i * 0.15, 
-                    duration: isMobile ? 0 : 0.6,
-                    type: "spring"
-                  }}
-                  whileHover={!isMobile ? { 
-                    y: -5,
-                    transition: { duration: 0.2 }
-                  } : {}}
-                  className="p-4 md:p-6 rounded-xl border border-white/[0.08] bg-white/[0.02] hover:border-white/15 transition-all duration-200"
-                >
-                  <h3 className="text-sm md:text-base font-bold text-white/90 mb-2 md:mb-3">{feature.title}</h3>
-                  <p className="text-xs md:text-sm text-white/60 leading-relaxed">{feature.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </ScrollRevealSection>
+  <div className="grid md:grid-cols-3 gap-4 md:gap-6">
+    {[
+      { title: "Code Analysis", desc: "Repository quality assessment and documentation scoring" },
+      { title: "Live Tracking", desc: "Real-time metrics with contribution pattern analysis" },
+      { title: "Skill Mapping", desc: "Technical stack breakdown and expertise visualization" },
+    ].map((feature, i) => (
+      <motion.div
+        key={i}
+        whileHover={!isMobile ? { 
+          y: -5,
+          transition: { duration: 0.2 }
+        } : {}}
+        className="p-4 md:p-6 rounded-xl border border-white/[0.08] bg-white/[0.02] hover:border-white/15 transition-all duration-200"
+      >
+        <h3 className="text-sm md:text-base font-bold text-white/90 mb-2 md:mb-3">{feature.title}</h3>
+        <p className="text-xs md:text-sm text-white/60 leading-relaxed">{feature.desc}</p>
+      </motion.div>
+    ))}
+  </div>
+</div>
 
           {/* PRO Section */}
           <ScrollRevealSection delay={0.2} isMobile={isMobile}>
