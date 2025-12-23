@@ -96,9 +96,6 @@ export default function HomePage() {
 
   return (
     <div ref={containerRef} className="min-h-screen relative overflow-hidden">
-      <div className="absolute top-6 right-6 z-50">
-          <UserMenu />
-        </div>
       
       {/* ✨ ANIMATED BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -268,217 +265,220 @@ export default function HomePage() {
       {/* MAIN CONTENT */}
       <div className="relative z-10">
         
-        {/* HEADER SECTION */}
-        <div className="max-w-4xl mx-auto px-6 py-8 md:py-12">
-          <motion.header
-            className="flex flex-col lg:flex-row gap-8 items-end justify-between mb-12 md:mb-20 md:items-start md:pl-[40px]"
-            style={!isMobile && !prefersReducedMotion ? { 
-              y: headerY,
-              opacity: headerOpacity,
-              scale: headerScale
-            } : {}}
-          >
-            {/* LEFT SIDE - MAIN CONTENT */}
-            <div className="flex flex-col justify-center flex-1 max-w-2xl">
-              {/* Logo */}
-              <motion.div
-                initial={{ opacity: 0, scale: isMobile ? 1 : 0.5, rotate: isMobile ? 0 : -180 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                transition={{ duration: isMobile ? 0 : 1, type: "spring" }}
-              >
-                <Link href="/" className="inline-flex items-center gap-2 group mb-8 md:mb-12">
-                  <motion.div
-                    whileHover={!isMobile ? { 
-                      rotate: [0, -10, 10, -10, 10, 0],
-                      scale: 1.3,
-                      y: [0, -5, 0, -3, 0]
-                    } : {}}
-                    transition={{ duration: 0.6 }}
-                    className="relative"
-                  >
-                    <svg fill="#ffffff" width={40} height={40} xmlns="http://www.w3.org/2000/svg" id="Layer_1" viewBox="0 0 245 245">
-                      <motion.path
-                        d="M185.8,232.75c9.45-10.21,14.43-20.71,10.61-35.01-3.06-11.43-16.92-24.07-17.7-32.75-.63-6.99,4.82-11.41,11.39-10.36,3.39.54,7.83,6.36,10.94,1.42,2.68-4.25-2.55-8.92-6.08-10.4-13.81-5.82-28.46,6.66-25.94,21.63,1.6,9.54,10.16,16.72,14.56,24.99,3.82,7.17,7.21,17.59.1,23.85l-.74-.57c-3.08-19.66-14.33-38.23-26.34-53.5-1.01-1.28-7.78-8.71-7.78-9.33,0-.46.35-.74.67-.99,1.18-.91,4.66-2.18,6.32-3.16,5.5-3.27,9.63-7.39,13.21-12.74,14.05,2.14,27.19-7.72,29.33-22.13,2.18-14.68-6.37-25.09-20.84-24.72-.71.02-1.89.65-2.27.03-4.48-29.93-33.71-44.47-61.11-38.79-17.89,3.71-32.53,17.11-37.76,35.12-1.66.48-3.30.38-5.04.82-5.22,1.33-9.45,6.28-10.86,11.48-2.74,10.11,1.79,21.25,11.35,25.29-.48,13.41,9.63,23,20.87,27.66.05.29.11.67-.03.91-.31.54-9.44,5.46-10.74,6.1-2.12,1.05-7.03,3.62-9.15,2.96-4.11-1.28-13.8-13.56-14.39-17.86-.35-2.55.49-5.15.62-7.63.17-3.33.54-12.69-4.38-12.16-2.65.28-2.93,3.72-3.57,5.68-.09.29-.12.93-.64.66-.43-.22-3.10-4.45-3.89-5.33-9.26-10.38-17.82-.52-16.66,10.78.72,6.98,6.47,13.72,12.06,17.24.79.5,2.74,1.1,3.15,1.51.69.68,3.03,6.49,3.82,7.97,3.61,6.79,10.03,15.86,17.07,19.08,5.63,2.58,11.55.6,17.02-1.51,1.22-.47,6.10-3.05,6.71-3.11.42-.04.49.17.75.45-6.25,17.06-10.31,35.22-8.09,53.58l2.76,14.82c-.36.56-.55.08-.96-.01-8.95-2.11-21.45-9.12-29.2-14.29C-4.7,190.53-17.92,106.22,25.83,48.42c49.53-65.43,145.86-64.24,194.47,1.67,42.04,57.01,29.09,139.38-28.69,179.14-.63.43-5.56,3.75-5.81,3.52Z"
-                        initial={{ pathLength: isMobile ? 1 : 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ duration: isMobile ? 0 : 2, ease: "easeInOut" }}
-                      />
-                    </svg>
-                    <motion.span
-                      className="absolute -top-8 left-1/2 -translate-x-1/2 text-2xl opacity-0 group-hover:opacity-100"
-                      initial={{ y: 0, opacity: 0 }}
-                      whileHover={{ y: -10, opacity: 1 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      🐵
-                    </motion.span>
-                  </motion.div>
-                </Link>
-              </motion.div>
-
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, y: isMobile ? 0 : -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: isMobile ? 0 : 0.3, duration: isMobile ? 0 : 0.6 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-6 md:mb-8 backdrop-blur-sm w-fit"
-              >
-                <Sparkles className="h-3.5 w-3.5 text-white/60" />
-                <span className="text-xs text-white/60 font-mono uppercase tracking-widest">
-                  Developer Analytics
-                </span>
-              </motion.div>
-
-              {/* Title */}
-              <motion.h1
-                initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: isMobile ? 0 : 0.5, duration: isMobile ? 0 : 0.8 }}
-                className="text-5xl md:text-6xl lg:text-8xl font-bold text-white mb-4 md:mb-6"
-              >
-                GitHub
-                <br />
-                Checked
-              </motion.h1>
-
-              {/* Terminal */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: isMobile ? 0 : 0.65 }}
-                className="text-sm text-white/40 font-mono mb-4 md:mb-6"
-              >
-                <span className="text-white/30">$</span> analyze --profile --repos --activity
-              </motion.div>
-
-              {/* Description */}
-              <motion.p
-                initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: isMobile ? 0 : 0.7, duration: isMobile ? 0 : 0.8 }}
-                className="text-base md:text-lg text-white/60 mb-8 md:mb-10 max-w-xl leading-relaxed"
-              >
-                Quantifiable metrics from your GitHub activity.
-                <br className="hidden lg:block" />
-                Advanced analysis for developers who care about data.
-              </motion.p>
-
-              {/* CTA */}
-              <motion.div
-                initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: isMobile ? 0 : 0.9, duration: isMobile ? 0 : 0.8 }}
-                className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
-              >
-                {isAuthenticated ? (
-                  <Link href="/dashboard" className="w-full sm:w-auto">
-                    <motion.div 
-                      whileHover={!isMobile ? { scale: 1.05 } : {}} 
-                      whileTap={{ scale: 0.95 }}
-                      transition={{ duration: 0.2 }}
-                      className="relative group w-full sm:w-auto"
-                    >
-                      <motion.div
-                        className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
-                        animate={!isMobile ? { opacity: [0.5, 0.8, 0.5] } : {}}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      />
-                      <Button className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto overflow-hidden">
-                        <motion.div
-                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                          animate={!isMobile ? { x: ["-200%", "200%"] } : {}}
-                          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                        />
-                        <span className="relative z-10 flex items-center justify-center gap-2">
-                          View Dashboard
-                          <motion.span
-                            animate={!isMobile ? { x: [0, 5, 0] } : {}}
-                            transition={{ duration: 1.5, repeat: Infinity }}
-                          >
-                            →
-                          </motion.span>
-                        </span>
-                      </Button>
-                    </motion.div>
-                  </Link>
-                ) : (
-                  <Link href="/login" className="w-full sm:w-auto">
-                    <motion.div 
-                      whileHover={!isMobile ? { scale: 1.05 } : {}} 
-                      whileTap={{ scale: 0.95 }}
-                      transition={{ duration: 0.2 }}
-                      className="relative group w-full sm:w-auto"
-                    >
-                      <motion.div
-                        className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
-                        animate={!isMobile ? { opacity: [0.5, 0.8, 0.5] } : {}}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      />
-                      <Button 
-                        disabled={isLoading}
-                        className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto disabled:opacity-50 overflow-hidden"
-                      >
-                        <motion.div
-                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                          animate={!isMobile ? { x: ["-200%", "200%"] } : {}}
-                          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                        />
-                        <span className="relative z-10 flex items-center justify-center gap-2">
-                          {isLoading ? "Loading..." : "Analyze Profile"}
-                          <motion.span
-                            animate={!isMobile ? { x: [0, 5, 0] } : {}}
-                            transition={{ duration: 1.5, repeat: Infinity }}
-                          >
-                            →
-                          </motion.span>
-                        </span>
-                      </Button>
-                    </motion.div>
-                  </Link>
-                )}
-                
-                <motion.span 
-                  className="text-sm text-white/40 font-mono"
-                  animate={!isMobile ? { opacity: [0.4, 0.7, 0.4] } : {}}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  {profileCount} analyzed
-                </motion.span>
-              </motion.div>
-            </div>
-
-            {/* RIGHT SIDE - LEADERBOARD (DESKTOP ONLY) */}
-            <motion.div
-              initial={{ opacity: 0, x: isMobile ? 0 : 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: isMobile ? 0 : 1.2, duration: isMobile ? 0 : 0.8 }}
-              className="hidden lg:block w-[260px] flex-shrink-0"
-            >
-              <LeaderboardCard 
-                profiles={leaderboard}
-                count={leaderboardCount}
-                loading={leaderboardLoading}
-                isMobile={isMobile} 
-              />
-            </motion.div>
-          </motion.header>
-
-          {/* MOBILE LEADERBOARD */}
-          <motion.div
-            initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: isMobile ? 0 : 1, duration: isMobile ? 0 : 0.8 }}
-            className="lg:hidden mb-12"
-          >
-            <LeaderboardCard 
-              profiles={leaderboard}
-              count={leaderboardCount}
-              loading={leaderboardLoading}
-              isMobile={isMobile} 
+      {/* HEADER SECTION */}
+<div className="max-w-5xl mx-auto px-6 py-8 md:py-12">
+  
+  {/* ✅ TOP BAR: Logo (sol) + UserMenu (sağ) */}
+  <div className="flex items-center justify-between mb-12 md:mb-20">
+    {/* Logo */}
+    <motion.div
+      initial={{ opacity: 0, scale: isMobile ? 1 : 0.5, rotate: isMobile ? 0 : -180 }}
+      animate={{ opacity: 1, scale: 1, rotate: 0 }}
+      transition={{ duration: isMobile ? 0 : 1, type: "spring" }}
+    >
+      <Link href="/" className="inline-flex items-center gap-2 group">
+        <motion.div
+          whileHover={!isMobile ? { 
+            rotate: [0, -10, 10, -10, 10, 0],
+            scale: 1.3,
+            y: [0, -5, 0, -3, 0]
+          } : {}}
+          transition={{ duration: 0.6 }}
+          className="relative"
+        >
+          <svg fill="#ffffff" width={40} height={40} xmlns="http://www.w3.org/2000/svg" id="Layer_1" viewBox="0 0 245 245">
+            <motion.path
+              d="M185.8,232.75c9.45-10.21,14.43-20.71,10.61-35.01-3.06-11.43-16.92-24.07-17.7-32.75-.63-6.99,4.82-11.41,11.39-10.36,3.39.54,7.83,6.36,10.94,1.42,2.68-4.25-2.55-8.92-6.08-10.4-13.81-5.82-28.46,6.66-25.94,21.63,1.6,9.54,10.16,16.72,14.56,24.99,3.82,7.17,7.21,17.59.1,23.85l-.74-.57c-3.08-19.66-14.33-38.23-26.34-53.5-1.01-1.28-7.78-8.71-7.78-9.33,0-.46.35-.74.67-.99,1.18-.91,4.66-2.18,6.32-3.16,5.5-3.27,9.63-7.39,13.21-12.74,14.05,2.14,27.19-7.72,29.33-22.13,2.18-14.68-6.37-25.09-20.84-24.72-.71.02-1.89.65-2.27.03-4.48-29.93-33.71-44.47-61.11-38.79-17.89,3.71-32.53,17.11-37.76,35.12-1.66.48-3.30.38-5.04.82-5.22,1.33-9.45,6.28-10.86,11.48-2.74,10.11,1.79,21.25,11.35,25.29-.48,13.41,9.63,23,20.87,27.66.05.29.11.67-.03.91-.31.54-9.44,5.46-10.74,6.1-2.12,1.05-7.03,3.62-9.15,2.96-4.11-1.28-13.8-13.56-14.39-17.86-.35-2.55.49-5.15.62-7.63.17-3.33.54-12.69-4.38-12.16-2.65.28-2.93,3.72-3.57,5.68-.09.29-.12.93-.64.66-.43-.22-3.10-4.45-3.89-5.33-9.26-10.38-17.82-.52-16.66,10.78.72,6.98,6.47,13.72,12.06,17.24.79.5,2.74,1.1,3.15,1.51.69.68,3.03,6.49,3.82,7.97,3.61,6.79,10.03,15.86,17.07,19.08,5.63,2.58,11.55.6,17.02-1.51,1.22-.47,6.10-3.05,6.71-3.11.42-.04.49.17.75.45-6.25,17.06-10.31,35.22-8.09,53.58l2.76,14.82c-.36.56-.55.08-.96-.01-8.95-2.11-21.45-9.12-29.2-14.29C-4.7,190.53-17.92,106.22,25.83,48.42c49.53-65.43,145.86-64.24,194.47,1.67,42.04,57.01,29.09,139.38-28.69,179.14-.63.43-5.56,3.75-5.81,3.52Z"
+              initial={{ pathLength: isMobile ? 1 : 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: isMobile ? 0 : 2, ease: "easeInOut" }}
             />
-          </motion.div>
-        </div>
+          </svg>
+          <motion.span
+            className="absolute -top-8 left-1/2 -translate-x-1/2 text-2xl opacity-0 group-hover:opacity-100"
+            initial={{ y: 0, opacity: 0 }}
+            whileHover={{ y: -10, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            🐵
+          </motion.span>
+        </motion.div>
+      </Link>
+    </motion.div>
 
+    {/* UserMenu */}
+    <UserMenu />
+  </div>
+
+  {/* ✅ CONTENT: Hero + Leaderboard - ortada, üstten hizalı */}
+  <div className="flex flex-col lg:flex-row gap-8 items-start justify-between">
+    
+    {/* Hero Content */}
+    <motion.div
+      className="flex-1 max-w-2xl"
+      style={!isMobile && !prefersReducedMotion ? { 
+        y: headerY,
+        opacity: headerOpacity,
+        scale: headerScale
+      } : {}}
+    >
+      {/* Badge */}
+      <motion.div
+        initial={{ opacity: 0, y: isMobile ? 0 : -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: isMobile ? 0 : 0.3, duration: isMobile ? 0 : 0.6 }}
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-6 md:mb-8 backdrop-blur-sm w-fit"
+      >
+        <Sparkles className="h-3.5 w-3.5 text-white/60" />
+        <span className="text-xs text-white/60 font-mono uppercase tracking-widest">
+          Developer Analytics
+        </span>
+      </motion.div>
+
+      {/* Title */}
+      <motion.h1
+        initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: isMobile ? 0 : 0.5, duration: isMobile ? 0 : 0.8 }}
+        className="text-5xl md:text-6xl lg:text-8xl font-bold text-white mb-4 md:mb-6"
+      >
+        GitHub
+        <br />
+        Checked
+      </motion.h1>
+
+      {/* Terminal */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: isMobile ? 0 : 0.65 }}
+        className="text-sm text-white/40 font-mono mb-4 md:mb-6"
+      >
+        <span className="text-white/30">$</span> analyze --profile --repos --activity
+      </motion.div>
+
+      {/* Description */}
+      <motion.p
+        initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: isMobile ? 0 : 0.7, duration: isMobile ? 0 : 0.8 }}
+        className="text-base md:text-lg text-white/60 mb-8 md:mb-10 max-w-xl leading-relaxed"
+      >
+        Quantifiable metrics from your GitHub activity.
+        <br className="hidden lg:block" />
+        Advanced analysis for developers who care about data.
+      </motion.p>
+
+      {/* CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: isMobile ? 0 : 0.9, duration: isMobile ? 0 : 0.8 }}
+        className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
+      >
+        {isAuthenticated ? (
+          <Link href="/dashboard" className="w-full sm:w-auto">
+            <motion.div 
+              whileHover={!isMobile ? { scale: 1.05 } : {}} 
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="relative group w-full sm:w-auto"
+            >
+              <motion.div
+                className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
+                animate={!isMobile ? { opacity: [0.5, 0.8, 0.5] } : {}}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              <Button className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto overflow-hidden">
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                  animate={!isMobile ? { x: ["-200%", "200%"] } : {}}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                />
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  View Dashboard
+                  <motion.span
+                    animate={!isMobile ? { x: [0, 5, 0] } : {}}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    →
+                  </motion.span>
+                </span>
+              </Button>
+            </motion.div>
+          </Link>
+        ) : (
+          <Link href="/login" className="w-full sm:w-auto">
+            <motion.div 
+              whileHover={!isMobile ? { scale: 1.05 } : {}} 
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+              className="relative group w-full sm:w-auto"
+            >
+              <motion.div
+                className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
+                animate={!isMobile ? { opacity: [0.5, 0.8, 0.5] } : {}}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              <Button 
+                disabled={isLoading}
+                className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto disabled:opacity-50 overflow-hidden"
+              >
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                  animate={!isMobile ? { x: ["-200%", "200%"] } : {}}
+                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                />
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  {isLoading ? "Loading..." : "Analyze Profile"}
+                  <motion.span
+                    animate={!isMobile ? { x: [0, 5, 0] } : {}}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    →
+                  </motion.span>
+                </span>
+              </Button>
+            </motion.div>
+          </Link>
+        )}
+        
+        <motion.span 
+          className="text-sm text-white/40 font-mono"
+          animate={!isMobile ? { opacity: [0.4, 0.7, 0.4] } : {}}
+          transition={{ duration: 3, repeat: Infinity }}
+        >
+          {profileCount} analyzed
+        </motion.span>
+      </motion.div>
+    </motion.div>
+
+    {/* Leaderboard - Sağ (Desktop) */}
+    <motion.div
+      initial={{ opacity: 0, x: isMobile ? 0 : 50 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: isMobile ? 0 : 1.2, duration: isMobile ? 0 : 0.8 }}
+      className="hidden lg:block w-[260px] flex-shrink-0"
+    >
+      <LeaderboardCard 
+        profiles={leaderboard}
+        count={leaderboardCount}
+        loading={leaderboardLoading}
+        isMobile={isMobile} 
+      />
+    </motion.div>
+  </div>
+
+  {/* Mobile Leaderboard */}
+  <motion.div className="lg:hidden mb-12 mt-8">
+    <LeaderboardCard 
+      profiles={leaderboard}
+      count={leaderboardCount}
+      loading={leaderboardLoading}
+      isMobile={isMobile} 
+    />
+  </motion.div>
+</div>
         {/* REST OF CONTENT */}
         <main className="max-w-4xl mx-auto px-6">
           
@@ -505,31 +505,39 @@ export default function HomePage() {
           </ScrollRevealSection>
 
           {/* Features Section */}
-         <div className="mb-12 md:mb-20 pt-12 md:pt-20 border-t border-white/[0.06]">
-  <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-10">
-    Core Features
-  </h2>
+          <ScrollRevealSection isMobile={isMobile}>
+            <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-10">
+              Core Features
+            </h2>
 
-  <div className="grid md:grid-cols-3 gap-4 md:gap-6">
-    {[
-      { title: "Code Analysis", desc: "Repository quality assessment and documentation scoring" },
-      { title: "Live Tracking", desc: "Real-time metrics with contribution pattern analysis" },
-      { title: "Skill Mapping", desc: "Technical stack breakdown and expertise visualization" },
-    ].map((feature, i) => (
-      <motion.div
-        key={i}
-        whileHover={!isMobile ? { 
-          y: -5,
-          transition: { duration: 0.2 }
-        } : {}}
-        className="p-4 md:p-6 rounded-xl border border-white/[0.08] bg-white/[0.02] hover:border-white/15 transition-all duration-200"
-      >
-        <h3 className="text-sm md:text-base font-bold text-white/90 mb-2 md:mb-3">{feature.title}</h3>
-        <p className="text-xs md:text-sm text-white/60 leading-relaxed">{feature.desc}</p>
-      </motion.div>
-    ))}
-  </div>
-</div>
+            <div className="grid md:grid-cols-3 gap-4 md:gap-6">
+              {[
+                { title: "Code Analysis", desc: "Repository quality assessment and documentation scoring" },
+                { title: "Live Tracking", desc: "Real-time metrics with contribution pattern analysis" },
+                { title: "Skill Mapping", desc: "Technical stack breakdown and expertise visualization" },
+              ].map((feature, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: isMobile ? 0 : 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ 
+                    delay: isMobile ? 0 : i * 0.15, 
+                    duration: isMobile ? 0 : 0.6,
+                    type: "spring"
+                  }}
+                  whileHover={!isMobile ? { 
+                    y: -5,
+                    transition: { duration: 0.2 }
+                  } : {}}
+                  className="p-4 md:p-6 rounded-xl border border-white/[0.08] bg-white/[0.02] hover:border-white/15 transition-all duration-200"
+                >
+                  <h3 className="text-sm md:text-base font-bold text-white/90 mb-2 md:mb-3">{feature.title}</h3>
+                  <p className="text-xs md:text-sm text-white/60 leading-relaxed">{feature.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </ScrollRevealSection>
 
           {/* PRO Section */}
           <ScrollRevealSection delay={0.2} isMobile={isMobile}>
