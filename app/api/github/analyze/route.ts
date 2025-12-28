@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { GitHubService } from "@/lib/github";
+import { GitHubGraphQLService } from "@/lib/github-graphql"; // ✅ NEW
 import { calculateDeveloperScore } from "@/lib/scoring/developer-score";
 import { calculateAverageQuality } from "@/lib/scoring";
 
@@ -14,7 +15,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // ✅ YENİ: Query parametresini kontrol et
     const url = new URL(req.url);
     const skipPro = url.searchParams.get('skipPro') === 'true';
     
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
     }
 
     const github = new GitHubService(user.githubToken);
+    const githubGraphQL = new GitHubGraphQLService(user.githubToken); // ✅ NEW
 
     console.log('🚀 Starting GitHub analysis...');
     
@@ -61,8 +62,18 @@ export async function POST(req: NextRequest) {
     const previousProfile = user.profiles[0];
     
     console.log('📊 Fetching core GitHub data...');
+    
+    // ✅ OPTIMIZED: Use GraphQL for repos, languages, and frameworks (300 → 1 request)
+    const { repos, languages, frameworks } = await githubGraphQL.getRepositoriesWithDetails(
+      user.githubUsername,
+      100
+    );
+    
+    console.log(`🚀 GraphQL Optimization: Fetched ${repos.length} repos + languages + frameworks in 1 request!`);
+    console.log(`💰 Saved ~${repos.length * 2} API requests!`);
+    
+    // ✅ REST API for other data (still needed)
     const userData = await github.getUserData(user.githubUsername);
-    const repos = await github.getRepositories(user.githubUsername);
     const contributions = await github.getContributions(user.githubUsername);
     const pullRequests = await github.getPullRequestMetrics(user.githubUsername);
     const activity = await github.getActivityMetrics(contributions);
@@ -70,21 +81,7 @@ export async function POST(req: NextRequest) {
     const totalStars = await github.getTotalStars(repos);
     const totalForks = await github.getTotalForks(repos);
     
-    console.log('💾 Checking cache...');
-    const languages = await github.getLanguageStatsCached(
-      repos,
-      previousProfile?.languages,
-      previousProfile?.cachedRepoCount || 0,
-      previousProfile?.lastLanguageScan
-    );
-    
-    const frameworks = await github.detectFrameworksCached(
-      repos,
-      previousProfile?.frameworks,
-      previousProfile?.cachedRepoCount || 0,
-      previousProfile?.lastFrameworkScan
-    );
-    
+    // ✅ Get organizations (cached)
     const organizations = await github.getOrganizationsCached(
       user.githubUsername,
       previousProfile?.organizationsCount || 0,
@@ -99,7 +96,6 @@ export async function POST(req: NextRequest) {
 
     const avgRepoQuality = calculateAverageQuality(repos);
 
-    // ✅ SADECE PRO PUAN SİSTEMİ: Puan hesaplama yok!
     console.log('⚠️ No score calculation - waiting for PRO analysis');
 
     const topReposData = repos
@@ -140,7 +136,7 @@ export async function POST(req: NextRequest) {
         userId: user.id 
       },
       update: {
-        score: 0, // Prisma null kabul etmiyorsa 0
+        score: 0,
         percentile: 0,
         totalCommits: contributions.totalCommits,
         totalRepos: repos.length,
@@ -195,7 +191,7 @@ export async function POST(req: NextRequest) {
       create: {
         userId: user.id,
         
-        score: 0, // PRO analizi yapacak
+        score: 0,
         percentile: 0,
         totalCommits: contributions.totalCommits,
         totalRepos: repos.length,
@@ -253,11 +249,9 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // ✅ YENİ: skipPro true ise burada dur, PRO analizini atla
     if (skipPro) {
       console.log('✅ Public data saved. PRO analysis will run in background.');
       
-      // Clear old PRO cache
       await prisma.profile.update({
         where: { userId: user.id },
         data: {
@@ -286,7 +280,6 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // ✅ Normal flow: PRO analizini de yap
     console.log('🗑️  Clearing old PRO cache for fresh analysis...');
     await prisma.profile.update({
       where: { userId: user.id },
@@ -302,7 +295,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // ✅ WAIT for PRO analysis and update score
     console.log('🎯 Running PRO analysis for precision scoring...');
     const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
     
@@ -317,10 +309,8 @@ export async function POST(req: NextRequest) {
       if (proResponse.ok) {
         console.log('✅ PRO analysis completed');
         
-        // Wait a moment for database write
         await new Promise(resolve => setTimeout(resolve, 500));
         
-        // Re-fetch profile with PRO cache
         const updatedProfile = await prisma.profile.findUnique({
           where: { userId: user.id },
         });
@@ -330,7 +320,6 @@ export async function POST(req: NextRequest) {
             ? JSON.parse(updatedProfile.codeQualityCache) 
             : updatedProfile.codeQualityCache;
           
-          // Recalculate with PRO data
           const finalScoring = calculateDeveloperScore({
             readmeQuality: analysisData.readmeQuality,
             repoHealth: analysisData.repoHealth,
@@ -363,7 +352,6 @@ export async function POST(req: NextRequest) {
             },
           });
           
-          // Update with FINAL precision score
           await prisma.profile.update({
             where: { userId: user.id },
             data: {
