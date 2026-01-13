@@ -58,31 +58,24 @@ export async function POST(req: NextRequest) {
     }
 
     const previousProfile = user.profiles[0];
-    
+
     console.log('📊 Fetching core GitHub data...');
     const userData = await github.getUserData(user.githubUsername);
-    const repos = await github.getRepositories(user.githubUsername);
+
+    // 🚀 OPTIMIZATION: Use GraphQL to fetch repos + languages + frameworks in ONE request
+    // This replaces: getRepositories (1) + getLanguageStats (N) + detectFrameworks (4N)
+    // Savings: ~500 requests → 1 request for 100 repos
+    const { repos, languageStats: languages, frameworks } = await github.getRepositoriesWithDetailedData(
+      user.githubUsername,
+      100
+    );
+
     const contributions = await github.getContributions(user.githubUsername);
     const pullRequests = await github.getPullRequestMetrics(user.githubUsername);
     const activity = await github.getActivityMetrics(contributions);
     const gistsCount = await github.getGistsCount(user.githubUsername);
     const totalStars = await github.getTotalStars(repos);
     const totalForks = await github.getTotalForks(repos);
-    
-    console.log('💾 Checking cache...');
-    const languages = await github.getLanguageStatsCached(
-      repos,
-      previousProfile?.languages,
-      previousProfile?.cachedRepoCount || 0,
-      previousProfile?.lastLanguageScan
-    );
-    
-    const frameworks = await github.detectFrameworksCached(
-      repos,
-      previousProfile?.frameworks,
-      previousProfile?.cachedRepoCount || 0,
-      previousProfile?.lastFrameworkScan
-    );
     
     const organizations = await github.getOrganizationsCached(
       user.githubUsername,

@@ -67,7 +67,7 @@ export async function analyzeRepositoryHealth(
     // ==========================================
     // 1. MAINTENANCE SCORE (OPTIMIZED)
     // ==========================================
-    
+
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
@@ -97,7 +97,7 @@ export async function analyzeRepositoryHealth(
         commits.forEach((commit: any) => {
           const commitDate = new Date(commit.commit.author.date);
           recentCommits++;
-          
+
           const dayKey = commitDate.toISOString().split('T')[0];
           activeDays.add(dayKey);
 
