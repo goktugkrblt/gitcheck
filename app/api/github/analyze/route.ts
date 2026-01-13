@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { GitHubService } from "@/lib/github";
 import { calculateDeveloperScore } from "@/lib/scoring/developer-score";
-import { calculateAverageQuality } from "@/lib/scoring";
 
 export async function POST(req: NextRequest) {
   try {
@@ -96,8 +95,6 @@ export async function POST(req: NextRequest) {
     const accountAge = Math.floor(
       (Date.now() - new Date(userData.created_at).getTime()) / (1000 * 60 * 60 * 24 * 365)
     );
-
-    const avgRepoQuality = calculateAverageQuality(repos);
 
     // ✅ SADECE PRO PUAN SİSTEMİ: Puan hesaplama yok!
     console.log('⚠️ No score calculation - waiting for PRO analysis');

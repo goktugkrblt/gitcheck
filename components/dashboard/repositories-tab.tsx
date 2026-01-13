@@ -2,7 +2,6 @@
 
 import { Package, Star, GitFork, TrendingUp, Code, Calendar, Scale, Info } from "lucide-react";
 import { TopRepos } from "./top-repos";
-import { LicenseChart } from "./license-chart";
 
 interface RepositoriesTabProps {
   profileData: any;
@@ -226,7 +225,22 @@ export function RepositoriesTab({ profileData }: RepositoriesTabProps) {
               {licensedCount} of {topRepos.length} repositories have licenses
             </p>
           </div>
-          <LicenseChart licenses={licenseDistribution} />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Object.entries(licenseDistribution)
+              .sort(([, a]: any, [, b]: any) => b - a)
+              .map(([license, count]: any) => (
+                <div key={license} className="bg-white/5 rounded-lg p-4 border border-[#131c26]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Scale className="w-4 h-4 text-[#666]" />
+                    <span className="text-sm font-bold text-[#e0e0e0]">{license}</span>
+                  </div>
+                  <p className="text-2xl font-black text-[#e0e0e0]">{count}</p>
+                  <p className="text-xs text-[#666]">
+                    {topRepos.length > 0 ? Math.round((count / topRepos.length) * 100) : 0}% of repos
+                  </p>
+                </div>
+              ))}
+          </div>
         </div>
       )}
 
