@@ -150,6 +150,363 @@ export class GitHubService {
     }
   }
 
+  // ==========================================
+  // 🚀 OPTIMIZED GRAPHQL METHODS
+  // ==========================================
+
+  /**
+   * 🎯 MEGA OPTIMIZATION: Get all repository data in ONE GraphQL request
+   * Replaces: getLanguageStats (N requests) + detectFrameworks (4N requests)
+   * Savings: 500+ REST requests → 1 GraphQL request
+   */
+  async getRepositoriesWithDetailedData(username: string, limit: number = 100): Promise<{
+    repos: GitHubRepo[];
+    languageStats: LanguageStats;
+    frameworks: Record<string, number>;
+  }> {
+    try {
+      console.log(`🚀 [GraphQL] Fetching ${limit} repos with languages & frameworks in ONE request...`);
+
+      const query = `
+        query($username: String!, $limit: Int!) {
+          user(login: $username) {
+            repositories(
+              first: $limit
+              ownerAffiliations: OWNER
+              orderBy: { field: UPDATED_AT, direction: DESC }
+            ) {
+              totalCount
+              nodes {
+                name
+                description
+                url
+                homepageUrl
+                createdAt
+                updatedAt
+                pushedAt
+                isPrivate
+                isFork
+                isArchived
+                stargazerCount
+                forkCount
+                watchers { totalCount }
+                primaryLanguage { name }
+                licenseInfo { key name }
+                defaultBranchRef {
+                  name
+                  target {
+                    ... on Commit {
+                      history(first: 1) {
+                        totalCount
+                      }
+                    }
+                  }
+                }
+                languages(first: 10, orderBy: { field: SIZE, direction: DESC }) {
+                  totalSize
+                  edges {
+                    size
+                    node {
+                      name
+                      color
+                    }
+                  }
+                }
+                object(expression: "HEAD:") {
+                  ... on Tree {
+                    entries {
+                      name
+                      type
+                      object {
+                        ... on Blob {
+                          byteSize
+                          text
+                        }
+                      }
+                    }
+                  }
+                }
+                owner {
+                  login
+                }
+              }
+            }
+          }
+        }
+      `;
+
+      const result: any = await this.graphqlClient(query, {
+        username,
+        limit,
+      });
+
+      const repoNodes = result.user.repositories.nodes;
+
+      // Transform to GitHubRepo format (compatible with existing code)
+      const repos: GitHubRepo[] = repoNodes.map((node: any) => ({
+        id: node.name,
+        name: node.name,
+        full_name: `${username}/${node.name}`,
+        description: node.description,
+        html_url: node.url,
+        homepage: node.homepageUrl,
+        created_at: node.createdAt,
+        updated_at: node.updatedAt,
+        pushed_at: node.pushedAt,
+        size: 0, // Not available in GraphQL
+        stargazers_count: node.stargazerCount,
+        watchers_count: node.watchers.totalCount,
+        language: node.primaryLanguage?.name || null,
+        forks_count: node.forkCount,
+        open_issues_count: 0, // Not queried here
+        fork: node.isFork,
+        private: node.isPrivate,
+        archived: node.isArchived,
+        license: node.licenseInfo ? { key: node.licenseInfo.key, name: node.licenseInfo.name } : null,
+        owner: {
+          login: node.owner.login,
+          avatar_url: '',
+          url: '',
+        },
+        default_branch: node.defaultBranchRef?.name || 'main',
+        // Store additional GraphQL data for processing
+        _graphql: {
+          languages: node.languages,
+          files: node.object?.entries || [],
+          commitCount: node.defaultBranchRef?.target?.history?.totalCount || 0,
+        },
+      }));
+
+      // Calculate language stats from GraphQL data
+      const languageStats = this.calculateLanguageStatsFromGraphQL(repos);
+
+      // Detect frameworks from file structure
+      const frameworks = this.detectFrameworksFromGraphQL(repos);
+
+      console.log(`✅ [GraphQL] Fetched ${repos.length} repos with languages & frameworks`);
+      console.log(`   Languages detected: ${Object.keys(languageStats).length}`);
+      console.log(`   Frameworks detected: ${Object.keys(frameworks).length}`);
+
+      return { repos, languageStats, frameworks };
+
+    } catch (error) {
+      console.error('❌ [GraphQL] Error fetching detailed repo data:', error);
+      // Fallback to REST API
+      console.log('⚠️  Falling back to REST API...');
+      const repos = await this.getRepositories(username);
+      const languageStats = await this.getLanguageStats(repos);
+      const frameworks = await this.detectFrameworks(repos);
+      return { repos, languageStats, frameworks };
+    }
+  }
+
+  /**
+   * Calculate language stats from GraphQL data (no additional requests needed)
+   */
+  private calculateLanguageStatsFromGraphQL(repos: any[]): LanguageStats {
+    const languages: Record<string, number> = {};
+
+    repos.forEach((repo) => {
+      if (repo._graphql?.languages?.edges && !repo.fork) {
+        repo._graphql.languages.edges.forEach((edge: any) => {
+          const lang = edge.node.name;
+          const bytes = edge.size;
+          languages[lang] = (languages[lang] || 0) + bytes;
+        });
+      }
+    });
+
+    const total = Object.values(languages).reduce((a, b) => a + b, 0);
+    if (total === 0) return {};
+
+    const percentages: LanguageStats = {};
+    Object.entries(languages).forEach(([lang, bytes]) => {
+      percentages[lang] = Number(((bytes / total) * 100).toFixed(1));
+    });
+
+    return percentages;
+  }
+
+  /**
+   * Detect frameworks from GraphQL file tree data (no additional requests needed)
+   */
+  private detectFrameworksFromGraphQL(repos: any[]): Record<string, number> {
+    const frameworkCounts: Record<string, number> = {};
+
+    repos.forEach((repo) => {
+      if (repo.fork || !repo._graphql?.files) return;
+
+      const files = repo._graphql.files;
+      const repoFrameworks = new Set<string>();
+
+      files.forEach((file: any) => {
+        if (file.type !== 'blob') return;
+
+        const fileName = file.name.toLowerCase();
+        let fileContent = '';
+
+        try {
+          // Get file content if available and small enough
+          if (file.object?.text && file.object.byteSize < 50000) {
+            fileContent = file.object.text;
+          }
+        } catch (e) {
+          // Skip if can't read
+        }
+
+        // Detect frameworks based on filename and content
+        if (fileName === 'package.json' && fileContent) {
+          this.detectJSFrameworks(fileContent, repoFrameworks);
+        } else if (fileName === 'requirements.txt' && fileContent) {
+          this.detectPythonFrameworks(fileContent, repoFrameworks);
+        } else if (fileName === 'composer.json' && fileContent) {
+          this.detectPHPFrameworks(fileContent, repoFrameworks);
+        } else if (fileName === 'gemfile' && fileContent) {
+          this.detectRubyFrameworks(fileContent, repoFrameworks);
+        } else if ((fileName === 'pom.xml' || fileName === 'build.gradle') && fileContent) {
+          this.detectJavaFrameworks(fileContent, repoFrameworks);
+        } else if (fileName === 'go.mod' && fileContent) {
+          this.detectGoFrameworks(fileContent, repoFrameworks);
+        } else if (fileName === 'cargo.toml' && fileContent) {
+          repoFrameworks.add('Rust');
+        } else if (fileName === 'pubspec.yaml' && fileContent) {
+          repoFrameworks.add('Flutter');
+        }
+      });
+
+      // Count frameworks across repos
+      repoFrameworks.forEach(framework => {
+        frameworkCounts[framework] = (frameworkCounts[framework] || 0) + 1;
+      });
+    });
+
+    return frameworkCounts;
+  }
+
+  private detectJSFrameworks(content: string, frameworks: Set<string>) {
+    const deps = content.toLowerCase();
+    if (deps.includes('"react"') || deps.includes("'react'")) frameworks.add('React');
+    if (deps.includes('"next"') || deps.includes("'next'")) frameworks.add('Next.js');
+    if (deps.includes('"vue"') || deps.includes("'vue'")) frameworks.add('Vue.js');
+    if (deps.includes('"nuxt"')) frameworks.add('Nuxt.js');
+    if (deps.includes('"angular"')) frameworks.add('Angular');
+    if (deps.includes('"express"')) frameworks.add('Express.js');
+    if (deps.includes('"nestjs"')) frameworks.add('NestJS');
+    if (deps.includes('"svelte"')) frameworks.add('Svelte');
+    if (deps.includes('"gatsby"')) frameworks.add('Gatsby');
+    if (deps.includes('"electron"')) frameworks.add('Electron');
+    if (deps.includes('"react-native"')) frameworks.add('React Native');
+    if (deps.includes('"typescript"')) frameworks.add('TypeScript');
+  }
+
+  private detectPythonFrameworks(content: string, frameworks: Set<string>) {
+    const lines = content.toLowerCase().split('\n');
+    lines.forEach(line => {
+      if (line.includes('django')) frameworks.add('Django');
+      if (line.includes('flask')) frameworks.add('Flask');
+      if (line.includes('fastapi')) frameworks.add('FastAPI');
+      if (line.includes('tensorflow')) frameworks.add('TensorFlow');
+      if (line.includes('pytorch')) frameworks.add('PyTorch');
+      if (line.includes('pandas')) frameworks.add('Pandas');
+      if (line.includes('numpy')) frameworks.add('NumPy');
+      if (line.includes('scikit-learn')) frameworks.add('Scikit-learn');
+    });
+  }
+
+  private detectPHPFrameworks(content: string, frameworks: Set<string>) {
+    const deps = content.toLowerCase();
+    if (deps.includes('laravel')) frameworks.add('Laravel');
+    if (deps.includes('symfony')) frameworks.add('Symfony');
+    if (deps.includes('codeigniter')) frameworks.add('CodeIgniter');
+    if (deps.includes('wordpress')) frameworks.add('WordPress');
+  }
+
+  private detectRubyFrameworks(content: string, frameworks: Set<string>) {
+    const lines = content.toLowerCase().split('\n');
+    lines.forEach(line => {
+      if (line.includes('rails')) frameworks.add('Ruby on Rails');
+      if (line.includes('sinatra')) frameworks.add('Sinatra');
+      if (line.includes('hanami')) frameworks.add('Hanami');
+    });
+  }
+
+  private detectJavaFrameworks(content: string, frameworks: Set<string>) {
+    const deps = content.toLowerCase();
+    if (deps.includes('spring')) frameworks.add('Spring');
+    if (deps.includes('hibernate')) frameworks.add('Hibernate');
+    if (deps.includes('junit')) frameworks.add('JUnit');
+    if (deps.includes('maven')) frameworks.add('Maven');
+    if (deps.includes('gradle')) frameworks.add('Gradle');
+  }
+
+  private detectGoFrameworks(content: string, frameworks: Set<string>) {
+    const lines = content.toLowerCase().split('\n');
+    lines.forEach(line => {
+      if (line.includes('gin')) frameworks.add('Gin');
+      if (line.includes('echo')) frameworks.add('Echo');
+      if (line.includes('fiber')) frameworks.add('Fiber');
+      if (line.includes('beego')) frameworks.add('Beego');
+    });
+  }
+
+  /**
+   * 🚀 OPTIMIZATION: Fetch READMEs for multiple repos in ONE GraphQL request
+   * Replaces: N REST API calls → 1 GraphQL request
+   * Used by PRO feature: README Quality Analysis
+   */
+  async getRepositoriesWithReadmes(username: string, limit: number = 20): Promise<Array<{
+    name: string;
+    readme: string | null;
+    isFork: boolean;
+  }>> {
+    try {
+      console.log(`🚀 [GraphQL] Fetching ${limit} repos with READMEs in ONE request...`);
+
+      const query = `
+        query($username: String!, $limit: Int!) {
+          user(login: $username) {
+            repositories(
+              first: $limit
+              ownerAffiliations: OWNER
+              orderBy: { field: UPDATED_AT, direction: DESC }
+            ) {
+              nodes {
+                name
+                isFork
+                readme: object(expression: "HEAD:README.md") {
+                  ... on Blob {
+                    text
+                  }
+                }
+              }
+            }
+          }
+        }
+      `;
+
+      const result: any = await this.graphqlClient(query, {
+        username,
+        limit,
+      });
+
+      const repos = result.user.repositories.nodes.map((node: any) => ({
+        name: node.name,
+        readme: node.readme?.text || null,
+        isFork: node.isFork,
+      }));
+
+      console.log(`✅ [GraphQL] Fetched ${repos.length} repos with READMEs`);
+      console.log(`   READMEs found: ${repos.filter((r: any) => r.readme).length}`);
+
+      return repos;
+
+    } catch (error) {
+      console.error('❌ [GraphQL] Error fetching READMEs:', error);
+      // Return empty array, caller will handle fallback
+      return [];
+    }
+  }
+
   async getPullRequestMetrics(username: string): Promise<PullRequestMetrics> {
     try {
       const { data } = await this.octokit.search.issuesAndPullRequests({

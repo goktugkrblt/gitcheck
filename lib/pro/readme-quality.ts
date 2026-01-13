@@ -45,16 +45,16 @@ export async function analyzeReadmeQuality(
         'X-GitHub-Api-Version': '2022-11-28',
       },
     });
-    
+
     const repos = reposResponse.data;
-    
+
     let bestReadme = '';
     let bestReadmeRepo = '';
-    
+
     // Sadece ilk 20 repo'yu kontrol et
     for (const repo of repos.slice(0, 20)) {
       if (repo.fork) continue;
-      
+
       try {
         const readmeResponse = await octokit.request(
           'GET /repos/{owner}/{repo}/readme',
@@ -66,9 +66,9 @@ export async function analyzeReadmeQuality(
             },
           }
         );
-        
+
         const content = Buffer.from(readmeResponse.data.content, 'base64').toString('utf-8');
-        
+
         if (content.length > bestReadme.length) {
           bestReadme = content;
           bestReadmeRepo = repo.name;
