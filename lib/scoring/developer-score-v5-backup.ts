@@ -186,8 +186,8 @@ function calculatePureStatisticalScore(metrics: ScoringInput['basicMetrics']): S
   // Composite z-score (weighted by importance)
   const codeQualityZ = zReposPerYear * 0.60 + zAvgSize * 0.25 + zGists * 0.15;
 
-  // Convert z-score to percentile with PRECISION
-  const codeQualityPercentile = calculatePrecisePercentileFromZ(codeQualityZ);
+  // Convert z-score to percentile
+  const codeQualityPercentile = calculatePercentileFromZScore(codeQualityZ);
 
   // Convert percentile to score (0-100 scale)
   const codeQualityScore = codeQualityPercentile;
@@ -216,7 +216,7 @@ function calculatePureStatisticalScore(metrics: ScoringInput['basicMetrics']): S
   // Composite z-score (stars weighted most heavily)
   const impactZ = zStars * 0.50 + zForks * 0.25 + zWatchers * 0.15 + zFollowers * 0.10;
 
-  const impactPercentile = calculatePrecisePercentileFromZ(impactZ);
+  const impactPercentile = calculatePercentileFromZScore(impactZ);
   const impactScore = impactPercentile;
 
   console.log(`  ⭐ Impact: z=${impactZ.toFixed(2)}, p${impactPercentile}, score=${impactScore.toFixed(2)}`);
@@ -257,7 +257,7 @@ function calculatePureStatisticalScore(metrics: ScoringInput['basicMetrics']): S
     zLongestStreak * 0.20 +
     zContributionsPerYear * 0.15;
 
-  const consistencyPercentile = calculatePrecisePercentileFromZ(consistencyZ);
+  const consistencyPercentile = calculatePercentileFromZScore(consistencyZ);
   const consistencyScore = consistencyPercentile;
 
   console.log(`  🔥 Consistency: z=${consistencyZ.toFixed(2)}, p${consistencyPercentile}, score=${consistencyScore.toFixed(2)}`);
@@ -306,7 +306,7 @@ function calculatePureStatisticalScore(metrics: ScoringInput['basicMetrics']): S
     zOrgs * 0.15 +
     mergeRateBonus;
 
-  const collaborationPercentile = calculatePrecisePercentileFromZ(collaborationZ);
+  const collaborationPercentile = calculatePercentileFromZScore(collaborationZ);
   const collaborationScore = collaborationPercentile;
 
   console.log(`  🤝 Collaboration: z=${collaborationZ.toFixed(2)}, p${collaborationPercentile}, score=${collaborationScore.toFixed(2)}`);
@@ -322,13 +322,11 @@ function calculatePureStatisticalScore(metrics: ScoringInput['basicMetrics']): S
     consistencyZ * WEIGHTS.consistency +
     collaborationZ * WEIGHTS.collaboration;
 
-  // Convert composite z-score to percentile with PRECISION
-  // Use continuous percentile calculation
-  const rawPercentile = calculatePrecisePercentileFromZ(compositeZ);
+  // Convert composite z-score to percentile
+  const overallPercentile = calculatePercentileFromZScore(compositeZ);
 
-  // Final score = percentile (0-100 scale) with 0.01 precision
-  const overallScore = Math.round(rawPercentile * 100) / 100;
-  const overallPercentile = Math.round(rawPercentile);
+  // Final score = percentile (0-100 scale)
+  const overallScore = overallPercentile;
 
   console.log(`  🎯 Composite Z: ${compositeZ.toFixed(2)}`);
   console.log(`  🎯 Overall Percentile: ${overallPercentile}`);
@@ -510,104 +508,6 @@ function calculateHybridScore(input: ScoringInput): ScoringResult {
     experienceLevel,
     statistics: statResult.statistics,
   };
-}
-
-/**
- * ====================================
- * PRECISION PERCENTILE CALCULATION
- * ====================================
- */
-
-/**
- * Calculate precise percentile from z-score with cubic interpolation
- * Returns continuous percentile value (not rounded)
- */
-function calculatePrecisePercentileFromZ(zScore: number): number {
-  // Extended percentile map for precision
-  const percentileMap = [
-    { z: -3.50, p: 0.02 },
-    { z: -3.00, p: 0.13 },
-    { z: -2.58, p: 0.50 },
-    { z: -2.33, p: 1.00 },
-    { z: -2.05, p: 2.00 },
-    { z: -1.88, p: 3.00 },
-    { z: -1.75, p: 4.00 },
-    { z: -1.64, p: 5.00 },
-    { z: -1.55, p: 6.00 },
-    { z: -1.48, p: 7.00 },
-    { z: -1.41, p: 8.00 },
-    { z: -1.34, p: 9.00 },
-    { z: -1.28, p: 10.00 },
-    { z: -1.04, p: 15.00 },
-    { z: -0.84, p: 20.00 },
-    { z: -0.67, p: 25.00 },
-    { z: -0.52, p: 30.00 },
-    { z: -0.39, p: 35.00 },
-    { z: -0.25, p: 40.00 },
-    { z: -0.13, p: 45.00 },
-    { z: 0.00, p: 50.00 },
-    { z: 0.13, p: 55.00 },
-    { z: 0.25, p: 60.00 },
-    { z: 0.39, p: 65.00 },
-    { z: 0.52, p: 70.00 },
-    { z: 0.67, p: 75.00 },
-    { z: 0.84, p: 80.00 },
-    { z: 1.04, p: 85.00 },
-    { z: 1.28, p: 90.00 },
-    { z: 1.34, p: 91.00 },
-    { z: 1.41, p: 92.00 },
-    { z: 1.48, p: 93.00 },
-    { z: 1.55, p: 94.00 },
-    { z: 1.64, p: 95.00 },
-    { z: 1.75, p: 96.00 },
-    { z: 1.88, p: 97.00 },
-    { z: 2.05, p: 98.00 },
-    { z: 2.33, p: 99.00 },
-    { z: 2.41, p: 99.20 },
-    { z: 2.50, p: 99.38 },
-    { z: 2.58, p: 99.50 },
-    { z: 2.65, p: 99.60 },
-    { z: 2.75, p: 99.70 },
-    { z: 2.88, p: 99.80 },
-    { z: 3.09, p: 99.90 },
-    { z: 3.29, p: 99.95 },
-    { z: 3.72, p: 99.99 },
-  ];
-
-  // Find surrounding points for interpolation
-  for (let i = 0; i < percentileMap.length - 1; i++) {
-    const lower = percentileMap[i];
-    const upper = percentileMap[i + 1];
-
-    if (zScore >= lower.z && zScore <= upper.z) {
-      // Linear interpolation (simple and precise)
-      const ratio = (zScore - lower.z) / (upper.z - lower.z);
-
-      // Apply cubic easing for smooth transition at extremes
-      let easedRatio = ratio;
-      if (lower.p > 95 || upper.p > 95) {
-        // Cubic easing in high percentiles for precision
-        easedRatio = ratio * ratio * (3 - 2 * ratio);
-      }
-
-      return lower.p + easedRatio * (upper.p - lower.p);
-    }
-  }
-
-  // Handle extremes with continuous extrapolation
-  if (zScore < percentileMap[0].z) {
-    // Very low z-score
-    const diff = percentileMap[0].z - zScore;
-    return Math.max(0.01, percentileMap[0].p - diff * 0.02);
-  }
-
-  if (zScore > percentileMap[percentileMap.length - 1].z) {
-    // Very high z-score
-    const diff = zScore - percentileMap[percentileMap.length - 1].z;
-    return Math.min(99.99, percentileMap[percentileMap.length - 1].p + diff * 0.01);
-  }
-
-  return 50.00; // Fallback
 }
 
 /**

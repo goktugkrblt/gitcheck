@@ -15,14 +15,9 @@ export async function GET() {
     // Get real profiles with scores from database
     const profiles = await prisma.profile.findMany({
       where: {
-        score: { gt: 0 },     // ✅ Score > 0
-        isPublic: true,        // ✅ Only public
-        username: {
-          not: null,           // ✅ Not null
-        },
-        NOT: {
-          username: '',        // ✅ Not empty string
-        },
+        score: { gt: 0 },      // ✅ Score > 0
+        isPublic: true,         // ✅ Only public
+        username: { not: '' },  // ✅ Not empty (null check included)
       },
       select: {
         username: true,

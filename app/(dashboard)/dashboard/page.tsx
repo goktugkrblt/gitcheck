@@ -186,13 +186,23 @@ export default function DashboardPage() {
 
  const fetchProfile = async () => {
   try {
-    const res = await fetch("/api/profile");
+    // Get username from URL query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username');
+
+    if (!username) {
+      console.error('No username provided');
+      setInitialLoading(false);
+      return;
+    }
+
+    const res = await fetch(`/api/profile?username=${username}`);
     const data = await res.json();
     if (data.profile) {
       setProfileData(data.profile);
       setHasProfile(true);
       setUserPlan(data.user?.plan || "FREE");
-      
+
       // ✅ YENİ: Score > 0 ise analiz tamamlanmış
       if (!initialCheckDone) {
         if (data.profile.score > 0) {
@@ -317,26 +327,26 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-xl p-4"
+          className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl p-4"
         >
           <div className="flex items-center gap-4">
-            <div className="animate-spin w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full flex-shrink-0"></div>
+            <div className="animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full flex-shrink-0"></div>
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
                 <p className="text-white font-bold text-sm">
                   <Brain className="w-4 h-4 inline mr-2" />
-                  Analyzing your GitHub profile...
+                  Calculating your developer score...
                 </p>
-                <span className="text-purple-400 text-xs font-mono">{analysisProgress}%</span>
+                <span className="text-blue-400 text-xs font-mono">{analysisProgress}%</span>
               </div>
               <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
-                <div 
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-full transition-all duration-500"
+                <div
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 h-full transition-all duration-500"
                   style={{ width: `${analysisProgress}%` }}
                 />
               </div>
               <p className="text-white/40 text-xs mt-2">
-                Please wait, this may take 20-30 seconds. Your score will appear when ready.
+                Your basic stats are visible below. Score calculation may take 30-60 seconds.
               </p>
             </div>
           </div>
@@ -468,15 +478,15 @@ export default function DashboardPage() {
                   username={displayData.username}
                 />
               ) : (
-                <div className="bg-[#050307] rounded-xl border border-purple-500/30 p-6 md:p-8 flex items-center justify-center min-h-[200px]">
+                <div className="bg-[#050307] rounded-xl border border-blue-500/30 p-6 md:p-8 flex items-center justify-center min-h-[200px]">
                   <div className="text-center">
-                    <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <h3 className="text-lg font-bold text-white mb-2">Calculating Your Score</h3>
+                    <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <h3 className="text-lg font-bold text-white mb-2">Calculating Developer Score</h3>
                     <p className="text-white/40 text-sm">
-                      Analyzing {displayData.totalCommits} commits across {displayData.totalRepos} repositories...
+                      Analyzing your coding patterns and contribution quality...
                     </p>
-                    <p className="text-purple-400 text-xs mt-3 font-mono">
-                      {analysisProgress}% complete
+                    <p className="text-blue-400 text-xs mt-3 font-mono">
+                      This may take 30-60 seconds
                     </p>
                   </div>
                 </div>

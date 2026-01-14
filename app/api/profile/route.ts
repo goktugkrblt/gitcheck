@@ -1,34 +1,28 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { calculateDeveloperScore } from '@/lib/scoring/developer-score';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     console.log('🔍 Profile API called');
-    
-    const session = await auth();
-    
-    if (!session?.user?.email) {
-      console.log('❌ No session found');
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    // Get username from query parameter
+    const url = new URL(req.url);
+    const username = url.searchParams.get('username');
+
+    if (!username) {
+      console.log('❌ No username provided');
+      return NextResponse.json({ error: 'Username is required' }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        profiles: true,
-      },
+    console.log(`🔍 Fetching profile for username: ${username}`);
+
+    const profile = await prisma.profile.findUnique({
+      where: { username },
     });
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    const profile = user.profiles[0];
 
     if (!profile) {
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
@@ -85,9 +79,7 @@ export async function GET() {
 
     const response = {
       user: {
-        id: user.id,
-        email: user.email,
-        plan: user.plan,
+        plan: "FREE", // Default plan for non-authenticated users
       },
       profile: {
         ...profile,

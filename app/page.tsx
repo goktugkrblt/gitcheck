@@ -1,18 +1,12 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
-import { LogIn, LogOut, User } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
-import { UserMenu } from "@/components/user-menu/page";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Sparkles, Trophy, Star } from "lucide-react";
+import { Trophy } from "lucide-react";
 import { motion, useScroll, useTransform, useSpring, useInView, useReducedMotion } from "framer-motion";
+import { UsernameInput } from "@/components/username-input";
 
 export default function HomePage() {
-  const { data: session, status } = useSession();
-  const isAuthenticated = status === "authenticated";
-  const isLoading = status === "loading";
 
   const [profileCount, setProfileCount] = useState(0);
   const [mounted, setMounted] = useState(false);
@@ -268,8 +262,8 @@ export default function HomePage() {
       {/* HEADER SECTION */}
 <div className="max-w-5xl mx-auto px-6 py-8 md:py-12">
   
-  {/* ✅ TOP BAR: Logo (sol) + UserMenu (sağ) */}
-  <div className="flex items-center justify-between mb-12 md:mb-20">
+  {/* ✅ TOP BAR: Logo (centered on mobile, left on desktop) */}
+  <div className="flex items-center justify-center md:justify-start mb-12 md:mb-20">
     {/* Logo */}
     <motion.div
       initial={{ opacity: 0, scale: isMobile ? 1 : 0.5, rotate: isMobile ? 0 : -180 }}
@@ -278,7 +272,7 @@ export default function HomePage() {
     >
       <Link href="/" className="inline-flex items-center gap-2 group">
         <motion.div
-          whileHover={!isMobile ? { 
+          whileHover={!isMobile ? {
             rotate: [0, -10, 10, -10, 10, 0],
             scale: 1.3,
             y: [0, -5, 0, -3, 0]
@@ -305,9 +299,6 @@ export default function HomePage() {
         </motion.div>
       </Link>
     </motion.div>
-
-    {/* UserMenu */}
-    <UserMenu />
   </div>
 
   {/* ✅ CONTENT: Hero + Leaderboard - ortada, üstten hizalı */}
@@ -437,86 +428,21 @@ export default function HomePage() {
         Advanced analysis for developers who care about data.
       </motion.p>
 
-      {/* CTA */}
+      {/* CTA - Username Input */}
       <motion.div
         initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: isMobile ? 0 : 0.9, duration: isMobile ? 0 : 0.8 }}
-        className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6"
+        className="w-full"
       >
-        {isAuthenticated ? (
-          <Link href="/dashboard" className="w-full sm:w-auto">
-            <motion.div 
-              whileHover={!isMobile ? { scale: 1.05 } : {}} 
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="relative group w-full sm:w-auto"
-            >
-              <motion.div
-                className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
-                animate={!isMobile ? { opacity: [0.5, 0.8, 0.5] } : {}}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-              <Button className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto overflow-hidden">
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                  animate={!isMobile ? { x: ["-200%", "200%"] } : {}}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                />
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  View Dashboard
-                  <motion.span
-                    animate={!isMobile ? { x: [0, 5, 0] } : {}}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    →
-                  </motion.span>
-                </span>
-              </Button>
-            </motion.div>
-          </Link>
-        ) : (
-          <Link href="/login" className="w-full sm:w-auto">
-            <motion.div 
-              whileHover={!isMobile ? { scale: 1.05 } : {}} 
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-              className="relative group w-full sm:w-auto"
-            >
-              <motion.div
-                className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
-                animate={!isMobile ? { opacity: [0.5, 0.8, 0.5] } : {}}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-              <Button 
-                disabled={isLoading}
-                className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto disabled:opacity-50 overflow-hidden"
-              >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                  animate={!isMobile ? { x: ["-200%", "200%"] } : {}}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                />
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  {isLoading ? "Loading..." : "Analyze Profile"}
-                  <motion.span
-                    animate={!isMobile ? { x: [0, 5, 0] } : {}}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    →
-                  </motion.span>
-                </span>
-              </Button>
-            </motion.div>
-          </Link>
-        )}
-        
-        <motion.span 
-          className="text-sm text-white/40 font-mono"
+        <UsernameInput isMobile={isMobile} />
+
+        <motion.span
+          className="text-sm text-white/40 font-mono mt-4 block"
           animate={!isMobile ? { opacity: [0.4, 0.7, 0.4] } : {}}
           transition={{ duration: 3, repeat: Infinity }}
         >
-          {profileCount} analyzed
+          {profileCount} profiles analyzed
         </motion.span>
       </motion.div>
     </motion.div>
@@ -608,105 +534,7 @@ export default function HomePage() {
             </div>
           </ScrollRevealSection>
 
-          {/* PRO Section */}
-          <ScrollRevealSection delay={0.2} isMobile={isMobile}>
-            <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-8">
-              Premium Analytics
-            </h2>
-
-            <motion.div 
-              className="flex items-baseline gap-4 mb-10"
-              initial={{ opacity: 0, scale: isMobile ? 1 : 0.5 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: isMobile ? 0 : 0.8, type: "spring" }}
-            >
-              <motion.span 
-                className="text-5xl md:text-6xl font-bold text-white"
-                whileHover={!isMobile ? { scale: 1.1, rotate: [0, -5, 5, 0] } : {}}
-                transition={{ duration: 0.4 }}
-              >
-                $2.99
-              </motion.span>
-              <span className="text-sm text-white/40 font-mono">ONE-TIME</span>
-            </motion.div>
-
-            <div className="grid md:grid-cols-2 gap-4 mb-8">
-              {[
-                { name: "README Quality", weight: "20%" },
-                { name: "Repository Health", weight: "25%" },
-                { name: "Developer Patterns", weight: "30%" },
-                { name: "Career Insights", weight: "25%" },
-              ].map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: isMobile ? 0 : -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: isMobile ? 0 : i * 0.1, duration: isMobile ? 0 : 0.6 }}
-                  className="flex items-center justify-between p-4 border border-white/[0.08] rounded-xl bg-white/[0.02] transition-colors duration-200"
-                >
-                  <span className="text-xs md:text-sm text-white/90">{item.name}</span>
-                  <span className="text-xs font-mono text-white/40">{item.weight}</span>
-                </motion.div>
-              ))}
-
-              <motion.div
-                initial={{ opacity: 0, scale: isMobile ? 1 : 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: isMobile ? 0 : 0.5, duration: isMobile ? 0 : 0.6 }}
-                className="md:col-span-2 flex items-center justify-between p-4 border-2 border-white/20 rounded-xl bg-white/[0.05]"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-xs md:text-sm text-white/90 font-bold">AI Career Analysis</span>
-                  <span className="text-xs font-mono text-white/50 bg-white/10 px-2 py-1 rounded">BONUS</span>
-                </div>
-              </motion.div>
-            </div>
-
-            {isAuthenticated ? (
-              <Link href="/dashboard" className="w-full sm:w-auto">
-                <motion.div 
-                  whileHover={!isMobile ? { scale: 1.05 } : {}} 
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  className="relative group w-full sm:w-fit"
-                >
-                  <motion.div
-                    className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
-                    animate={!isMobile ? { opacity: [0.5, 0.8, 0.5] } : {}}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  />
-                  <Button className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto">
-                    View Dashboard →
-                  </Button>
-                </motion.div>
-              </Link>
-            ) : (
-              <Link href="/login" className="w-full sm:w-auto">
-                <motion.div 
-                  whileHover={!isMobile ? { scale: 1.05 } : {}} 
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  className="relative group w-full sm:w-fit"
-                >
-                  <motion.div
-                    className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
-                    animate={!isMobile ? { opacity: [0.5, 0.8, 0.5] } : {}}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  />
-                  <Button 
-                    disabled={isLoading}
-                    className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-6 w-full sm:w-auto disabled:opacity-50"
-                  >
-                    {isLoading ? "Loading..." : "Unlock PRO for $2.99 →"}
-                  </Button>
-                </motion.div>
-              </Link>
-            )}
-          </ScrollRevealSection>
-            {/* Comparison Table Section */}
+          {/* Comparison Table Section */}
           <ScrollRevealSection delay={0.25} isMobile={isMobile}>
             <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-10">
               Free vs PRO

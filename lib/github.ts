@@ -782,9 +782,15 @@ export class GitHubService {
   async detectFrameworks(repos: GitHubRepo[]): Promise<Record<string, number>> {
     const frameworkCounts: Record<string, number> = {};
 
-    for (const repo of repos) {
-      if (repo.fork) continue;
+    // ✅ OPTIMIZATION: Only check top 10 most starred repos (to reduce API calls)
+    const topRepos = repos
+      .filter(r => !r.fork)
+      .sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0))
+      .slice(0, 10);
 
+    console.log(`🔍 Detecting frameworks from top ${topRepos.length} repos...`);
+
+    for (const repo of topRepos) {
       const detected = await this.detectRepoFrameworks(repo.owner.login, repo.name);
       detected.forEach(framework => {
         frameworkCounts[framework] = (frameworkCounts[framework] || 0) + 1;

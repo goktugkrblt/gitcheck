@@ -126,8 +126,8 @@ export async function POST(req: NextRequest) {
     const now = new Date();
 
     const profile = await prisma.profile.upsert({
-      where: { 
-        userId: user.id 
+      where: {
+        username: user.githubUsername
       },
       update: {
         score: 0, // Prisma null kabul etmiyorsa 0
@@ -249,7 +249,7 @@ export async function POST(req: NextRequest) {
       
       // Clear old PRO cache
       await prisma.profile.update({
-        where: { userId: user.id },
+        where: { username: user.githubUsername },
         data: {
           codeQualityCache: Prisma.JsonNull,
           repoHealthCache: Prisma.JsonNull,
@@ -279,7 +279,7 @@ export async function POST(req: NextRequest) {
     // ✅ Normal flow: PRO analizini de yap
     console.log('🗑️  Clearing old PRO cache for fresh analysis...');
     await prisma.profile.update({
-      where: { userId: user.id },
+      where: { username: user.githubUsername },
       data: {
         codeQualityCache: Prisma.JsonNull,
         repoHealthCache: Prisma.JsonNull,
@@ -312,7 +312,7 @@ export async function POST(req: NextRequest) {
         
         // Re-fetch profile with PRO cache
         const updatedProfile = await prisma.profile.findUnique({
-          where: { userId: user.id },
+          where: { username: user.githubUsername },
         });
         
         if (updatedProfile?.codeQualityCache) {
@@ -355,7 +355,7 @@ export async function POST(req: NextRequest) {
           
           // Update with FINAL precision score
           await prisma.profile.update({
-            where: { userId: user.id },
+            where: { username: user.githubUsername },
             data: {
               score: finalScoring.overallScore,
               percentile: finalScoring.percentile,

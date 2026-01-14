@@ -42,13 +42,13 @@ enum Plan {
 
 model Profile {
   id              String    @id @default(cuid())
-  userId          String    @unique
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  userId          String?   // Made optional for backwards compatibility
+  user            User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   // Core Metrics
   score           Float
   percentile      Float?
-  
+
   // GitHub Data (cached)
   totalCommits    Int
   totalRepos      Int
@@ -57,9 +57,9 @@ model Profile {
   languages       Json
   topRepos        Json
   contributions   Json
-  
+
   // Basic info
-  username        String?
+  username        String    @unique  // Now required and unique
   avatarUrl       String?
   bio             String?
   location        String?
@@ -128,8 +128,9 @@ model Profile {
   isPublic        Boolean   @default(true)
   
   scannedAt       DateTime  @default(now())
-  
+
   @@index([userId])
+  @@index([username])
   @@index([score])
 }
 

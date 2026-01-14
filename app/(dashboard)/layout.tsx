@@ -3,7 +3,6 @@
 import { ArrowLeft, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { UserMenu } from "@/components/user-menu/page";
 
 export default function DashboardLayout({
   children,
@@ -98,9 +97,6 @@ export default function DashboardLayout({
                   </Link>
                 </>
               )}
-
-              {/* User Menu - Always visible */}
-              <UserMenu />
             </div>
           </div>
         </div>
