@@ -222,9 +222,10 @@ export async function analyzeReadmeQuality(
       strengths.push("🎉 Outstanding documentation! Your README is a great example for others");
     }
     
-    const readability = Math.min(100, Math.round(((codeBlocksScore / 15) * 40 + (sectionsScore / 20) * 30 + (tocScore / 10) * 30) * 100));
-    const completeness = Math.min(100, Math.round(((lengthScore / 15) * 30 + (sectionsScore / 20) * 40 + (linksScore / 10) * 30) * 100));
-    const professionalism = Math.min(100, Math.round(((badgesScore / 10) * 40 + (imagesScore / 10) * 30 + (tablesScore / 10) * 30) * 100));
+    // ✅ Convert to /10 scale for consistency
+    const readability = Math.min(10, Math.round(((codeBlocksScore / 15) * 40 + (sectionsScore / 20) * 30 + (tocScore / 10) * 30) * 10 * 10) / 10);
+    const completeness = Math.min(10, Math.round(((lengthScore / 15) * 30 + (sectionsScore / 20) * 40 + (linksScore / 10) * 30) * 10 * 10) / 10);
+    const professionalism = Math.min(10, Math.round(((badgesScore / 10) * 40 + (imagesScore / 10) * 30 + (tablesScore / 10) * 30) * 10 * 10) / 10);
     
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
     console.log(`✅ [README] Complete in ${duration}s - Score: ${finalScore}/10`);

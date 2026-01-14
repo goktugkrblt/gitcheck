@@ -180,7 +180,7 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
         </div>
       </div>
 
-      {/* Insights Cards */}
+      {/* Insights Cards - ALL /10 FOR CONSISTENCY */}
       <div className="grid md:grid-cols-3 gap-4">
         <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
           <h4 className="font-bold text-[#e0e0e0] mb-2">Readability</h4>
@@ -188,12 +188,15 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
             <div className="text-3xl font-black text-blue-400">
               {data.insights.readability}
             </div>
-            <div className="text-sm text-[#666] mb-1">/100</div>
+            <div className="text-sm text-[#666] mb-1">/10</div>
           </div>
+          <p className="text-xs text-[#666] mt-2 leading-relaxed text-left">
+            How easy your docs are to understand - clear structure and code examples boost this.
+          </p>
           <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-3">
-            <div 
+            <div
               className="h-full bg-gradient-to-r from-blue-500 to-cyan-500"
-              style={{ width: `${data.insights.readability}%` }}
+              style={{ width: `${(data.insights.readability / 10) * 100}%` }}
             />
           </div>
         </div>
@@ -204,12 +207,15 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
             <div className="text-3xl font-black text-green-400">
               {data.insights.completeness}
             </div>
-            <div className="text-sm text-[#666] mb-1">/100</div>
+            <div className="text-sm text-[#666] mb-1">/10</div>
           </div>
+          <p className="text-xs text-[#666] mt-2 leading-relaxed text-left">
+            Coverage of key info - installation, usage, examples. More sections = higher score.
+          </p>
           <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-3">
-            <div 
+            <div
               className="h-full bg-gradient-to-r from-green-500 to-emerald-500"
-              style={{ width: `${data.insights.completeness}%` }}
+              style={{ width: `${(data.insights.completeness / 10) * 100}%` }}
             />
           </div>
         </div>
@@ -220,12 +226,15 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
             <div className="text-3xl font-black text-purple-400">
               {data.insights.professionalism}
             </div>
-            <div className="text-sm text-[#666] mb-1">/100</div>
+            <div className="text-sm text-[#666] mb-1">/10</div>
           </div>
+          <p className="text-xs text-[#666] mt-2 leading-relaxed text-left">
+            Polish matters - badges, images, tables show attention to detail and active maintenance.
+          </p>
           <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-3">
-            <div 
+            <div
               className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
-              style={{ width: `${data.insights.professionalism}%` }}
+              style={{ width: `${(data.insights.professionalism / 10) * 100}%` }}
             />
           </div>
         </div>
