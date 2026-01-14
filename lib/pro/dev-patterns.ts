@@ -752,28 +752,36 @@ export async function analyzeDeveloperPatterns(
     // OVERALL SCORE & INSIGHTS
     // ==========================================
 
+    // Convert all scores to 0-100 scale
+    const commitPatternsScore100 = Math.round(commitPatternsScore * 10 * 100) / 100;
+    const codeQualityScore100 = Math.round(codeQualityScore * 10 * 100) / 100;
+    const workLifeBalanceScore100 = Math.round(workLifeBalanceScore * 10 * 100) / 100;
+    const collaborationScore100 = Math.round(collaborationScore * 10 * 100) / 100;
+    const technologyScore100 = Math.round(technologyScore * 10 * 100) / 100;
+    const productivityScore100 = Math.round(productivityScore * 10 * 100) / 100;
+
     const overallScore = Math.round(
-      (commitPatternsScore * 0.2 +
-       codeQualityScore * 0.2 +
-       workLifeBalanceScore * 0.15 +
-       collaborationScore * 0.15 +
-       technologyScore * 0.15 +
-       productivityScore * 0.15) * 10
-    ) / 10;
+      (commitPatternsScore100 * 0.2 +
+       codeQualityScore100 * 0.2 +
+       workLifeBalanceScore100 * 0.15 +
+       collaborationScore100 * 0.15 +
+       technologyScore100 * 0.15 +
+       productivityScore100 * 0.15) * 100
+    ) / 100;
 
     let grade = 'F';
-    if (overallScore >= 9.5) grade = 'A+';
-    else if (overallScore >= 9.0) grade = 'A';
-    else if (overallScore >= 8.5) grade = 'A-';
-    else if (overallScore >= 8.0) grade = 'B+';
-    else if (overallScore >= 7.5) grade = 'B';
-    else if (overallScore >= 7.0) grade = 'B-';
-    else if (overallScore >= 6.5) grade = 'C+';
-    else if (overallScore >= 6.0) grade = 'C';
-    else if (overallScore >= 5.5) grade = 'C-';
-    else if (overallScore >= 5.0) grade = 'D+';
-    else if (overallScore >= 4.5) grade = 'D';
-    else if (overallScore >= 4.0) grade = 'D-';
+    if (overallScore >= 95) grade = 'A+';
+    else if (overallScore >= 90) grade = 'A';
+    else if (overallScore >= 85) grade = 'A-';
+    else if (overallScore >= 80) grade = 'B+';
+    else if (overallScore >= 75) grade = 'B';
+    else if (overallScore >= 70) grade = 'B-';
+    else if (overallScore >= 65) grade = 'C+';
+    else if (overallScore >= 60) grade = 'C';
+    else if (overallScore >= 55) grade = 'C-';
+    else if (overallScore >= 50) grade = 'D+';
+    else if (overallScore >= 45) grade = 'D';
+    else if (overallScore >= 40) grade = 'D-';
 
     let persona = 'Balanced Developer 🎯';
     const nightActivitySum = hourlyActivity.slice(0, 6).reduce((a, b) => a + b, 0);
@@ -815,14 +823,14 @@ export async function analyzeDeveloperPatterns(
     if (collaborationScore < 6) recommendations.push('Engage more with open source - contribute to other projects via PRs');
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-    console.log(`✅ [DEV PATTERNS] Complete in ${duration}s - Score: ${overallScore}/10`);
+    console.log(`✅ [DEV PATTERNS] Complete in ${duration}s - Score: ${overallScore.toFixed(2)}/100`);
 
     return {
       overallScore,
       grade,
       patterns: {
         commitPatterns: {
-          score: commitPatternsScore,
+          score: commitPatternsScore100,
           hourlyActivity: normalizedHourly,
           weeklyActivity: normalizedWeekly,
           peakHours,
@@ -831,35 +839,35 @@ export async function analyzeDeveloperPatterns(
           consistency,
         },
         codeQuality: {
-          score: codeQualityScore,
+          score: codeQualityScore100,
           branchManagement,
           commitSize,
           reviewEngagement,
           documentationHabits,
         },
         workLifeBalance: {
-          score: workLifeBalanceScore,
+          score: workLifeBalanceScore100,
           weekendActivity,
           nightCoding,
           burnoutRisk,
           sustainablePace,
         },
         collaboration: {
-          score: collaborationScore,
+          score: collaborationScore100,
           soloVsTeam,
           prResponseTime,
           reviewParticipation,
           crossRepoWork,
         },
         technology: {
-          score: technologyScore,
+          score: technologyScore100,
           modernFrameworks,
           cuttingEdge,
           legacyMaintenance,
           learningCurve,
         },
         productivity: {
-          score: productivityScore,
+          score: productivityScore100,
           peakHours,
           deepWorkSessions,
           contextSwitching,

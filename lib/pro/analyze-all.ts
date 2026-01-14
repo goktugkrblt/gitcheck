@@ -323,64 +323,65 @@ function calculateCareerInsights(data: {
   }
 
   // ==========================================
-  // 5. SKILL SCORES (ENHANCED)
+  // 5. SKILL SCORES (0-100 scale with decimals)
   // ==========================================
-  
+
+  // Note: collaborationScore, codeQualityScore, productivityScore are NOW 0-100 from devPatterns
   const technicalBreadth = Math.round(
-    (modernFrameworks * 0.4 + cuttingEdge * 0.3 + learningCurve * 0.3) / 10 * 10
-  ) / 10;
-  
-  const documentation = readmeQuality.overallScore;
-  
-  const collaborationSkill = collaborationScore;
-  
+    (modernFrameworks * 0.4 + cuttingEdge * 0.3 + learningCurve * 0.3) * 100
+  ) / 100;
+
+  const documentation = readmeQuality.overallScore; // Already 0-100
+
+  const collaborationSkill = collaborationScore; // Now 0-100
+
   const projectManagement = Math.round(
-    (repoHealth.overallScore * 0.6 + (maintenance.score || 0) * 0.4) * 10
-  ) / 10;
-  
-  const codeQualitySkill = codeQualityScore;
-  
-  const productivitySkill = productivityScore;
+    (repoHealth.overallScore * 0.6 + (maintenance.score || 0) * 0.4) * 100
+  ) / 100;
+
+  const codeQualitySkill = codeQualityScore; // Now 0-100
+
+  const productivitySkill = productivityScore; // Now 0-100
 
   // ==========================================
-  // 6. OVERALL SCORE & GRADE
+  // 6. OVERALL SCORE & GRADE (0-100)
   // ==========================================
-  
+
   const overallScore = Math.round(
-    (technicalBreadth * 0.20 + 
-     documentation * 0.15 + 
-     collaborationSkill * 0.20 + 
+    (technicalBreadth * 0.20 +
+     documentation * 0.15 +
+     collaborationSkill * 0.20 +
      projectManagement * 0.20 +
      codeQualitySkill * 0.15 +
-     productivitySkill * 0.10) * 10
-  ) / 10;
-  
+     productivitySkill * 0.10) * 100
+  ) / 100;
+
   let grade = 'F';
-  if (overallScore >= 9.5) grade = 'S';
-  else if (overallScore >= 9.0) grade = 'A+';
-  else if (overallScore >= 8.5) grade = 'A';
-  else if (overallScore >= 8.0) grade = 'A-';
-  else if (overallScore >= 7.5) grade = 'B+';
-  else if (overallScore >= 7.0) grade = 'B';
-  else if (overallScore >= 6.5) grade = 'B-';
-  else if (overallScore >= 6.0) grade = 'C+';
-  else if (overallScore >= 5.5) grade = 'C';
-  else if (overallScore >= 5.0) grade = 'C-';
-  else if (overallScore >= 4.0) grade = 'D';
+  if (overallScore >= 95) grade = 'S';
+  else if (overallScore >= 90) grade = 'A+';
+  else if (overallScore >= 85) grade = 'A';
+  else if (overallScore >= 80) grade = 'A-';
+  else if (overallScore >= 75) grade = 'B+';
+  else if (overallScore >= 70) grade = 'B';
+  else if (overallScore >= 65) grade = 'B-';
+  else if (overallScore >= 60) grade = 'C+';
+  else if (overallScore >= 55) grade = 'C';
+  else if (overallScore >= 50) grade = 'C-';
+  else if (overallScore >= 40) grade = 'D';
 
   // ==========================================
   // 7. PROFESSIONAL METRICS
   // ==========================================
   
-  // Portfolio Strength (0-10)
-  const diversityScore = Math.min(technicalBreadth * 10, 25);
+  // Portfolio Strength (0-100)
+  const diversityScore = Math.min(technicalBreadth, 25);
   const consistencyScore = Math.min((consistency / 100) * 25, 25);
-  const impactScore = Math.min((collaborationSkill / 10) * 25, 25);
-  const visibilityScore = Math.min((documentation / 10) * 25, 25);
+  const impactScore = Math.min((collaborationSkill / 100) * 25, 25);
+  const visibilityScore = Math.min((documentation / 100) * 25, 25);
 
   const portfolioStrength = Math.round(
-    (diversityScore + consistencyScore + impactScore + visibilityScore) / 10 * 10
-  ) / 10;
+    (diversityScore + consistencyScore + impactScore + visibilityScore) * 100
+  ) / 100;
   
   // Market Value
   let marketValue: 'Entry' | 'Competitive' | 'High-Value' | 'Elite' = 'Entry';
@@ -393,19 +394,19 @@ function calculateCareerInsights(data: {
     marketValue = 'Competitive';
   }
   
-  // Visibility (GitHub presence) - 0-10
+  // Visibility (GitHub presence) - 0-100
   const visibility = Math.round(
     (documentation * 0.3 +
-     (reviewParticipation / 100) * 10 * 0.3 +
-     collaborationSkill * 0.4) * 10
-  ) / 10;
+     reviewParticipation * 0.3 +
+     collaborationSkill * 0.4) * 100
+  ) / 100;
   
-  // Consistency (long-term commitment) - 0-10
+  // Consistency (long-term commitment) - 0-100
   const consistencyMetric = Math.round(
-    ((consistency / 100) * 10 * 0.5 +
-     ((maintenance.activeDaysRatio || 0) / 100) * 10 * 0.3 +
-     (sustainablePace / 100) * 10 * 0.2) * 10
-  ) / 10;
+    (consistency * 0.5 +
+     (maintenance.activeDaysRatio || 0) * 0.3 +
+     sustainablePace * 0.2) * 100
+  ) / 100;
 
   // ==========================================
   // 8. STRENGTHS IDENTIFICATION
