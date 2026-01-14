@@ -3,6 +3,12 @@ import { Octokit } from "@octokit/rest";
 import { analyzeReadmeQuality } from "./readme-quality";
 import { analyzeRepositoryHealth } from "./repo-health";
 import { analyzeDeveloperPatterns } from "./dev-patterns";
+import {
+  generateReadmeInsights,
+  generateRepoHealthInsights,
+  generateDevPatternsInsights,
+  generateCareerInsights,
+} from "./insight-generator";
 
 export interface CareerInsights {
   experienceLevel: 'Junior' | 'Mid-Level' | 'Senior' | 'Staff+';
@@ -66,21 +72,92 @@ export async function analyzeAllPro(
       devPatternsPromise,
     ]);
 
+    // 🎯 ENRICH WITH STORY-DRIVEN INSIGHTS
+    console.log('📖 Generating story-driven insights...');
+
+    // Enrich README insights
+    const readmeInsights = generateReadmeInsights({
+      overallScore: readmeQuality.overallScore,
+      details: {
+        length: readmeQuality.details.length,
+        sections: readmeQuality.details.sections,
+        badges: readmeQuality.details.badges,
+        codeBlocks: readmeQuality.details.codeBlocks,
+        links: readmeQuality.details.links,
+        images: readmeQuality.details.images,
+        toc: readmeQuality.details.toc,
+      },
+      insights: readmeQuality.insights,
+    });
+
+    // Enrich Repository Health insights
+    const repoHealthInsights = generateRepoHealthInsights({
+      overallScore: repoHealth.overallScore,
+      metrics: repoHealth.metrics,
+      trend: repoHealth.trend,
+    });
+
+    // Enrich Developer Patterns insights
+    const devPatternsInsights = generateDevPatternsInsights({
+      overallScore: devPatterns.overallScore,
+      patterns: devPatterns.patterns,
+      developerPersona: devPatterns.developerPersona,
+    });
+
     // Calculate Career Insights from existing data (NO extra API calls!)
-    const careerInsights = calculateCareerInsights({
+    const careerInsightsBase = calculateCareerInsights({
       readmeQuality,
       repoHealth,
       devPatterns,
       username
     });
 
+    // Enrich Career Insights with story
+    const careerInsightsEnriched = generateCareerInsights({
+      experienceLevel: careerInsightsBase.experienceLevel,
+      overallScore: careerInsightsBase.overallScore,
+      skills: careerInsightsBase.skills,
+      professionalMetrics: {
+        portfolioStrength: careerInsightsBase.professional.portfolioStrength,
+        marketValue: careerInsightsBase.professional.marketValue,
+        visibility: careerInsightsBase.professional.visibility,
+        consistency: careerInsightsBase.professional.consistency,
+      },
+      profileType: careerInsightsBase.profileType,
+    });
+
+    // Merge enriched insights back
+    const careerInsights = {
+      ...careerInsightsBase,
+      strengths: careerInsightsEnriched.strengths,
+      recommendations: careerInsightsEnriched.recommendations,
+    };
+
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-    console.log(`✅ [ANALYZE ALL] Complete in ${duration}s`);
+    console.log(`✅ [ANALYZE ALL] Complete in ${duration}s with enriched insights`);
 
     return {
-      readmeQuality,
-      repoHealth,
-      devPatterns,
+      readmeQuality: {
+        ...readmeQuality,
+        strengths: readmeInsights.strengths,
+        improvements: readmeInsights.improvements,
+      },
+      repoHealth: {
+        ...repoHealth,
+        insights: {
+          strengths: repoHealthInsights.strengths,
+          concerns: repoHealthInsights.concerns,
+          recommendations: repoHealthInsights.recommendations,
+        },
+      },
+      devPatterns: {
+        ...devPatterns,
+        insights: {
+          strengths: devPatternsInsights.strengths,
+          patterns: devPatternsInsights.patterns,
+          recommendations: devPatternsInsights.recommendations,
+        },
+      },
       careerInsights,
     };
   } catch (error) {
