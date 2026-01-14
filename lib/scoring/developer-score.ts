@@ -440,20 +440,22 @@ function calculateHybridScore(input: ScoringInput): ScoringResult {
   // Override with PRO data if available
   let codeQualityScore = statResult.components.codeQuality.score;
   if (readme !== null && health !== null) {
-    // PRO data available - use it but cap at 95
-    const proScore = (readme + health) / 2 * 10; // 0-10 → 0-100
+    // ✅ FIX: README and Health are already 0-100, just average them
+    const proScore = (readme + health) / 2;
     codeQualityScore = Math.min(proScore, 95);
   }
 
   let consistencyScore = statResult.components.consistency.score;
   if (patterns !== null) {
-    const proScore = patterns * 10; // 0-10 → 0-100
+    // ✅ FIX: Patterns is already 0-100
+    const proScore = patterns;
     consistencyScore = Math.min(proScore, 95);
   }
 
   let collaborationScore = statResult.components.collaboration.score;
   if (career !== null) {
-    const proScore = career * 10; // 0-10 → 0-100
+    // ✅ FIX: Career is already 0-100
+    const proScore = career;
     collaborationScore = Math.min(proScore, 95);
   }
 
