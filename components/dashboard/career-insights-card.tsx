@@ -79,9 +79,9 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 8) return "from-green-500 to-emerald-500";
-    if (score >= 6) return "from-blue-500 to-cyan-500";
-    if (score >= 4) return "from-yellow-500 to-orange-500";
+    if (score >= 80) return "from-green-500 to-emerald-500";
+    if (score >= 60) return "from-blue-500 to-cyan-500";
+    if (score >= 40) return "from-yellow-500 to-orange-500";
     return "from-red-500 to-pink-500";
   };
 
@@ -92,7 +92,7 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
     return 'text-[#666]';
   };
 
-  const scorePercentage = (safeData.overallScore / 10) * 100;
+  const scorePercentage = safeData.overallScore; // Already 0-100
   const experiencePercentage = (safeData.experiencePoints / 18) * 100;
 
   return (
@@ -134,9 +134,9 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
           <div className="flex items-center gap-8 mb-8">
             <div className="flex items-end gap-3">
               <div className={`text-8xl font-black bg-gradient-to-r ${getScoreColor(safeData.overallScore)} bg-clip-text text-transparent`}>
-                {safeData.overallScore.toFixed(1)}
+                {safeData.overallScore.toFixed(2)}
               </div>
-              <div className="text-4xl text-[#666] mb-4">/10</div>
+              <div className="text-4xl text-[#666] mb-4">/100</div>
             </div>
 
             {/* Circular Progress */}
@@ -164,8 +164,8 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
                 />
                 <defs>
                   <linearGradient id="gradient-career" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" className={`${safeData.overallScore >= 8 ? 'text-green-500' : safeData.overallScore >= 6 ? 'text-blue-500' : safeData.overallScore >= 4 ? 'text-yellow-500' : 'text-red-500'}`} stopColor="currentColor" />
-                    <stop offset="100%" className={`${safeData.overallScore >= 8 ? 'text-emerald-500' : safeData.overallScore >= 6 ? 'text-cyan-500' : safeData.overallScore >= 4 ? 'text-orange-500' : 'text-pink-500'}`} stopColor="currentColor" />
+                    <stop offset="0%" className={`${safeData.overallScore >= 80 ? 'text-green-500' : safeData.overallScore >= 60 ? 'text-blue-500' : safeData.overallScore >= 40 ? 'text-yellow-500' : 'text-red-500'}`} stopColor="currentColor" />
+                    <stop offset="100%" className={`${safeData.overallScore >= 80 ? 'text-emerald-500' : safeData.overallScore >= 60 ? 'text-cyan-500' : safeData.overallScore >= 40 ? 'text-orange-500' : 'text-pink-500'}`} stopColor="currentColor" />
                   </linearGradient>
                 </defs>
               </svg>
@@ -204,13 +204,13 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
                 <span className="text-sm font-medium text-[#919191]">Technical Breadth</span>
               </div>
               <span className="text-lg font-bold text-[#e0e0e0]">
-                {safeData.skills.technicalBreadth.toFixed(1)}/10
+                {safeData.skills.technicalBreadth.toFixed(2)}/100
               </span>
             </div>
             <div className="h-3 bg-[#050307] rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-1000"
-                style={{ width: `${(safeData.skills.technicalBreadth / 10) * 100}%` }}
+                style={{ width: `${safeData.skills.technicalBreadth}%` }}
               />
             </div>
           </div>
@@ -223,13 +223,13 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
                 <span className="text-sm font-medium text-[#919191]">Documentation</span>
               </div>
               <span className="text-lg font-bold text-[#e0e0e0]">
-                {safeData.skills.documentation.toFixed(1)}/10
+                {safeData.skills.documentation.toFixed(2)}/100
               </span>
             </div>
             <div className="h-3 bg-[#050307] rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-green-500 to-emerald-500 transition-all duration-1000"
-                style={{ width: `${(safeData.skills.documentation / 10) * 100}%` }}
+                style={{ width: `${safeData.skills.documentation}%` }}
               />
             </div>
           </div>
@@ -242,13 +242,13 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
                 <span className="text-sm font-medium text-[#919191]">Collaboration</span>
               </div>
               <span className="text-lg font-bold text-[#e0e0e0]">
-                {safeData.skills.collaboration.toFixed(1)}/10
+                {safeData.skills.collaboration.toFixed(2)}/100
               </span>
             </div>
             <div className="h-3 bg-[#050307] rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-1000"
-                style={{ width: `${(safeData.skills.collaboration / 10) * 100}%` }}
+                style={{ width: `${safeData.skills.collaboration}%` }}
               />
             </div>
           </div>
@@ -261,13 +261,13 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
                 <span className="text-sm font-medium text-[#919191]">Project Management</span>
               </div>
               <span className="text-lg font-bold text-[#e0e0e0]">
-                {safeData.skills.projectManagement.toFixed(1)}/10
+                {safeData.skills.projectManagement.toFixed(2)}/100
               </span>
             </div>
             <div className="h-3 bg-[#050307] rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-yellow-500 to-orange-500 transition-all duration-1000"
-                style={{ width: `${(safeData.skills.projectManagement / 10) * 100}%` }}
+                style={{ width: `${safeData.skills.projectManagement}%` }}
               />
             </div>
           </div>
@@ -280,13 +280,13 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
                 <span className="text-sm font-medium text-[#919191]">Code Quality</span>
               </div>
               <span className="text-lg font-bold text-[#e0e0e0]">
-                {safeData.skills.codeQuality.toFixed(1)}/10
+                {safeData.skills.codeQuality.toFixed(2)}/100
               </span>
             </div>
             <div className="h-3 bg-[#050307] rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-red-500 to-orange-500 transition-all duration-1000"
-                style={{ width: `${(safeData.skills.codeQuality / 10) * 100}%` }}
+                style={{ width: `${safeData.skills.codeQuality}%` }}
               />
             </div>
           </div>
@@ -299,13 +299,13 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
                 <span className="text-sm font-medium text-[#919191]">Productivity</span>
               </div>
               <span className="text-lg font-bold text-[#e0e0e0]">
-                {safeData.skills.productivity.toFixed(1)}/10
+                {safeData.skills.productivity.toFixed(2)}/100
               </span>
             </div>
             <div className="h-3 bg-[#050307] rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-pink-500 to-purple-500 transition-all duration-1000"
-                style={{ width: `${(safeData.skills.productivity / 10) * 100}%` }}
+                style={{ width: `${safeData.skills.productivity}%` }}
               />
             </div>
           </div>
@@ -328,13 +328,13 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
                 <span className="text-sm font-medium text-[#919191]">Portfolio Strength</span>
               </div>
               <span className="text-2xl font-black text-[#e0e0e0]">
-                {safeData.professionalMetrics.portfolioStrength}/10
+                {safeData.professionalMetrics.portfolioStrength.toFixed(2)}/100
               </span>
             </div>
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-1000"
-                style={{ width: `${(safeData.professionalMetrics.portfolioStrength / 10) * 100}%` }}
+                style={{ width: `${safeData.professionalMetrics.portfolioStrength}%` }}
               />
             </div>
             <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
@@ -350,13 +350,13 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
                 <span className="text-sm font-medium text-[#919191]">Visibility</span>
               </div>
               <span className="text-2xl font-black text-[#e0e0e0]">
-                {safeData.professionalMetrics.visibility}/10
+                {safeData.professionalMetrics.visibility.toFixed(2)}/100
               </span>
             </div>
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-1000"
-                style={{ width: `${(safeData.professionalMetrics.visibility / 10) * 100}%` }}
+                style={{ width: `${safeData.professionalMetrics.visibility}%` }}
               />
             </div>
             <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
@@ -372,13 +372,13 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
                 <span className="text-sm font-medium text-[#919191]">Consistency</span>
               </div>
               <span className="text-2xl font-black text-[#e0e0e0]">
-                {safeData.professionalMetrics.consistency}/10
+                {safeData.professionalMetrics.consistency.toFixed(2)}/100
               </span>
             </div>
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-green-500 to-emerald-500 transition-all duration-1000"
-                style={{ width: `${(safeData.professionalMetrics.consistency / 10) * 100}%` }}
+                style={{ width: `${safeData.professionalMetrics.consistency}%` }}
               />
             </div>
             <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">

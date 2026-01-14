@@ -169,23 +169,23 @@ export async function generateAIAnalysis(
 
 📊 SKILL BREAKDOWN:
 ━━━━━━━━━━━━━━━━━━━━━━━━
-Technical Breadth: ${proData.careerInsights.skills.technicalBreadth}/10
-Documentation: ${proData.careerInsights.skills.documentation}/10
-Collaboration: ${proData.careerInsights.skills.collaboration}/10
-Project Management: ${proData.careerInsights.skills.projectManagement}/10
-Code Quality: ${proData.careerInsights.skills.codeQuality}/10
-Productivity: ${proData.careerInsights.skills.productivity}/10
+Technical Breadth: ${proData.careerInsights.skills.technicalBreadth.toFixed(2)}/100
+Documentation: ${proData.careerInsights.skills.documentation.toFixed(2)}/100
+Collaboration: ${proData.careerInsights.skills.collaboration.toFixed(2)}/100
+Project Management: ${proData.careerInsights.skills.projectManagement.toFixed(2)}/100
+Code Quality: ${proData.careerInsights.skills.codeQuality.toFixed(2)}/100
+Productivity: ${proData.careerInsights.skills.productivity.toFixed(2)}/100
 
-Overall Career Score: ${proData.careerInsights.overallScore}/10 (Grade: ${proData.careerInsights.grade})
+Overall Career Score: ${proData.careerInsights.overallScore.toFixed(2)}/100 (Grade: ${proData.careerInsights.grade})
 
 🎨 COMPONENT SCORES:
 ━━━━━━━━━━━━━━━━━━━━━━━━
-README Quality: ${proData.readmeQuality.overallScore}/10
-Repository Health: ${proData.repoHealth.overallScore}/10
-Developer Patterns: ${proData.devPatterns.overallScore}/10
+README Quality: ${proData.readmeQuality.overallScore.toFixed(2)}/100
+Repository Health: ${proData.repoHealth.overallScore.toFixed(2)}/100
+Developer Patterns: ${proData.devPatterns.overallScore.toFixed(2)}/100
 
-Portfolio Strength: ${proData.careerInsights.professional.portfolioStrength}/10
-Visibility: ${proData.careerInsights.professional.visibility}/10
+Portfolio Strength: ${proData.careerInsights.professional.portfolioStrength.toFixed(2)}/100
+Visibility: ${proData.careerInsights.professional.visibility.toFixed(2)}/100
 
 💪 KEY STRENGTHS:
 ${proData.careerInsights.strengths.map((s, i) => `${i + 1}. ${s}`).join('\n')}
@@ -249,7 +249,7 @@ STRUCTURE - WRITE A CREATIVE GITHUB STORY:
 
 [3-4 paragraphs of narrative storytelling about their strengths:
 • Don't just list - tell the story of their strengths
-• Reference specific scores: "Your ${proData.careerInsights.skills.documentation}/10 documentation..."
+• Reference specific scores: "Your ${proData.careerInsights.skills.documentation.toFixed(2)}/100 documentation..."
 • Explain what this reveals about who they are as a developer
 • Be creative and engaging - avoid bullet points
 • Make comparisons vivid: "While most devs treat docs as an afterthought, you..."
@@ -272,15 +272,15 @@ STRUCTURE - WRITE A CREATIVE GITHUB STORY:
 ## 📊 Your GitHub at a Glance
 
 **Your Scores:**
-- Technical Breadth: ${proData.careerInsights.skills.technicalBreadth}/10
-- Documentation: ${proData.careerInsights.skills.documentation}/10
-- Collaboration: ${proData.careerInsights.skills.collaboration}/10
-- Code Quality: ${proData.careerInsights.skills.codeQuality}/10
-- Productivity: ${proData.careerInsights.skills.productivity}/10
+- Technical Breadth: ${proData.careerInsights.skills.technicalBreadth.toFixed(2)}/100
+- Documentation: ${proData.careerInsights.skills.documentation.toFixed(2)}/100
+- Collaboration: ${proData.careerInsights.skills.collaboration.toFixed(2)}/100
+- Code Quality: ${proData.careerInsights.skills.codeQuality.toFixed(2)}/100
+- Productivity: ${proData.careerInsights.skills.productivity.toFixed(2)}/100
 
 **Your Portfolio:**
-- Strength: ${proData.careerInsights.professional.portfolioStrength}/10
-- Visibility: ${proData.careerInsights.professional.visibility}/10
+- Strength: ${proData.careerInsights.professional.portfolioStrength.toFixed(2)}/100
+- Visibility: ${proData.careerInsights.professional.visibility.toFixed(2)}/100
 - Consistency: ${consistency}%
 
 **Your Positioning:** ${marketValue}

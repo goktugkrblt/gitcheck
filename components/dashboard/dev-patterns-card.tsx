@@ -76,19 +76,19 @@ interface DevPatternsCardProps {
 export function DevPatternsCard({ data }: DevPatternsCardProps) {
   // ✅ REMOVE ALL: useState, useEffect, fetchDevPatterns, loading, error
 
-  const scorePercentage = (data.overallScore / 10) * 100;
+  const scorePercentage = data.overallScore; // Already 0-100
 
   const getScoreColor = (score: number) => {
-    if (score >= 8) return "from-green-500 to-emerald-500";
-    if (score >= 6) return "from-blue-500 to-cyan-500";
-    if (score >= 4) return "from-yellow-500 to-orange-500";
+    if (score >= 80) return "from-green-500 to-emerald-500";
+    if (score >= 60) return "from-blue-500 to-cyan-500";
+    if (score >= 40) return "from-yellow-500 to-orange-500";
     return "from-red-500 to-pink-500";
   };
 
   const getScoreBgColor = (score: number) => {
-    if (score >= 8) return "from-green-500/10 to-emerald-500/10";
-    if (score >= 6) return "from-blue-500/10 to-cyan-500/10";
-    if (score >= 4) return "from-yellow-500/10 to-orange-500/10";
+    if (score >= 80) return "from-green-500/10 to-emerald-500/10";
+    if (score >= 60) return "from-blue-500/10 to-cyan-500/10";
+    if (score >= 40) return "from-yellow-500/10 to-orange-500/10";
     return "from-red-500/10 to-pink-500/10";
   };
 
@@ -134,9 +134,9 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
           <div className="flex items-center gap-8 mb-8">
             <div className="flex items-end gap-3">
               <div className={`text-8xl font-black bg-gradient-to-r ${getScoreColor(data.overallScore)} bg-clip-text text-transparent`}>
-                {data.overallScore}
+                {data.overallScore.toFixed(2)}
               </div>
-              <div className="text-4xl text-[#666] mb-4">/10</div>
+              <div className="text-4xl text-[#666] mb-4">/100</div>
             </div>
 
             {/* Circular Progress */}
@@ -164,8 +164,8 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
                 />
                 <defs>
                   <linearGradient id="gradient-dev" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" className={`${data.overallScore >= 8 ? 'text-green-500' : data.overallScore >= 6 ? 'text-blue-500' : data.overallScore >= 4 ? 'text-yellow-500' : 'text-red-500'}`} stopColor="currentColor" />
-                    <stop offset="100%" className={`${data.overallScore >= 8 ? 'text-emerald-500' : data.overallScore >= 6 ? 'text-cyan-500' : data.overallScore >= 4 ? 'text-orange-500' : 'text-pink-500'}`} stopColor="currentColor" />
+                    <stop offset="0%" className={`${data.overallScore >= 80 ? 'text-green-500' : data.overallScore >= 60 ? 'text-blue-500' : data.overallScore >= 40 ? 'text-yellow-500' : 'text-red-500'}`} stopColor="currentColor" />
+                    <stop offset="100%" className={`${data.overallScore >= 80 ? 'text-emerald-500' : data.overallScore >= 60 ? 'text-cyan-500' : data.overallScore >= 40 ? 'text-orange-500' : 'text-pink-500'}`} stopColor="currentColor" />
                   </linearGradient>
                 </defs>
               </svg>
@@ -202,8 +202,8 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
                 <h4 className="font-bold text-[#e0e0e0]">Commit Patterns</h4>
             </div>
             <div className="flex items-center gap-1">
-                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.commitPatterns.score}</span>
-                <span className="text-sm text-[#666]">/10</span>
+                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.commitPatterns.score.toFixed(2)}</span>
+                <span className="text-sm text-[#666]">/100</span>
             </div>
             </div>
 
@@ -231,7 +231,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
             <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.commitPatterns.score)} transition-all duration-1000`}
-                style={{ width: `${(data.patterns.commitPatterns.score / 10) * 100}%` }}
+                style={{ width: `${data.patterns.commitPatterns.score}%` }}
             />
             </div>
 
@@ -248,8 +248,8 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
                 <h4 className="font-bold text-[#e0e0e0]">Code Quality</h4>
             </div>
             <div className="flex items-center gap-1">
-                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.codeQuality.score}</span>
-                <span className="text-sm text-[#666]">/10</span>
+                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.codeQuality.score.toFixed(2)}</span>
+                <span className="text-sm text-[#666]">/100</span>
             </div>
             </div>
 
@@ -277,7 +277,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
             <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.codeQuality.score)} transition-all duration-1000`}
-                style={{ width: `${(data.patterns.codeQuality.score / 10) * 100}%` }}
+                style={{ width: `${data.patterns.codeQuality.score}%` }}
             />
             </div>
 
@@ -294,8 +294,8 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
                 <h4 className="font-bold text-[#e0e0e0]">Work-Life Balance</h4>
             </div>
             <div className="flex items-center gap-1">
-                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.workLifeBalance.score}</span>
-                <span className="text-sm text-[#666]">/10</span>
+                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.workLifeBalance.score.toFixed(2)}</span>
+                <span className="text-sm text-[#666]">/100</span>
             </div>
             </div>
 
@@ -323,7 +323,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
             <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.workLifeBalance.score)} transition-all duration-1000`}
-                style={{ width: `${(data.patterns.workLifeBalance.score / 10) * 100}%` }}
+                style={{ width: `${data.patterns.workLifeBalance.score}%` }}
             />
             </div>
 
@@ -340,8 +340,8 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
                 <h4 className="font-bold text-[#e0e0e0]">Collaboration</h4>
             </div>
             <div className="flex items-center gap-1">
-                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.collaboration.score}</span>
-                <span className="text-sm text-[#666]">/10</span>
+                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.collaboration.score.toFixed(2)}</span>
+                <span className="text-sm text-[#666]">/100</span>
             </div>
             </div>
 
@@ -369,7 +369,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
             <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.collaboration.score)} transition-all duration-1000`}
-                style={{ width: `${(data.patterns.collaboration.score / 10) * 100}%` }}
+                style={{ width: `${data.patterns.collaboration.score}%` }}
             />
             </div>
 
@@ -386,8 +386,8 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
                 <h4 className="font-bold text-[#e0e0e0]">Technology</h4>
             </div>
             <div className="flex items-center gap-1">
-                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.technology.score}</span>
-                <span className="text-sm text-[#666]">/10</span>
+                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.technology.score.toFixed(2)}</span>
+                <span className="text-sm text-[#666]">/100</span>
             </div>
             </div>
 
@@ -415,7 +415,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
             <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.technology.score)} transition-all duration-1000`}
-                style={{ width: `${(data.patterns.technology.score / 10) * 100}%` }}
+                style={{ width: `${data.patterns.technology.score}%` }}
             />
             </div>
 
@@ -432,8 +432,8 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
                 <h4 className="font-bold text-[#e0e0e0]">Productivity</h4>
             </div>
             <div className="flex items-center gap-1">
-                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.productivity.score}</span>
-                <span className="text-sm text-[#666]">/10</span>
+                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.productivity.score.toFixed(2)}</span>
+                <span className="text-sm text-[#666]">/100</span>
             </div>
             </div>
 
@@ -461,7 +461,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
             <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.productivity.score)} transition-all duration-1000`}
-                style={{ width: `${(data.patterns.productivity.score / 10) * 100}%` }}
+                style={{ width: `${data.patterns.productivity.score}%` }}
             />
             </div>
 

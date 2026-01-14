@@ -59,20 +59,20 @@ interface RepoHealthCardProps {
 
 export function RepoHealthCard({ data }: RepoHealthCardProps) {
   // ✅ REMOVE ALL: useState, useEffect, fetchRepoHealth, loading, error
-  
-  const scorePercentage = (data.overallScore / 10) * 100;
+
+  const scorePercentage = data.overallScore; // Already 0-100
 
   const getScoreColor = (score: number) => {
-    if (score >= 8) return "from-green-500 to-emerald-500";
-    if (score >= 6) return "from-blue-500 to-cyan-500";
-    if (score >= 4) return "from-yellow-500 to-orange-500";
+    if (score >= 80) return "from-green-500 to-emerald-500";
+    if (score >= 60) return "from-blue-500 to-cyan-500";
+    if (score >= 40) return "from-yellow-500 to-orange-500";
     return "from-red-500 to-pink-500";
   };
 
   const getScoreBgColor = (score: number) => {
-    if (score >= 8) return "from-green-500/10 to-emerald-500/10";
-    if (score >= 6) return "from-blue-500/10 to-cyan-500/10";
-    if (score >= 4) return "from-yellow-500/10 to-orange-500/10";
+    if (score >= 80) return "from-green-500/10 to-emerald-500/10";
+    if (score >= 60) return "from-blue-500/10 to-cyan-500/10";
+    if (score >= 40) return "from-yellow-500/10 to-orange-500/10";
     return "from-red-500/10 to-pink-500/10";
   };
   const getTrendIcon = () => {
@@ -136,9 +136,9 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
           <div className="flex items-center gap-8 mb-8">
             <div className="flex items-end gap-3">
               <div className={`text-8xl font-black bg-gradient-to-r ${getScoreColor(data.overallScore)} bg-clip-text text-transparent`}>
-                {data.overallScore}
+                {data.overallScore.toFixed(2)}
               </div>
-              <div className="text-4xl text-[#666] mb-4">/10</div>
+              <div className="text-4xl text-[#666] mb-4">/100</div>
             </div>
 
             {/* Circular Progress - SADECE BURASI YÜZDE */}
@@ -166,8 +166,8 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
                 />
                 <defs>
                   <linearGradient id="gradient-health" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" className={`${data.overallScore >= 8 ? 'text-green-500' : data.overallScore >= 6 ? 'text-blue-500' : data.overallScore >= 4 ? 'text-yellow-500' : 'text-red-500'}`} stopColor="currentColor" />
-                    <stop offset="100%" className={`${data.overallScore >= 8 ? 'text-emerald-500' : data.overallScore >= 6 ? 'text-cyan-500' : data.overallScore >= 4 ? 'text-orange-500' : 'text-pink-500'}`} stopColor="currentColor" />
+                    <stop offset="0%" className={`${data.overallScore >= 80 ? 'text-green-500' : data.overallScore >= 60 ? 'text-blue-500' : data.overallScore >= 40 ? 'text-yellow-500' : 'text-red-500'}`} stopColor="currentColor" />
+                    <stop offset="100%" className={`${data.overallScore >= 80 ? 'text-emerald-500' : data.overallScore >= 60 ? 'text-cyan-500' : data.overallScore >= 40 ? 'text-orange-500' : 'text-pink-500'}`} stopColor="currentColor" />
                   </linearGradient>
                 </defs>
               </svg>
