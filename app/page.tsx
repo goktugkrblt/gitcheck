@@ -711,9 +711,9 @@ export default function HomePage() {
             >
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 text-xs text-white/40">
                 {[
+                  { label: "Documentation", href: "/docs" },
                   { label: "Privacy", href: "/privacy" },
                   { label: "Terms", href: "/terms" },
-                  { label: "Data Usage", href: "/data-usage" },
                 ].map((link, i) => (
                   <Link
                     key={i}
