@@ -1,14 +1,14 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { Lock, TrendingUp, Award, ChevronDown, ChevronUp } from "lucide-react";
+import { Lock, Award, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
 interface ScoreDisplayProps {
   score: number;
-  percentile: number;
-  username: string;
+  percentile: number; // Still needed for API, but not displayed anymore
+  username: string; // Kept for API compatibility
   globalRank?: {
     rank: number;
     totalProfiles: number;
@@ -25,7 +25,7 @@ interface ComponentScore {
   subScores?: { [key: string]: number | string };
 }
 
-export function ScoreDisplay({ score, percentile, username, globalRank }: ScoreDisplayProps) {
+export function ScoreDisplay({ score, globalRank }: ScoreDisplayProps) {
   const { data: session } = useSession();
   const user = session?.user as { plan?: string } | undefined;
   const [showBreakdown, setShowBreakdown] = useState(false);
@@ -195,14 +195,6 @@ export function ScoreDisplay({ score, percentile, username, globalRank }: ScoreD
               {gradeInfo.label}
             </span>
           </div>
-        </div>
-
-        {/* Percentile Info */}
-        <div className="flex items-center justify-center gap-2 pt-4 border-t border-white/10">
-          <TrendingUp className="w-4 h-4 text-white/40" />
-          <p className="text-sm text-white/60">
-            Top <span className="font-bold text-white">{100 - percentile}%</span> of developers
-          </p>
         </div>
 
         {/* Global Rank */}
