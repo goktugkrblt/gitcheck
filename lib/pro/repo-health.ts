@@ -384,31 +384,32 @@ export async function analyzeRepositoryHealth(
     console.log(`  ⏱️  [Activity] ${((Date.now() - t4) / 1000).toFixed(2)}s - Score: ${activityScore}/100`);
 
     // ==========================================
-    // OVERALL SCORE (0-10)
+    // OVERALL SCORE (0-100 with decimal precision)
     // ==========================================
 
-    const maintenanceScore10 = Math.round(maintenanceScore / 10 * 10) / 10;
-    const issueScore10 = Math.round(issueScore / 10 * 10) / 10;
-    const prScore10 = Math.round(prScore / 10 * 10) / 10;
-    const activityScore10 = Math.round(activityScore / 10 * 10) / 10;
-    
+    // Keep scores in 0-100 range with 2 decimal places
+    const maintenanceScoreFinal = Math.round(maintenanceScore * 100) / 100;
+    const issueScoreFinal = Math.round(issueScore * 100) / 100;
+    const prScoreFinal = Math.round(prScore * 100) / 100;
+    const activityScoreFinal = Math.round(activityScore * 100) / 100;
+
     const overallScore = Math.round(
-      (maintenanceScore10 * 0.3 + issueScore10 * 0.25 + prScore10 * 0.25 + activityScore10 * 0.2) * 10
-    ) / 10;
+      (maintenanceScoreFinal * 0.3 + issueScoreFinal * 0.25 + prScoreFinal * 0.25 + activityScoreFinal * 0.2) * 100
+    ) / 100;
 
     let grade = 'F';
-    if (overallScore >= 9.5) grade = 'A+';
-    else if (overallScore >= 9.0) grade = 'A';
-    else if (overallScore >= 8.5) grade = 'A-';
-    else if (overallScore >= 8.0) grade = 'B+';
-    else if (overallScore >= 7.5) grade = 'B';
-    else if (overallScore >= 7.0) grade = 'B-';
-    else if (overallScore >= 6.5) grade = 'C+';
-    else if (overallScore >= 6.0) grade = 'C';
-    else if (overallScore >= 5.5) grade = 'C-';
-    else if (overallScore >= 5.0) grade = 'D+';
-    else if (overallScore >= 4.5) grade = 'D';
-    else if (overallScore >= 4.0) grade = 'D-';
+    if (overallScore >= 95) grade = 'A+';
+    else if (overallScore >= 90) grade = 'A';
+    else if (overallScore >= 85) grade = 'A-';
+    else if (overallScore >= 80) grade = 'B+';
+    else if (overallScore >= 75) grade = 'B';
+    else if (overallScore >= 70) grade = 'B-';
+    else if (overallScore >= 65) grade = 'C+';
+    else if (overallScore >= 60) grade = 'C';
+    else if (overallScore >= 55) grade = 'C-';
+    else if (overallScore >= 50) grade = 'D+';
+    else if (overallScore >= 45) grade = 'D';
+    else if (overallScore >= 40) grade = 'D-';
 
     // ==========================================
     // INSIGHTS & RECOMMENDATIONS
@@ -444,34 +445,34 @@ export async function analyzeRepositoryHealth(
     else if (lastCommitDays > 60 || maintenanceScore < 40) trend = 'declining';
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-    console.log(`✅ [REPO HEALTH] Complete in ${duration}s - Score: ${overallScore}/10`);
+    console.log(`✅ [REPO HEALTH] Complete in ${duration}s - Score: ${overallScore.toFixed(2)}/100`);
 
     return {
       overallScore,
       grade,
       metrics: {
         maintenance: {
-          score: maintenanceScore10,
+          score: maintenanceScoreFinal,
           commitFrequency: Math.round(commitFrequency * 10) / 10,
           lastCommitDays,
           activeDaysRatio: Math.round(activeDaysRatio * 10) / 10,
         },
         issueManagement: {
-          score: issueScore10,
+          score: issueScoreFinal,
           averageResolutionDays: Math.round(averageResolutionDays * 10) / 10,
           openClosedRatio: Math.round(openClosedRatio * 10) / 10,
           totalIssues,
           closedIssues,
         },
         pullRequests: {
-          score: prScore10,
+          score: prScoreFinal,
           mergeRate: Math.round(mergeRate * 10) / 10,
           averageMergeDays: Math.round(averageMergeDays * 10) / 10,
           totalPRs,
           mergedPRs,
         },
         activity: {
-          score: activityScore10,
+          score: activityScoreFinal,
           contributorCount,
           staleBranches,
           stalePRs,

@@ -130,70 +130,49 @@ export async function analyzeReadmeQuality(
     const hasContributing = /##?\s+(contributing|contribution)/i.test(bestReadme);
     const hasLicense = /##?\s+(license)/i.test(bestReadme);
     
-    let lengthScore = 0;
-    if (length >= 3000) lengthScore = 15;
-    else if (length >= 2000) lengthScore = 12;
-    else if (length >= 1500) lengthScore = 10;
-    else if (length >= 1000) lengthScore = 7;
-    else if (length >= 500) lengthScore = 4;
-    else lengthScore = 2;
-    
-    let sectionsScore = 0;
-    if (sections >= 10) sectionsScore = 20;
-    else if (sections >= 8) sectionsScore = 17;
-    else if (sections >= 6) sectionsScore = 14;
-    else if (sections >= 4) sectionsScore = 10;
-    else if (sections >= 2) sectionsScore = 5;
-    else sectionsScore = 2;
-    
+    // ✅ HASSAS PUANLAMA - Smooth continuous functions (0-100 scale)
+
+    // Length Score (0-15): Logarithmic scale favoring comprehensive docs
+    const lengthScore = Math.min(15, Math.round((Math.log(length + 1) / Math.log(4000)) * 15 * 100) / 100);
+
+    // Sections Score (0-20): Linear + essential sections bonus
+    const baseSectionsScore = Math.min(15, sections * 1.5);
     const essentialSections = [hasInstallation, hasUsage, hasFeatures, hasContributing, hasLicense].filter(Boolean).length;
-    sectionsScore += essentialSections * 2;
-    sectionsScore = Math.min(sectionsScore, 20);
-    
-    let badgesScore = 0;
-    if (badges >= 5) badgesScore = 10;
-    else if (badges >= 3) badgesScore = 7;
-    else if (badges >= 1) badgesScore = 4;
-    
-    let codeBlocksScore = 0;
-    if (codeBlocks >= 5) codeBlocksScore = 15;
-    else if (codeBlocks >= 3) codeBlocksScore = 10;
-    else if (codeBlocks >= 2) codeBlocksScore = 6;
-    else if (codeBlocks >= 1) codeBlocksScore = 3;
-    
-    let linksScore = 0;
-    if (links >= 10) linksScore = 10;
-    else if (links >= 7) linksScore = 8;
-    else if (links >= 5) linksScore = 6;
-    else if (links >= 3) linksScore = 4;
-    else linksScore = 1;
-    
-    let imagesScore = 0;
-    if (images >= 5) imagesScore = 10;
-    else if (images >= 3) imagesScore = 7;
-    else if (images >= 1) imagesScore = 5;
-    
-    let tablesScore = 0;
-    if (tables >= 3) tablesScore = 10;
-    else if (tables >= 2) tablesScore = 7;
-    else if (tables >= 1) tablesScore = 4;
-    
+    const sectionsScore = Math.min(20, Math.round((baseSectionsScore + essentialSections) * 100) / 100);
+
+    // Badges Score (0-10): Diminishing returns after 5 badges
+    const badgesScore = Math.min(10, Math.round((badges / (1 + badges / 6)) * 2 * 100) / 100);
+
+    // Code Blocks Score (0-15): Essential for technical docs
+    const codeBlocksScore = Math.min(15, Math.round((codeBlocks / (1 + codeBlocks / 7)) * 3 * 100) / 100);
+
+    // Links Score (0-10): External references show depth
+    const linksScore = Math.min(10, Math.round((links / (1 + links / 12)) * 2 * 100) / 100);
+
+    // Images Score (0-10): Visual aids matter
+    const imagesScore = Math.min(10, Math.round((images / (1 + images / 6)) * 2 * 100) / 100);
+
+    // Tables Score (0-10): Structured data presentation
+    const tablesScore = Math.min(10, Math.round((tables / (1 + tables / 4)) * 2 * 100) / 100);
+
+    // TOC Score (0-10): Binary but important for navigation
     const tocScore = toc ? 10 : 0;
-    
-    const totalScore = lengthScore + sectionsScore + badgesScore + codeBlocksScore + linksScore + imagesScore + tablesScore + tocScore;
-    const finalScore = Math.round((totalScore / 100) * 10 * 10) / 10;
+
+    // Total Score with decimal precision
+    const totalScore = Math.round((lengthScore + sectionsScore + badgesScore + codeBlocksScore + linksScore + imagesScore + tablesScore + tocScore) * 100) / 100;
+    const finalScore = Math.round(totalScore * 100) / 100; // Keep as 0-100 scale
     
     let grade = "F";
-    if (finalScore >= 9) grade = "A+";
-    else if (finalScore >= 8.5) grade = "A";
-    else if (finalScore >= 8) grade = "A-";
-    else if (finalScore >= 7.5) grade = "B+";
-    else if (finalScore >= 7) grade = "B";
-    else if (finalScore >= 6.5) grade = "B-";
-    else if (finalScore >= 6) grade = "C+";
-    else if (finalScore >= 5.5) grade = "C";
-    else if (finalScore >= 5) grade = "C-";
-    else if (finalScore >= 4) grade = "D";
+    if (finalScore >= 95) grade = "A+";
+    else if (finalScore >= 90) grade = "A";
+    else if (finalScore >= 85) grade = "A-";
+    else if (finalScore >= 80) grade = "B+";
+    else if (finalScore >= 75) grade = "B";
+    else if (finalScore >= 70) grade = "B-";
+    else if (finalScore >= 65) grade = "C+";
+    else if (finalScore >= 60) grade = "C";
+    else if (finalScore >= 55) grade = "C-";
+    else if (finalScore >= 50) grade = "D";
     
     const strengths: string[] = [];
     const improvements: string[] = [];
@@ -218,17 +197,17 @@ export async function analyzeReadmeQuality(
     if (!hasLicense) improvements.push("Specify a License to clarify usage terms");
     if (!hasContributing && length > 1500) improvements.push("Add Contributing guidelines to encourage collaboration");
     
-    if (finalScore >= 9) {
+    if (finalScore >= 90) {
       strengths.push("🎉 Outstanding documentation! Your README is a great example for others");
     }
-    
-    // ✅ Convert to /10 scale for consistency
-    const readability = Math.min(10, Math.round(((codeBlocksScore / 15) * 40 + (sectionsScore / 20) * 30 + (tocScore / 10) * 30) * 10 * 10) / 10);
-    const completeness = Math.min(10, Math.round(((lengthScore / 15) * 30 + (sectionsScore / 20) * 40 + (linksScore / 10) * 30) * 10 * 10) / 10);
-    const professionalism = Math.min(10, Math.round(((badgesScore / 10) * 40 + (imagesScore / 10) * 30 + (tablesScore / 10) * 30) * 10 * 10) / 10);
-    
+
+    // ✅ Insight scores (0-100 with decimal precision)
+    const readability = Math.min(100, Math.round(((codeBlocksScore / 15) * 40 + (sectionsScore / 20) * 30 + (tocScore / 10) * 30) * 100) / 100);
+    const completeness = Math.min(100, Math.round(((lengthScore / 15) * 30 + (sectionsScore / 20) * 40 + (linksScore / 10) * 30) * 100) / 100);
+    const professionalism = Math.min(100, Math.round(((badgesScore / 10) * 40 + (imagesScore / 10) * 30 + (tablesScore / 10) * 30) * 100) / 100);
+
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-    console.log(`✅ [README] Complete in ${duration}s - Score: ${finalScore}/10`);
+    console.log(`✅ [README] Complete in ${duration}s - Score: ${finalScore.toFixed(2)}/100`);
     
     return {
       overallScore: finalScore,
