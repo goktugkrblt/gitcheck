@@ -147,118 +147,227 @@ export async function generateAIAnalysis(
   });
 
   // ✅ ULTRA KISALTILMIŞ PROMPT - TAM ANALİZ GARANTİSİ
-  const prompt = `Technical analysis for ${username}
+  // Extract rich context for personalization
+  const persona = proData.devPatterns.developerPersona;
+  const experienceLevel = proData.careerInsights.experienceLevel;
+  const profileType = proData.careerInsights.profileType;
+  const marketValue = proData.careerInsights.professional.marketValue;
+  const peakHours = proData.devPatterns.patterns.commitPatterns.peakHours;
+  const peakDays = proData.devPatterns.patterns.commitPatterns.peakDays;
+  const burnoutRisk = proData.devPatterns.patterns.workLifeBalance.burnoutRisk;
+  const consistency = proData.devPatterns.patterns.commitPatterns.consistency;
 
-DATA: Tech ${proData.careerInsights.skills.technicalBreadth}/10 | Doc ${proData.careerInsights.skills.documentation}/10 | Collab ${proData.careerInsights.skills.collaboration}/10 | Quality ${proData.careerInsights.skills.codeQuality}/10 | Overall ${proData.careerInsights.overallScore}/10 (${proData.careerInsights.grade})
+  const prompt = `You are analyzing the GitHub profile of **${username}**, a real developer with unique patterns and potential.
 
-Profile: ${proData.careerInsights.profileType} | Style: ${proData.devPatterns.developerPersona} | Portfolio ${proData.careerInsights.professional.portfolioStrength}%
+🎯 WHO IS ${username.toUpperCase()}?
+━━━━━━━━━━━━━━━━━━━━━━━━
+• Experience: ${experienceLevel} developer
+• Profile: ${profileType}
+• Work Style: ${persona}
+• Market Positioning: ${marketValue}
+• Peak Productivity: ${peakHours[0]}:00 on ${peakDays[0]}s
+• Consistency: ${consistency}% active days
+• Burnout Risk: ${burnoutRisk}%
 
-README ${proData.readmeQuality.overallScore}/10 | Health ${proData.repoHealth.overallScore}/10 | Patterns ${proData.devPatterns.overallScore}/10
+📊 SKILL BREAKDOWN:
+━━━━━━━━━━━━━━━━━━━━━━━━
+Technical Breadth: ${proData.careerInsights.skills.technicalBreadth}/10
+Documentation: ${proData.careerInsights.skills.documentation}/10
+Collaboration: ${proData.careerInsights.skills.collaboration}/10
+Project Management: ${proData.careerInsights.skills.projectManagement}/10
+Code Quality: ${proData.careerInsights.skills.codeQuality}/10
+Productivity: ${proData.careerInsights.skills.productivity}/10
 
-Strengths: ${proData.careerInsights.strengths.join('; ')}
+Overall Career Score: ${proData.careerInsights.overallScore}/10 (Grade: ${proData.careerInsights.grade})
 
----
+🎨 COMPONENT SCORES:
+━━━━━━━━━━━━━━━━━━━━━━━━
+README Quality: ${proData.readmeQuality.overallScore}/10
+Repository Health: ${proData.repoHealth.overallScore}/10
+Developer Patterns: ${proData.devPatterns.overallScore}/10
 
-Write COMPLETE analysis. NO STOPPING. ALL SECTIONS.
+Portfolio Strength: ${proData.careerInsights.professional.portfolioStrength}%
+Visibility: ${proData.careerInsights.professional.visibility}%
 
-RULES: No career levels. Global perspective. Use numbers. Natural tone. FINISH EVERYTHING.
+💪 KEY STRENGTHS:
+${proData.careerInsights.strengths.map((s, i) => `${i + 1}. ${s}`).join('\n')}
 
----
-
-STRUCTURE (WRITE ALL):
-
-## 🎯 Profile Analysis
-[2 paragraphs with numbers from data]
-
----
-
-## 💪 Technical Strengths
-
-### [Strength 1 - metric number]
-[What it shows]
-**Impact:** [Effect]
-**Action:** [How to leverage]
-
-### [Strength 2]
-[Same]
-
-### [Strength 3]
-[Same]
-
----
-
-## ⚡ Growth Opportunities
-
-### 1. [Gap - metric]
-**Current:** [Number]
-**Why:** [Impact]
-**Fix:** Week 1: [Task - Xh] | Week 2-4: [Steps]
-**Measure:** [Success metric]
-
-### 2. [Gap 2]
-[Same]
-
-### 3. [Gap 3]
-[Same]
+⚠️ CONCERNS & OPPORTUNITIES:
+${proData.repoHealth.insights.concerns?.slice(0, 3).map((c, i) => `${i + 1}. ${c}`).join('\n') || 'No major concerns'}
 
 ---
 
-## 🗺️ 90-Day Plan
+🎯 YOUR MISSION:
 
-### Month 1
-**Goal:** [Specific]
-- [ ] [Task 1] - [Xh]
-- [ ] [Task 2] - [Xh]
-- [ ] [Task 3] - [Xh]
-**Result:** [Outcome]
+Write a DEEPLY PERSONALIZED, ENGAGING analysis that makes ${username} feel SEEN and UNDERSTOOD.
 
-### Month 2
-**Goal:** [Specific]
-- [ ] [Task 1] - [Xh]
-- [ ] [Task 2] - [Xh]
-**Result:** [Outcome]
+TONE & STYLE:
+• Address ${username} directly ("You", "Your")
+• Reference their ${persona} style naturally
+• Acknowledge their ${experienceLevel} journey
+• Use their actual numbers and patterns
+• Be encouraging but honest
+• Make it feel like a 1-on-1 conversation with a senior dev who "gets them"
 
-### Month 3
-**Goal:** [Specific]
-- [ ] [Task 1] - [Xh]
-- [ ] [Task 2] - [Xh]
-**Result:** [Outcome]
+AVOID:
+❌ Generic advice that could apply to anyone
+❌ Robotic listing of stats
+❌ Ignoring their unique ${profileType} profile
+❌ Unrealistic goals
+❌ Forgetting to reference their ${peakHours[0]}:00 peak hours or ${peakDays[0]} activity
 
----
-
-## 🎯 This Week (5 Actions)
-
-### 1. [Action] - [Xh]
-**What:** [Task]
-**Why:** [Reason]
-**How:** [3 steps]
-
-### 2-5. [Same for all]
+INCLUDE:
+✅ Specific references to THEIR numbers
+✅ Personalized insights based on ${persona} style
+✅ Realistic action items fitting their ${burnoutRisk}% burnout risk
+✅ Concrete examples from their actual patterns
+✅ Motivational but grounded career guidance
 
 ---
 
-## 📊 Quick Stats
+STRUCTURE (COMPLETE EVERYTHING - NO STOPPING):
 
-| Area | Score | Benchmark | Gap |
-|------|-------|-----------|-----|
-| Documentation | ${proData.careerInsights.skills.documentation}/10 | 6.5 | [analysis] |
-| Code Quality | ${proData.careerInsights.skills.codeQuality}/10 | 6.0 | [analysis] |
-| Collaboration | ${proData.careerInsights.skills.collaboration}/10 | 7.0 | [analysis] |
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 👋 Hey ${username},
+
+[2-3 engaging paragraphs that:
+• Acknowledge their ${persona} style
+• Highlight their ${experienceLevel} journey
+• Reference specific numbers (${consistency}% consistency, ${burnoutRisk}% burnout risk)
+• Make them feel UNDERSTOOD
+• Set the tone: "I analyzed your GitHub deeply, and here's what stands out..."]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 💪 Your Superpowers
+
+### 1. [Biggest Strength from their data - with specific number]
+**What this means:** [Explain the strength in their context]
+**Real-world impact:** [How this helps them as a ${profileType}]
+**How to leverage:** [Concrete way to use this strength more]
+
+[Example: "Your 8.5/10 documentation score puts you in the top 15% of developers. For a ${profileType}, this is gold - it means teams trust your work documentation and onboarding becomes effortless."]
+
+### 2. [Second strength - different category]
+[Same deep dive format]
+
+### 3. [Third strength]
+[Same format]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 🎯 Growth Edges (Honest But Kind)
+
+### 1. [Biggest improvement area with actual number]
+**Current state:** [Their specific number/metric]
+**Why this matters:** [Impact on their ${marketValue} positioning]
+**Quick win (This week - 2-3 hours):**
+1. [Specific actionable task]
+2. [Another specific task]
+3. [Measurement to track]
+
+**Medium-term (Month 1-2):**
+[Realistic steps that fit their ${burnoutRisk}% burnout risk and ${peakHours[0]}:00 schedule]
+
+### 2. [Second opportunity]
+[Same detailed format with their context]
+
+### 3. [Third opportunity]
+[Same format]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 🗓️ Your 90-Day Personalized Roadmap
+
+**Based on:** Your ${persona} style + ${consistency}% consistency + ${burnoutRisk}% burnout risk
+
+### 🎯 Month 1: [Specific Theme Based on Their Data]
+**Main Goal:** [Something achievable for their level]
+
+**Week 1-2:**
+- [ ] [Task tied to their lowest score] - Est. 3-4 hours
+- [ ] [Task that leverages their strength] - Est. 2-3 hours
+- [ ] [Task aligned with ${peakDays[0]} peak days] - Est. 1-2 hours
+
+**Week 3-4:**
+- [ ] [Progressive task] - Est. 4-5 hours
+- [ ] [Another task fitting their ${profileType}] - Est. 2-3 hours
+
+**Expected outcome:** [Concrete improvement with numbers]
+
+### 🚀 Month 2: [Next theme]
+[Same detailed week-by-week breakdown]
+
+### 🏆 Month 3: [Final theme]
+[Same format]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 🔥 This Week's Action Plan
+
+**Time Budget:** 5-8 hours total (fits your ${burnoutRisk < 50 ? 'sustainable' : 'busy'} schedule)
+
+### 1. [Highest ROI task from growth edges] - 2 hours
+**What:** [Specific task]
+**Why it matters:** [Direct benefit]
+**How to do it:**
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+
+**Best time:** ${peakHours[0]}:00-${peakHours[0] + 2}:00 on ${peakDays[0]} (your peak hours!)
+
+### 2. [Second priority] - 1.5 hours
+[Same format]
+
+### 3. [Third task] - 1 hour
+[Same format]
+
+### 4-5. [Two more quick wins]
+[Brief format for each]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## 📊 Your Numbers vs. Market
+
+| Skill | You | ${experienceLevel} Avg | Gap | Next Milestone |
+|-------|-----|------------------------|-----|----------------|
+| Technical Breadth | ${proData.careerInsights.skills.technicalBreadth}/10 | [realistic avg] | [+ or -] | [What to reach] |
+| Documentation | ${proData.careerInsights.skills.documentation}/10 | [avg] | [gap] | [milestone] |
+| Collaboration | ${proData.careerInsights.skills.collaboration}/10 | [avg] | [gap] | [milestone] |
+| Code Quality | ${proData.careerInsights.skills.codeQuality}/10 | [avg] | [gap] | [milestone] |
+
+**Market positioning:** ${marketValue} → [Next tier and what it takes]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ---
 
-## 🎯 Key Takeaways
+## 🎯 Final Thoughts, ${username}
 
-- [Takeaway 1]
-- [Takeaway 2]
-- [Takeaway 3]
-- [Takeaway 4]
+[2-3 sentences that:
+• Acknowledge their unique journey as a ${experienceLevel} ${profileType}
+• Remind them of their ${persona} superpower
+• Motivate them with specific next step
+• Make it personal and memorable]
 
-**Next Review:** 90 days - track [3 metrics]
+**Your first win:** [One specific action from This Week section]
+
+**Next check-in:** 90 days - We'll track your ${consistency}% → [target]% consistency, skill improvements, and career momentum.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ---
 
-WRITE COMPLETE NOW. DO NOT STOP UNTIL "Next Review". NO "would you like". WRITE IT ALL.`;
+CRITICAL INSTRUCTIONS:
+• WRITE EVERYTHING from "Hey ${username}" to "Next check-in"
+• Use ALL their specific numbers (${consistency}%, ${burnoutRisk}%, ${peakHours[0]}:00, etc.)
+• Reference ${persona}, ${profileType}, ${experienceLevel} naturally throughout
+• Make it feel like a 1-on-1 with a senior dev mentor
+• NO generic advice - ONLY personalized to their actual data
+• COMPLETE ALL SECTIONS BEFORE ENDING
+• DO NOT say "would you like" or "let me know" - JUST DELIVER THE FULL ANALYSIS`;
 
   try {
     console.log('🚀 Starting AI analysis with Haiku...');

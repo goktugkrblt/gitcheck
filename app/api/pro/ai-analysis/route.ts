@@ -68,15 +68,19 @@ export async function GET(request: NextRequest) {
 
     console.log(`✅ Access granted: ${isDev ? 'DEV MODE' : 'PRO USER'}`);
 
-    const username = user.githubUsername;
+    // 3. Check query params - GET USERNAME FROM QUERY!
+    const { searchParams } = new URL(request.url);
+    const requestedUsername = searchParams.get('username');
+    const forceRegenerate = searchParams.get('regenerate') === 'true';
+
+    // Use requested username if provided, fallback to authenticated user
+    const username = requestedUsername || user.githubUsername;
 
     if (!username) {
       return NextResponse.json({ error: 'GitHub username not found' }, { status: 404 });
     }
 
-    // 3. Check query params
-    const { searchParams } = new URL(request.url);
-    const forceRegenerate = searchParams.get('regenerate') === 'true';
+    console.log(`🎯 Analyzing profile: ${username} ${requestedUsername ? '(requested)' : '(own profile)'}`);
 
     // 4. Check cache (unless force regenerate)
     if (!forceRegenerate) {
