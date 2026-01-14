@@ -9,7 +9,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const profile = await prisma.profile.findUnique({
+    const profile = await prisma.profile.findFirst({
       where: { userId: session.user.id },
       select: {
         totalRepos: true,
