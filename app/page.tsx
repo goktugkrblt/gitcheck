@@ -442,56 +442,45 @@ export default function HomePage() {
       >
         <UsernameInput isMobile={isMobile} />
 
-        {/* Enhanced Stats Card */}
+        {/* Profile Count with Scanning Effect */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: isMobile ? 0 : 1.1 }}
-          className="mt-6 p-4 rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm"
+          className="flex items-center gap-3 mt-6"
         >
-          <div className="grid grid-cols-3 gap-4">
-            {/* Profiles Analyzed */}
-            <div className="text-center">
-              <motion.div
-                className="text-2xl md:text-3xl font-black bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent mb-1"
-                initial={{ scale: 0.5 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: isMobile ? 0 : 1.2, type: "spring" }}
-              >
-                {profileCount > 0 ? profileCount.toLocaleString() : '—'}
-              </motion.div>
-              <div className="text-[10px] text-white/40 uppercase tracking-wider font-mono">Analyzed</div>
-            </div>
+          {/* Scanning Indicator */}
+          <motion.div
+            className="relative w-2 h-2"
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [0.5, 1, 0.5],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+          >
+            <div className="absolute inset-0 rounded-full bg-red-500" />
+            <motion.div
+              className="absolute inset-0 rounded-full bg-red-500/50"
+              animate={{
+                scale: [1, 2, 1],
+                opacity: [0.6, 0, 0.6],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeOut"
+              }}
+            />
+          </motion.div>
 
-            {/* Users Ranked */}
-            <div className="text-center border-l border-r border-white/10">
-              <motion.div
-                className="text-2xl md:text-3xl font-black bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent mb-1"
-                initial={{ scale: 0.5 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: isMobile ? 0 : 1.3, type: "spring" }}
-              >
-                {leaderboardCount > 0 ? leaderboardCount.toLocaleString() : '—'}
-              </motion.div>
-              <div className="text-[10px] text-white/40 uppercase tracking-wider font-mono">Ranked</div>
-            </div>
-
-            {/* Avg Score */}
-            <div className="text-center">
-              <motion.div
-                className="text-2xl md:text-3xl font-black bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent mb-1"
-                initial={{ scale: 0.5 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: isMobile ? 0 : 1.4, type: "spring" }}
-              >
-                {leaderboard.length > 0
-                  ? (leaderboard.reduce((sum, p) => sum + p.score, 0) / leaderboard.length).toFixed(1)
-                  : '—'
-                }
-              </motion.div>
-              <div className="text-[10px] text-white/40 uppercase tracking-wider font-mono">Avg Score</div>
-            </div>
-          </div>
+          {/* Text */}
+          <span className="text-sm text-white/40 font-mono">
+            {profileCount > 0 ? `${profileCount.toLocaleString()} profiles analyzed` : 'Loading...'}
+          </span>
         </motion.div>
       </motion.div>
     </motion.div>
@@ -570,13 +559,13 @@ export default function HomePage() {
               ].map((item, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
+                  initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
+                  viewport={{ once: true, margin: "-50px" }}
                   transition={{
-                    delay: isMobile ? 0 : i * 0.15,
-                    duration: isMobile ? 0 : 0.6,
-                    type: "spring"
+                    delay: isMobile ? 0 : i * 0.1,
+                    duration: 0.5,
+                    ease: "easeOut"
                   }}
                   className="relative p-6 rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] hover:border-white/20 transition-all duration-300 group"
                 >
@@ -651,13 +640,13 @@ export default function HomePage() {
               ].map((feature, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, scale: isMobile ? 1 : 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, y: isMobile ? 0 : 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{
-                    delay: isMobile ? 0 : i * 0.1,
-                    duration: isMobile ? 0 : 0.5,
-                    type: "spring"
+                    delay: isMobile ? 0 : i * 0.08,
+                    duration: 0.4,
+                    ease: "easeOut"
                   }}
                   whileHover={!isMobile ? { y: -5 } : {}}
                   className="p-5 rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] hover:border-white/20 transition-all duration-300 group"
@@ -712,15 +701,15 @@ export default function HomePage() {
               ].map((feature, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: isMobile ? 0 : 50 }}
+                  initial={{ opacity: 0, y: isMobile ? 0 : 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ 
-                    delay: isMobile ? 0 : i * 0.15, 
-                    duration: isMobile ? 0 : 0.6,
-                    type: "spring"
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{
+                    delay: isMobile ? 0 : i * 0.08,
+                    duration: 0.4,
+                    ease: "easeOut"
                   }}
-                  whileHover={!isMobile ? { 
+                  whileHover={!isMobile ? {
                     y: -5,
                     transition: { duration: 0.2 }
                   } : {}}
@@ -768,10 +757,10 @@ export default function HomePage() {
               ].map((row, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, x: isMobile ? 0 : -20 }}
+                  initial={{ opacity: 0, x: isMobile ? 0 : -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: isMobile ? 0 : i * 0.05, duration: isMobile ? 0 : 0.4 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ delay: isMobile ? 0 : i * 0.03, duration: 0.3, ease: "easeOut" }}
                   className="grid grid-cols-3 gap-4 md:gap-6 items-center p-3 md:p-4 rounded-xl border border-white/[0.08] bg-white/[0.02] hover:border-white/15 transition-all duration-200"
                 >
                   {/* Feature Name */}
@@ -782,13 +771,7 @@ export default function HomePage() {
                   {/* Free Column */}
                   <div className="flex justify-center">
                     {row.free ? (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        whileInView={{ scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: isMobile ? 0 : i * 0.05 + 0.2, type: "spring" }}
-                        className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center"
-                      >
+                      <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                           <path
                             d="M10 3L4.5 8.5L2 6"
@@ -798,7 +781,7 @@ export default function HomePage() {
                             strokeLinejoin="round"
                           />
                         </svg>
-                      </motion.div>
+                      </div>
                     ) : (
                       <div className="text-white/20 text-sm">—</div>
                     )}
@@ -807,13 +790,7 @@ export default function HomePage() {
                   {/* PRO Column */}
                   <div className="flex justify-center">
                     {row.pro ? (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        whileInView={{ scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: isMobile ? 0 : i * 0.05 + 0.3, type: "spring" }}
-                        className="w-5 h-5 rounded-full bg-purple-500/20 flex items-center justify-center"
-                      >
+                      <div className="w-5 h-5 rounded-full bg-purple-500/20 flex items-center justify-center">
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                           <path
                             d="M10 3L4.5 8.5L2 6"
@@ -823,7 +800,7 @@ export default function HomePage() {
                             strokeLinejoin="round"
                           />
                         </svg>
-                      </motion.div>
+                      </div>
                     ) : (
                       <div className="text-white/20 text-sm">—</div>
                     )}
@@ -1087,15 +1064,15 @@ function LeaderboardCard({
 // ScrollRevealSection Component
 function ScrollRevealSection({ children, delay = 0, isMobile }: { children: React.ReactNode; delay?: number; isMobile: boolean }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
   const prefersReducedMotion = useReducedMotion();
 
   return (
     <motion.section
       ref={ref}
-      initial={{ opacity: 0, y: (prefersReducedMotion || isMobile) ? 0 : 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: (prefersReducedMotion || isMobile) ? 0 : 50 }}
-      transition={{ duration: isMobile ? 0 : 0.6, delay: isMobile ? 0 : delay, type: "spring", stiffness: 50 }}
+      initial={{ opacity: 0, y: (prefersReducedMotion || isMobile) ? 0 : 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: (prefersReducedMotion || isMobile) ? 0 : 30 }}
+      transition={{ duration: 0.5, delay: isMobile ? 0 : delay, ease: "easeOut" }}
       className="mb-12 md:mb-20 pt-12 md:pt-20 border-t border-white/[0.06]"
     >
       {children}
