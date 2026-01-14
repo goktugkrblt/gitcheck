@@ -266,7 +266,7 @@ export default function DocsPage() {
                     <div className="bg-white/5 rounded-lg p-4 text-purple-300">
                       percentile = interpolate(zScore, lookupTable)
                       <br />
-                      // Cubic easing for >95th percentile precision
+                      {`// Cubic easing for >95th percentile precision`}
                     </div>
                   </div>
 
