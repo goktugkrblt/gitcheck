@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Clock, Brain, Zap, AlertCircle, TrendingUp, Target, Award, Rocket, ArrowRight, Code2, Layers, GitBranch } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,14 +8,32 @@ import remarkGfm from "remark-gfm";
 
 interface AIAnalysisCardProps {
   username: string;
+  // State lifting - managed by parent to persist across tab switches
+  analysis: string | null;
+  setAnalysis: (analysis: string | null) => void;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
+  error: string | null;
+  setError: (error: string | null) => void;
+  generatedAt: number | null;
+  setGeneratedAt: (generatedAt: number | null) => void;
+  isCached: boolean;
+  setIsCached: (isCached: boolean) => void;
 }
 
-export function AIAnalysisCard({ username }: AIAnalysisCardProps) {
-  const [analysis, setAnalysis] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [generatedAt, setGeneratedAt] = useState<number | null>(null);
-  const [isCached, setIsCached] = useState(false);
+export function AIAnalysisCard({
+  username,
+  analysis,
+  setAnalysis,
+  loading,
+  setLoading,
+  error,
+  setError,
+  generatedAt,
+  setGeneratedAt,
+  isCached,
+  setIsCached,
+}: AIAnalysisCardProps) {
 
   const generateAnalysis = async () => {
     setLoading(true);

@@ -35,6 +35,13 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // ✅ AI Analysis state - persists across tab switches
+  const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [aiGeneratedAt, setAiGeneratedAt] = useState<number | null>(null);
+  const [aiIsCached, setAiIsCached] = useState(false);
+
   const handlePurchase = async () => {
     setIsPurchasing(true);
     try {
@@ -228,7 +235,19 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
               <CareerInsightsCard data={proData.careerInsights} />
             </TabsContent>
             <TabsContent value="ai-analysis" className="space-y-6 mt-6">
-              <AIAnalysisCard username={username || ''} />
+              <AIAnalysisCard
+                username={username || ''}
+                analysis={aiAnalysis}
+                setAnalysis={setAiAnalysis}
+                loading={aiLoading}
+                setLoading={setAiLoading}
+                error={aiError}
+                setError={setAiError}
+                generatedAt={aiGeneratedAt}
+                setGeneratedAt={setAiGeneratedAt}
+                isCached={aiIsCached}
+                setIsCached={setAiIsCached}
+              />
             </TabsContent>
           </Tabs>
         )}
