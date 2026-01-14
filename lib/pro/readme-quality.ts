@@ -201,10 +201,44 @@ export async function analyzeReadmeQuality(
       strengths.push("🎉 Outstanding documentation! Your README is a great example for others");
     }
 
-    // ✅ Insight scores (0-100 with decimal precision)
-    const readability = Math.min(100, Math.round(((codeBlocksScore / 15) * 40 + (sectionsScore / 20) * 30 + (tocScore / 10) * 30) * 100) / 100);
-    const completeness = Math.min(100, Math.round(((lengthScore / 15) * 30 + (sectionsScore / 20) * 40 + (linksScore / 10) * 30) * 100) / 100);
-    const professionalism = Math.min(100, Math.round(((badgesScore / 10) * 40 + (imagesScore / 10) * 30 + (tablesScore / 10) * 30) * 100) / 100);
+    // ✅ Insight scores (0-100 with decimal precision and smart weighting)
+
+    // Readability: How easy is it to understand? (Code examples + Structure + Navigation)
+    // - Code blocks show practical usage (40%)
+    // - Well-organized sections help scanning (35%)
+    // - TOC enables quick navigation (15%)
+    // - Short paragraphs bonus: penalize super long READMEs without structure (10%)
+    const paragraphDensity = sections > 0 ? Math.min(100, (length / sections) / 10) : 0;
+    const readability = Math.min(100, Math.round((
+      (codeBlocksScore / 15) * 40 +
+      (sectionsScore / 20) * 35 +
+      (tocScore / 10) * 15 +
+      (100 - paragraphDensity) * 0.10
+    ) * 100) / 100);
+
+    // Completeness: Coverage of essential information (Installation + Usage + Features + Depth)
+    // - Essential sections (Installation, Usage, Features) (50%)
+    // - Content length shows depth (25%)
+    // - External links show research/references (15%)
+    // - Contributing/License show project maturity (10%)
+    const essentialCoverage = Math.min(100, (essentialSections / 5) * 100);
+    const projectMaturity = (hasContributing ? 50 : 0) + (hasLicense ? 50 : 0);
+    const completeness = Math.min(100, Math.round((
+      essentialCoverage * 0.50 +
+      (lengthScore / 15) * 100 * 0.25 +
+      (linksScore / 10) * 100 * 0.15 +
+      projectMaturity * 0.10
+    ) * 100) / 100);
+
+    // Professionalism: Polish and attention to detail (Badges + Visuals + Data presentation)
+    // - Badges show active maintenance and standards (40%)
+    // - Images/diagrams show thoughtful UX (35%)
+    // - Tables show organized data presentation (25%)
+    const professionalism = Math.min(100, Math.round((
+      (badgesScore / 10) * 100 * 0.40 +
+      (imagesScore / 10) * 100 * 0.35 +
+      (tablesScore / 10) * 100 * 0.25
+    ) * 100) / 100);
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
     console.log(`✅ [README] Complete in ${duration}s - Score: ${finalScore.toFixed(2)}/100`);
@@ -214,21 +248,21 @@ export async function analyzeReadmeQuality(
       grade,
       details: {
         length,
-        lengthScore: Math.round((lengthScore / 15) * 10),
+        lengthScore: Math.round(lengthScore * 100) / 100, // Keep raw 0-15 score with decimals
         sections,
-        sectionsScore: Math.round((sectionsScore / 20) * 10),
+        sectionsScore: Math.round(sectionsScore * 100) / 100, // Keep raw 0-20 score with decimals
         badges,
-        badgesScore: Math.round((badgesScore / 10) * 10),
+        badgesScore: Math.round(badgesScore * 100) / 100, // Keep raw 0-10 score with decimals
         codeBlocks,
-        codeBlocksScore: Math.round((codeBlocksScore / 15) * 10),
+        codeBlocksScore: Math.round(codeBlocksScore * 100) / 100, // Keep raw 0-15 score with decimals
         links,
-        linksScore: Math.round((linksScore / 10) * 10),
+        linksScore: Math.round(linksScore * 100) / 100, // Keep raw 0-10 score with decimals
         images,
-        imagesScore: Math.round((imagesScore / 10) * 10),
+        imagesScore: Math.round(imagesScore * 100) / 100, // Keep raw 0-10 score with decimals
         tables,
-        tablesScore: Math.round((tablesScore / 10) * 10),
+        tablesScore: Math.round(tablesScore * 100) / 100, // Keep raw 0-10 score with decimals
         toc,
-        tocScore: Math.round((tocScore / 10) * 10),
+        tocScore: Math.round(tocScore * 100) / 100, // Keep raw 0-10 score with decimals
       },
       strengths,
       improvements,

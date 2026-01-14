@@ -144,7 +144,20 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
         </div>
       </div>
 
-      {/* Metrics Grid */}
+      {/* Story Section - MOVED TO TOP! */}
+      {data.story && (
+        <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <BookOpen className="w-5 h-5 text-purple-400" />
+            <h4 className="text-lg font-black text-[#e0e0e0]">What This Means</h4>
+          </div>
+          <p className="text-sm text-[#e0e0e0] leading-relaxed text-left">
+            {data.story}
+          </p>
+        </div>
+      )}
+
+      {/* Metrics Grid with explanatory text */}
       <div className="grid md:grid-cols-3 gap-4">
         <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
           <div className="flex items-center gap-2 mb-3">
@@ -154,7 +167,10 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
           <div className="text-2xl font-black text-[#e0e0e0]">
             {data.details.length.toLocaleString()}
           </div>
-          <div className="text-xs text-[#666]">characters</div>
+          <div className="text-xs text-[#666] mb-2">characters</div>
+          <p className="text-xs text-[#666] leading-relaxed text-left">
+            Comprehensive docs (1500+ chars) show depth and help users understand your project better.
+          </p>
         </div>
 
         <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
@@ -165,7 +181,10 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
           <div className="text-2xl font-black text-[#e0e0e0]">
             {data.details.sections}
           </div>
-          <div className="text-xs text-[#666]">key sections</div>
+          <div className="text-xs text-[#666] mb-2">key sections</div>
+          <p className="text-xs text-[#666] leading-relaxed text-left">
+            Well-organized structure with Installation, Usage, and Features sections improves readability.
+          </p>
         </div>
 
         <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
@@ -176,22 +195,25 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
           <div className="text-2xl font-black text-[#e0e0e0]">
             {data.details.badges}
           </div>
-          <div className="text-xs text-[#666]">status badges</div>
+          <div className="text-xs text-[#666] mb-2">status badges</div>
+          <p className="text-xs text-[#666] leading-relaxed text-left">
+            Build status, version, and license badges signal active maintenance and professionalism.
+          </p>
         </div>
       </div>
 
-      {/* Insights Cards - ALL /10 FOR CONSISTENCY */}
+      {/* Quality Insights - Fine-grained scores with decimals */}
       <div className="grid md:grid-cols-3 gap-4">
         <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
           <h4 className="font-bold text-[#e0e0e0] mb-2">Readability</h4>
           <div className="flex items-end gap-2">
             <div className="text-3xl font-black text-blue-400">
-              {data.insights.readability}
+              {data.insights.readability.toFixed(2)}
             </div>
             <div className="text-sm text-[#666] mb-1">/100</div>
           </div>
           <p className="text-xs text-[#666] mt-2 leading-relaxed text-left">
-            How easy your docs are to understand - clear structure and code examples boost this.
+            How easy your docs are to understand - code examples (40%), clear structure (35%), and navigation (15%) matter most.
           </p>
           <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-3">
             <div
@@ -205,12 +227,12 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
           <h4 className="font-bold text-[#e0e0e0] mb-2">Completeness</h4>
           <div className="flex items-end gap-2">
             <div className="text-3xl font-black text-green-400">
-              {data.insights.completeness}
+              {data.insights.completeness.toFixed(2)}
             </div>
             <div className="text-sm text-[#666] mb-1">/100</div>
           </div>
           <p className="text-xs text-[#666] mt-2 leading-relaxed text-left">
-            Coverage of key info - installation, usage, examples. More sections = higher score.
+            Coverage of essential sections (50%) like Installation/Usage/Features, plus content depth (25%) and references (15%).
           </p>
           <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-3">
             <div
@@ -224,12 +246,12 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
           <h4 className="font-bold text-[#e0e0e0] mb-2">Professionalism</h4>
           <div className="flex items-end gap-2">
             <div className="text-3xl font-black text-purple-400">
-              {data.insights.professionalism}
+              {data.insights.professionalism.toFixed(2)}
             </div>
             <div className="text-sm text-[#666] mb-1">/100</div>
           </div>
           <p className="text-xs text-[#666] mt-2 leading-relaxed text-left">
-            Polish matters - badges, images, tables show attention to detail and active maintenance.
+            Polish and attention to detail - badges (40%), visual aids (35%), and structured tables (25%) show care.
           </p>
           <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-3">
             <div
@@ -240,52 +262,77 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
         </div>
       </div>
 
-      {/* Documentation Checklist */}
+      {/* Documentation Elements - Detailed with explanations */}
       <div className="bg-[#050307] border border-[#131c26] rounded-xl p-8">
-        <h3 className="text-xl font-black text-[#e0e0e0] mb-6">Documentation Elements</h3>
-        
+        <h3 className="text-xl font-black text-[#e0e0e0] mb-2">Documentation Elements</h3>
+        <p className="text-sm text-[#666] mb-6 text-left">
+          Essential components that make your README professional and helpful
+        </p>
+
         <div className="grid md:grid-cols-2 gap-4">
           {[
-            { label: 'Code Blocks', value: data.details.codeBlocks, count: data.details.codeBlocks },
-            { label: 'External Links', value: data.details.links, count: data.details.links },
-            { label: 'Images/Diagrams', value: data.details.images, count: data.details.images },
-            { label: 'Data Tables', value: data.details.tables, count: data.details.tables },
-            { label: 'Table of Contents', value: data.details.toc, count: null },
-            { label: 'Status Badges', value: data.details.badges, count: data.details.badges },
+            {
+              label: 'Code Examples',
+              value: data.details.codeBlocks,
+              count: data.details.codeBlocks,
+              description: 'Shows how to actually use your project - critical for adoption'
+            },
+            {
+              label: 'External Links',
+              value: data.details.links,
+              count: data.details.links,
+              description: 'References to docs, tutorials, or related projects add depth'
+            },
+            {
+              label: 'Images/Diagrams',
+              value: data.details.images,
+              count: data.details.images,
+              description: 'Screenshots and diagrams improve visual understanding'
+            },
+            {
+              label: 'Data Tables',
+              value: data.details.tables,
+              count: data.details.tables,
+              description: 'Organized presentation of features, options, or comparisons'
+            },
+            {
+              label: 'Table of Contents',
+              value: data.details.toc,
+              count: null,
+              description: 'Quick navigation for long READMEs (6+ sections)'
+            },
+            {
+              label: 'Status Badges',
+              value: data.details.badges,
+              count: data.details.badges,
+              description: 'Build status, version, coverage show active maintenance'
+            },
           ].map((item, index) => (
-            <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-[#050307]">
-              <div className="flex items-center gap-3">
-                {item.value ? (
-                  <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
-                ) : (
-                  <AlertCircle className="w-5 h-5 text-[#666] flex-shrink-0" />
+            <div key={index} className="flex flex-col gap-2 p-4 rounded-lg bg-[#050307] border border-[#131c26]">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {item.value ? (
+                    <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+                  ) : (
+                    <AlertCircle className="w-5 h-5 text-[#666] flex-shrink-0" />
+                  )}
+                  <span className={`text-sm font-bold ${item.value ? 'text-[#e0e0e0]' : 'text-[#666]'}`}>
+                    {item.label}
+                  </span>
+                </div>
+                {item.count !== null && (
+                  <span className="text-sm font-black text-[#919191]">
+                    {item.count}
+                  </span>
                 )}
-                <span className={`text-sm ${item.value ? 'text-[#e0e0e0]' : 'text-[#666]'}`}>
-                  {item.label}
-                </span>
               </div>
-              {item.count !== null && (
-                <span className="text-sm font-bold text-[#919191]">
-                  {item.count}
-                </span>
-              )}
+              <p className="text-xs text-[#666] leading-relaxed text-left pl-8">
+                {item.description}
+              </p>
             </div>
           ))}
         </div>
       </div>
-
-      {/* Story Section - NEW! */}
-      {data.story && (
-        <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <BookOpen className="w-5 h-5 text-purple-400" />
-            <h4 className="text-lg font-black text-[#e0e0e0]">What This Means</h4>
-          </div>
-          <p className="text-sm text-[#e0e0e0] leading-relaxed text-left">
-            {data.story}
-          </p>
-        </div>
-      )}
 
       {/* Insights */}
       <div className="grid md:grid-cols-2 gap-6">
