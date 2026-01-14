@@ -67,14 +67,14 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
   // ✅ NEW: Run analysis for ALL users (FREE and PRO)
   const fetchAllProData = useCallback(async () => {
     if (!username) return;
-  
+
     const cached = ClientCache.get<{
       readmeQuality: any;
       repoHealth: any;
       devPatterns: any;
       careerInsights: any;
     }>(ProCacheKeys.allAnalysis(username));
-    
+
     if (cached) {
       console.log("⚡ INSTANT LOAD: All PRO data from session storage!");
       setProData(cached);
@@ -85,7 +85,8 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
     setError(null);
 
     try {
-      const response = await fetch('/api/pro/analyze-all');
+      // ✅ FIX: Send username as query parameter
+      const response = await fetch(`/api/pro/analyze-all?username=${encodeURIComponent(username)}`);
       const result = await response.json();
 
       if (!response.ok) {

@@ -36,14 +36,6 @@ interface CodeQualityCardProps {
 }
 
 export function CodeQualityCard({ data }: CodeQualityCardProps) {
-  const getGradeColor = (grade: string) => {
-    if (grade.startsWith('A')) return 'text-green-400';
-    if (grade.startsWith('B')) return 'text-blue-400';
-    if (grade.startsWith('C')) return 'text-yellow-400';
-    if (grade.startsWith('D')) return 'text-orange-400';
-    return 'text-red-400';
-  };
-
   const getScoreColor = (score: number) => {
     if (score >= 80) return "from-green-500 to-emerald-500";
     if (score >= 60) return "from-blue-500 to-cyan-500";
@@ -94,41 +86,6 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
                 {data.overallScore.toFixed(2)}
               </div>
               <div className="text-4xl text-[#666] mb-4">/100</div>
-            </div>
-
-            {/* Circular Progress */}
-            <div className="hidden sm:block relative w-32 h-32">
-              <svg className="transform -rotate-90 w-32 h-32">
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
-                  stroke="currentColor"
-                  strokeWidth="8"
-                  fill="none"
-                  className="text-[#050307]"
-                />
-                <circle
-                  cx="64"
-                  cy="64"
-                  r="56"
-                  stroke="url(#gradient-readme)"
-                  strokeWidth="8"
-                  fill="none"
-                  strokeDasharray={`${scorePercentage * 3.51} 351`}
-                  className="transition-all duration-1000 ease-out"
-                  strokeLinecap="round"
-                />
-                <defs>
-                  <linearGradient id="gradient-readme" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" className={`${data.overallScore >= 80 ? 'text-green-500' : data.overallScore >= 60 ? 'text-blue-500' : data.overallScore >= 40 ? 'text-yellow-500' : 'text-red-500'}`} stopColor="currentColor" />
-                    <stop offset="100%" className={`${data.overallScore >= 80 ? 'text-emerald-500' : data.overallScore >= 60 ? 'text-cyan-500' : data.overallScore >= 40 ? 'text-orange-500' : 'text-pink-500'}`} stopColor="currentColor" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-black text-[#e0e0e0]">{Math.round(scorePercentage)}%</span>
-              </div>
             </div>
           </div>
 

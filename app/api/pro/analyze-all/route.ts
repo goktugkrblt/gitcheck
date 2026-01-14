@@ -6,7 +6,7 @@ import { CacheService, CacheKeys } from "@/lib/cache";
 import { analyzeAllPro } from "@/lib/pro/analyze-all";
 import { calculateDeveloperScore } from "@/lib/scoring/developer-score"; // ✅ YENİ
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const session = await auth();
 
@@ -32,16 +32,29 @@ export async function GET() {
       return NextResponse.json({ error: "GitHub account not connected" }, { status: 404 });
     }
 
-    const username = user.githubUsername;
+    // ✅ FIX: Get username from query params, fallback to authenticated user
+    const { searchParams } = new URL(request.url);
+    const requestedUsername = searchParams.get('username');
+    const username = requestedUsername || user.githubUsername;
+
+    console.log(`🎯 Analyzing profile: ${username} ${requestedUsername ? '(requested)' : '(own profile)'}`);
+
     const cacheKey = CacheKeys.proAnalysis(username);
 
     // 🔥 CHECK CACHE
     const cached = CacheService.get(cacheKey);
     if (cached) {
       console.log(`✅ Cache HIT for PRO analysis: ${username}`);
-      
-      // ✅ YENİ: Cache'den geliyorsa da score hesapla (eğer yoksa)
-      const profile = user.profiles[0];
+
+      // ✅ FIX: Get the profile for the requested username, not just authenticated user
+      const targetUser = requestedUsername
+        ? await prisma.user.findUnique({
+            where: { githubUsername: requestedUsername },
+            include: { profiles: { orderBy: { scannedAt: 'desc' }, take: 1 } }
+          })
+        : user;
+
+      const profile = targetUser?.profiles[0];
       
       if (profile && profile.score === 0) {
         console.log(`🎯 Cache HIT but no score, calculating...`);
@@ -97,7 +110,9 @@ export async function GET() {
 
     // Cache miss - analyze everything
     console.log(`🔍 Cache MISS, running full PRO analysis for: ${username}`);
-    
+
+    // ✅ FIX: Use authenticated user's token for API rate limits
+    // Public data is accessible even when analyzing other users
     const octokit = new Octokit({
       auth: user.githubToken,
     });
@@ -135,9 +150,16 @@ export async function GET() {
       console.error('❌ Failed to save to database:', dbError);
     }
 
-    // ✅ YENİ: SCORE HESAPLA (SADECE BURADA!)
-    const profile = user.profiles[0];
-    
+    // ✅ FIX: Get the profile for the requested username
+    const targetUser = requestedUsername
+      ? await prisma.user.findUnique({
+          where: { githubUsername: requestedUsername },
+          include: { profiles: { orderBy: { scannedAt: 'desc' }, take: 1 } }
+        })
+      : user;
+
+    const profile = targetUser?.profiles[0];
+
     if (profile) {
       console.log(`🎯 Calculating SINGLE SCORE for: ${username}`);
       
