@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { ScoreDisplay } from "@/components/dashboard/score-display";
+import { BadgeEmbed } from "@/components/dashboard/badge-embed";
 import { ActivityHeatmap } from "@/components/dashboard/activity-heatmap";
 import { ProTab } from "@/components/dashboard/pro-tab";
 import { CompareTab } from "@/components/dashboard/compare-tab";
@@ -553,12 +554,22 @@ const fetchGlobalRank = async (username: string) => {
             {/* ✅ CHANGED: Score Display - Full width, separate from profile */}
             <div className="lg:motion-safe:animate-slideInRight">
               {shouldShowScore ? (
-                <ScoreDisplay
-                  score={displayData.score}
-                  percentile={displayData.percentile}
-                  username={displayData.username}
-                  globalRank={globalRank}
-                />
+                <>
+                  <ScoreDisplay
+                    score={displayData.score}
+                    percentile={displayData.percentile}
+                    username={displayData.username}
+                    globalRank={globalRank}
+                  />
+
+                  {/* Badge Embed Component */}
+                  <div className="mt-6">
+                    <BadgeEmbed
+                      username={displayData.username}
+                      rank={globalRank?.rank}
+                    />
+                  </div>
+                </>
               ) : (
                 <div className="bg-[#050307] rounded-xl border border-blue-500/30 p-6 md:p-8 flex items-center justify-center min-h-[200px]">
                   <div className="text-center">
