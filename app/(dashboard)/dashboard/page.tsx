@@ -40,11 +40,17 @@ export default function DashboardPage() {
   const [userPlan, setUserPlan] = useState<string>("FREE");
   const [activeTab, setActiveTab] = useState("overview");
   const [devMockPlan, setDevMockPlan] = useState<"FREE" | "PRO" | null>(null);
-  
+
   // ✅ NEW: PRO Analysis state
   const [proAnalysisStatus, setProAnalysisStatus] = useState<'idle' | 'running' | 'complete'>('idle');
   const [analysisProgress, setAnalysisProgress] = useState(0);
   const [initialCheckDone, setInitialCheckDone] = useState(false); // ✅ YENİ: Sadece bir kez kontrol
+
+  // ✅ NEW: Cache warning state
+  const [cacheInfo, setCacheInfo] = useState<{
+    nextScanAvailable: string;
+    hoursRemaining: number;
+  } | null>(null);
 
   const effectivePlan = process.env.NODE_ENV === 'development' && devMockPlan 
     ? devMockPlan 
@@ -54,6 +60,19 @@ export default function DashboardPage() {
   const shouldShowScore = proAnalysisStatus === 'complete';
 
   useEffect(() => {
+    // Check for cache info in URL params
+    const urlParams = new URLSearchParams(window.location.search);
+    const cached = urlParams.get('cached');
+    const nextScan = urlParams.get('nextScan');
+    const hoursRemaining = urlParams.get('hoursRemaining');
+
+    if (cached === 'true' && nextScan && hoursRemaining) {
+      setCacheInfo({
+        nextScanAvailable: nextScan,
+        hoursRemaining: parseInt(hoursRemaining),
+      });
+    }
+
     fetchProfile();
   }, []);
 
@@ -320,6 +339,38 @@ export default function DashboardPage() {
         <div className="fixed top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 font-bold text-sm">
           🔧 DEV: {devMockPlan} MODE
         </div>
+      )}
+
+      {/* ✅ NEW: Cache Warning */}
+      {cacheInfo && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl p-4"
+        >
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+              <Info className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-bold text-white mb-1">
+                Viewing Cached Data
+              </h3>
+              <p className="text-xs text-white/70 mb-3">
+                This profile was recently analyzed. To prevent excessive API usage, you can request a fresh analysis once per day.
+              </p>
+              <div className="flex items-center gap-2 text-xs">
+                <Calendar className="w-4 h-4 text-blue-400" />
+                <span className="text-white/90 font-medium">
+                  Next scan available in {cacheInfo.hoursRemaining} hour{cacheInfo.hoursRemaining !== 1 ? 's' : ''}
+                </span>
+              </div>
+              <div className="mt-2 text-[10px] text-white/50 font-mono">
+                Resets at: {new Date(cacheInfo.nextScanAvailable).toLocaleString()}
+              </div>
+            </div>
+          </div>
+        </motion.div>
       )}
 
       {/* ✅ NEW: Analysis Progress Indicator */}

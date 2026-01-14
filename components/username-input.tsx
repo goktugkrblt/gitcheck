@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { Loader2, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { RateLimitWarning } from "./rate-limit-warning";
-import { CacheWarning } from "./cache-warning";
 
 interface UsernameInputProps {
   isMobile?: boolean;
@@ -20,10 +19,6 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
   const [rateLimitInfo, setRateLimitInfo] = useState<{
     resetAt: string;
     minutesUntilReset: number;
-  } | null>(null);
-  const [cacheInfo, setCacheInfo] = useState<{
-    nextScanAvailable: string;
-    hoursRemaining: number;
   } | null>(null);
   const [pageLoadTime] = useState(() => Date.now()); // Track when component mounted
   const [honeypot, setHoneypot] = useState(""); // Honeypot field (should stay empty)
@@ -85,16 +80,15 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
         return;
       }
 
-      // Check if cached data was returned
+      // Success - redirect to dashboard with extracted username and cache info
+      let redirectUrl = `/dashboard?username=${extractedUsername}`;
+
+      // Add cache info to URL if data was cached
       if (data.cached && data.nextScanAvailable && data.hoursRemaining) {
-        setCacheInfo({
-          nextScanAvailable: data.nextScanAvailable,
-          hoursRemaining: data.hoursRemaining,
-        });
+        redirectUrl += `&cached=true&nextScan=${encodeURIComponent(data.nextScanAvailable)}&hoursRemaining=${data.hoursRemaining}`;
       }
 
-      // Success - redirect to dashboard with extracted username
-      router.push(`/dashboard?username=${extractedUsername}`);
+      router.push(redirectUrl);
     } catch (err) {
       setError("Network error. Please try again.");
       setAnalyzing(false);
@@ -114,14 +108,6 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
         <RateLimitWarning
           resetAt={rateLimitInfo.resetAt}
           minutesUntilReset={rateLimitInfo.minutesUntilReset}
-        />
-      )}
-
-      {/* Cache Warning */}
-      {cacheInfo && (
-        <CacheWarning
-          nextScanAvailable={cacheInfo.nextScanAvailable}
-          hoursRemaining={cacheInfo.hoursRemaining}
         />
       )}
 
