@@ -26,6 +26,7 @@ interface CodeQualityCardProps {
     };
     strengths: string[];
     improvements: string[];
+    story?: string;
     insights: {
       readability: number;
       completeness: number;
@@ -263,6 +264,19 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
           ))}
         </div>
       </div>
+
+      {/* Story Section - NEW! */}
+      {data.story && (
+        <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <BookOpen className="w-5 h-5 text-purple-400" />
+            <h4 className="text-lg font-black text-[#e0e0e0]">What This Means</h4>
+          </div>
+          <p className="text-sm text-[#e0e0e0] leading-relaxed text-left">
+            {data.story}
+          </p>
+        </div>
+      )}
 
       {/* Insights */}
       <div className="grid md:grid-cols-2 gap-6">

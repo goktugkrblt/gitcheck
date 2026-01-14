@@ -141,6 +141,7 @@ export async function analyzeAllPro(
         ...readmeQuality,
         strengths: readmeInsights.strengths,
         improvements: readmeInsights.improvements,
+        story: readmeInsights.story,
       },
       repoHealth: {
         ...repoHealth,
@@ -148,6 +149,7 @@ export async function analyzeAllPro(
           strengths: repoHealthInsights.strengths,
           concerns: repoHealthInsights.concerns,
           recommendations: repoHealthInsights.recommendations,
+          story: repoHealthInsights.story,
         },
       },
       devPatterns: {
@@ -156,9 +158,13 @@ export async function analyzeAllPro(
           strengths: devPatternsInsights.strengths,
           patterns: devPatternsInsights.patterns,
           recommendations: devPatternsInsights.recommendations,
+          story: devPatternsInsights.story,
         },
       },
-      careerInsights,
+      careerInsights: {
+        ...careerInsights,
+        story: careerInsightsEnriched.story,
+      },
     };
   } catch (error) {
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);

@@ -48,6 +48,7 @@ interface RepoHealthData {
     strengths: string[];
     concerns: string[];
     recommendations: string[];
+    story?: string;
   };
   trend: 'improving' | 'stable' | 'declining';
 }
@@ -334,6 +335,19 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
           </div>
         </div>
       </div>
+
+      {/* Story Section - NEW! */}
+      {data.insights.story && (
+        <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Shield className="w-5 h-5 text-blue-400" />
+            <h4 className="text-lg font-black text-[#e0e0e0]">Health Assessment</h4>
+          </div>
+          <p className="text-sm text-[#e0e0e0] leading-relaxed text-left">
+            {data.insights.story}
+          </p>
+        </div>
+      )}
 
       {/* Insights */}
      {/* Insights - 3 BÖLÜM */}
