@@ -9,6 +9,11 @@ interface ScoreDisplayProps {
   score: number;
   percentile: number;
   username: string;
+  globalRank?: {
+    rank: number;
+    totalProfiles: number;
+    percentile: number;
+  } | null;
 }
 
 interface ComponentScore {
@@ -20,7 +25,7 @@ interface ComponentScore {
   subScores?: { [key: string]: number | string };
 }
 
-export function ScoreDisplay({ score, percentile, username }: ScoreDisplayProps) {
+export function ScoreDisplay({ score, percentile, username, globalRank }: ScoreDisplayProps) {
   const { data: session } = useSession();
   const user = session?.user as { plan?: string } | undefined;
   const [showBreakdown, setShowBreakdown] = useState(false);
@@ -199,6 +204,35 @@ export function ScoreDisplay({ score, percentile, username }: ScoreDisplayProps)
             Top <span className="font-bold text-white">{100 - percentile}%</span> of developers
           </p>
         </div>
+
+        {/* Global Rank */}
+        {globalRank && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mt-3 pt-3 border-t border-white/10"
+          >
+            <div className="flex items-center justify-center gap-3">
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-xs text-white/40 uppercase tracking-wider font-semibold">Rank</span>
+                <span className="text-2xl font-black bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
+                  #{globalRank.rank.toLocaleString()}
+                </span>
+              </div>
+              <div className="w-px h-6 bg-white/10" />
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-xs text-white/40">of</span>
+                <span className="text-sm font-bold text-white">
+                  {globalRank.totalProfiles.toLocaleString()}
+                </span>
+              </div>
+            </div>
+            <p className="text-center text-xs text-white/40 mt-2">
+              You're in the top <span className="text-white font-semibold">{globalRank.percentile.toFixed(2)}%</span>
+            </p>
+          </motion.div>
+        )}
 
         {/* ✅ Score Breakdown Toggle */}
         {components && (

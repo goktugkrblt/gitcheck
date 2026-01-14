@@ -28,32 +28,39 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. RATE LIMITING: IP-based rate limit (5 requests per 15 minutes)
+    // Skip rate limiting for localhost (for populate script)
     const clientIp = getClientIp(req);
-    const rateLimitResult = checkRateLimit(clientIp, {
-      maxRequests: 5,
-      windowSeconds: 15 * 60, // 15 minutes
-      minRequestInterval: 2000, // 2 seconds minimum between requests
-    });
+    const isLocalhost = clientIp === '127.0.0.1' || clientIp === '::1' || clientIp === 'unknown';
 
-    if (!rateLimitResult.success) {
-      console.log(`🚫 Rate limit exceeded for IP: ${clientIp}`);
-      return NextResponse.json(
-        {
-          error: rateLimitResult.reason || "Too many requests. Please try again later.",
-          retryAfter: rateLimitResult.retryAfter,
-          resetAt: rateLimitResult.reset.toISOString(),
-          minutesUntilReset: Math.ceil((rateLimitResult.retryAfter || 0) / 60),
-        },
-        {
-          status: 429,
-          headers: {
-            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
-            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
-            'X-RateLimit-Reset': rateLimitResult.reset.toISOString(),
-            'Retry-After': (rateLimitResult.retryAfter || 0).toString(),
+    if (!isLocalhost) {
+      const rateLimitResult = checkRateLimit(clientIp, {
+        maxRequests: 5,
+        windowSeconds: 15 * 60, // 15 minutes
+        minRequestInterval: 2000, // 2 seconds minimum between requests
+      });
+
+      if (!rateLimitResult.success) {
+        console.log(`🚫 Rate limit exceeded for IP: ${clientIp}`);
+        return NextResponse.json(
+          {
+            error: rateLimitResult.reason || "Too many requests. Please try again later.",
+            retryAfter: rateLimitResult.retryAfter,
+            resetAt: rateLimitResult.reset.toISOString(),
+            minutesUntilReset: Math.ceil((rateLimitResult.retryAfter || 0) / 60),
+          },
+          {
+            status: 429,
+            headers: {
+              'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+              'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+              'X-RateLimit-Reset': rateLimitResult.reset.toISOString(),
+              'Retry-After': (rateLimitResult.retryAfter || 0).toString(),
+            }
           }
-        }
-      );
+        );
+      }
+    } else {
+      console.log('✅ Localhost request - skipping rate limit');
     }
 
     if (!username || typeof username !== "string") {

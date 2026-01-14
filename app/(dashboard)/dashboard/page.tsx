@@ -52,8 +52,15 @@ export default function DashboardPage() {
     hoursRemaining: number;
   } | null>(null);
 
-  const effectivePlan = process.env.NODE_ENV === 'development' && devMockPlan 
-    ? devMockPlan 
+  // ✅ NEW: Global rank state
+  const [globalRank, setGlobalRank] = useState<{
+    rank: number;
+    totalProfiles: number;
+    percentile: number;
+  } | null>(null);
+
+  const effectivePlan = process.env.NODE_ENV === 'development' && devMockPlan
+    ? devMockPlan
     : userPlan;
 
   // ✅ CHANGED: Show score only after analysis completes
@@ -234,11 +241,34 @@ export default function DashboardPage() {
         }
         setInitialCheckDone(true);
       }
+
+      // ✅ NEW: Fetch global rank if score exists
+      if (data.profile.score && data.profile.score > 0) {
+        fetchGlobalRank(username);
+      }
     }
   } catch (error) {
     console.error("Failed to fetch profile:", error);
   } finally {
     setInitialLoading(false);
+  }
+};
+
+// ✅ NEW: Fetch global rank
+const fetchGlobalRank = async (username: string) => {
+  try {
+    const res = await fetch(`/api/global-rank?username=${username}`);
+    const data = await res.json();
+
+    if (res.ok && data.rank) {
+      setGlobalRank({
+        rank: data.rank,
+        totalProfiles: data.totalProfiles,
+        percentile: data.percentile,
+      });
+    }
+  } catch (error) {
+    console.error("Failed to fetch global rank:", error);
   }
 };
 
@@ -527,6 +557,7 @@ export default function DashboardPage() {
                   score={displayData.score}
                   percentile={displayData.percentile}
                   username={displayData.username}
+                  globalRank={globalRank}
                 />
               ) : (
                 <div className="bg-[#050307] rounded-xl border border-blue-500/30 p-6 md:p-8 flex items-center justify-center min-h-[200px]">
