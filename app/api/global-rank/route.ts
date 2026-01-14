@@ -26,11 +26,11 @@ export async function GET(request: Request) {
       );
     }
 
-    // Count total profiles with scores
+    // Count total profiles with scores (use gt: 0 to filter out null)
     const totalProfiles = await prisma.profile.count({
       where: {
         score: {
-          not: null as any,
+          gt: 0,
         },
       },
     });
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     // Count profiles with higher scores
     const higherScores = await prisma.profile.count({
       where: {
-        score: { gt: profile.score as number },
+        score: { gt: profile.score },
       },
     });
 
