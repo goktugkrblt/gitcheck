@@ -289,12 +289,17 @@ export default function HomePage() {
             />
           </svg>
           <motion.span
-            className="absolute -top-8 left-1/2 -translate-x-1/2 text-2xl opacity-0 group-hover:opacity-100"
+            className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100"
             initial={{ y: 0, opacity: 0 }}
             whileHover={{ y: -10, opacity: 1 }}
             transition={{ duration: 0.3 }}
           >
-            🐵
+            <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+              <circle cx="9" cy="10" r="1.5" fill="currentColor"/>
+              <circle cx="15" cy="10" r="1.5" fill="currentColor"/>
+              <path d="M8 15c1.5 1.5 3 2 4 2s2.5-.5 4-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
           </motion.span>
         </motion.div>
       </Link>
@@ -437,13 +442,57 @@ export default function HomePage() {
       >
         <UsernameInput isMobile={isMobile} />
 
-        <motion.span
-          className="text-sm text-white/40 font-mono mt-4 block"
-          animate={!isMobile ? { opacity: [0.4, 0.7, 0.4] } : {}}
-          transition={{ duration: 3, repeat: Infinity }}
+        {/* Enhanced Stats Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: isMobile ? 0 : 1.1 }}
+          className="mt-6 p-4 rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm"
         >
-          {profileCount} profiles analyzed
-        </motion.span>
+          <div className="grid grid-cols-3 gap-4">
+            {/* Profiles Analyzed */}
+            <div className="text-center">
+              <motion.div
+                className="text-2xl md:text-3xl font-black bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent mb-1"
+                initial={{ scale: 0.5 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: isMobile ? 0 : 1.2, type: "spring" }}
+              >
+                {profileCount > 0 ? profileCount.toLocaleString() : '—'}
+              </motion.div>
+              <div className="text-[10px] text-white/40 uppercase tracking-wider font-mono">Analyzed</div>
+            </div>
+
+            {/* Users Ranked */}
+            <div className="text-center border-l border-r border-white/10">
+              <motion.div
+                className="text-2xl md:text-3xl font-black bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent mb-1"
+                initial={{ scale: 0.5 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: isMobile ? 0 : 1.3, type: "spring" }}
+              >
+                {leaderboardCount > 0 ? leaderboardCount.toLocaleString() : '—'}
+              </motion.div>
+              <div className="text-[10px] text-white/40 uppercase tracking-wider font-mono">Ranked</div>
+            </div>
+
+            {/* Avg Score */}
+            <div className="text-center">
+              <motion.div
+                className="text-2xl md:text-3xl font-black bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent mb-1"
+                initial={{ scale: 0.5 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: isMobile ? 0 : 1.4, type: "spring" }}
+              >
+                {leaderboard.length > 0
+                  ? (leaderboard.reduce((sum, p) => sum + p.score, 0) / leaderboard.length).toFixed(1)
+                  : '—'
+                }
+              </motion.div>
+              <div className="text-[10px] text-white/40 uppercase tracking-wider font-mono">Avg Score</div>
+            </div>
+          </div>
+        </motion.div>
       </motion.div>
     </motion.div>
 
@@ -477,24 +526,174 @@ export default function HomePage() {
         {/* REST OF CONTENT */}
         <main className="max-w-4xl mx-auto px-6">
           
-          {/* About Section */}
+          {/* How It Works Section */}
           <ScrollRevealSection isMobile={isMobile}>
+            <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-10">
+              How It Works
+            </h2>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                {
+                  step: "01",
+                  title: "Enter Username",
+                  desc: "Simply enter any public GitHub username. No authentication required, no OAuth permissions.",
+                  icon: (
+                    <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )
+                },
+                {
+                  step: "02",
+                  title: "Statistical Analysis",
+                  desc: "Our algorithm analyzes 100+ repositories, commits, PRs, and contribution patterns in 30-45 seconds.",
+                  icon: (
+                    <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <line x1="12" y1="22.08" x2="12" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )
+                },
+                {
+                  step: "03",
+                  title: "Get Insights",
+                  desc: "Receive a 0-100 developer score, global ranking, and detailed breakdown of your GitHub activity.",
+                  icon: (
+                    <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none">
+                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )
+                }
+              ].map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{
+                    delay: isMobile ? 0 : i * 0.15,
+                    duration: isMobile ? 0 : 0.6,
+                    type: "spring"
+                  }}
+                  className="relative p-6 rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] hover:border-white/20 transition-all duration-300 group"
+                >
+                  {/* Step Number */}
+                  <div className="absolute top-4 right-4 text-6xl font-black text-white/5 group-hover:text-white/10 transition-all">
+                    {item.step}
+                  </div>
+
+                  {/* Icon */}
+                  <div className="mb-4 text-blue-400 group-hover:text-blue-300 transition-colors relative z-10">
+                    {item.icon}
+                  </div>
+
+                  {/* Content */}
+                  <h3 className="text-lg font-bold text-white mb-2 relative z-10">{item.title}</h3>
+                  <p className="text-sm text-white/60 leading-relaxed relative z-10">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </ScrollRevealSection>
+
+          {/* Key Features Section */}
+          <ScrollRevealSection delay={0.2} isMobile={isMobile}>
+            <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-10">
+              Key Features
+            </h2>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                {
+                  title: "Statistical Scoring",
+                  desc: "0-100 percentile-based scores using z-score normalization across 100K+ developer baseline.",
+                  icon: (
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                      <path d="M18 20V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M12 20V4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M6 20v-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  ),
+                  color: "from-blue-500 to-cyan-500"
+                },
+                {
+                  title: "Global Leaderboard",
+                  desc: "See your real-time rank among all analyzed developers. Track your position and percentile.",
+                  icon: (
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  ),
+                  color: "from-purple-500 to-pink-500"
+                },
+                {
+                  title: "24-Hour Cache",
+                  desc: "Smart caching system prevents API abuse. Cached responses served in ~50ms vs. 30-45s full analysis.",
+                  icon: (
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  ),
+                  color: "from-yellow-500 to-orange-500"
+                },
+                {
+                  title: "Privacy First",
+                  desc: "No authentication, no OAuth. Only public GitHub data accessed. Zero tracking cookies or sessions.",
+                  icon: (
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  ),
+                  color: "from-green-500 to-emerald-500"
+                }
+              ].map((feature, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: isMobile ? 1 : 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{
+                    delay: isMobile ? 0 : i * 0.1,
+                    duration: isMobile ? 0 : 0.5,
+                    type: "spring"
+                  }}
+                  whileHover={!isMobile ? { y: -5 } : {}}
+                  className="p-5 rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] hover:border-white/20 transition-all duration-300 group"
+                >
+                  {/* Icon with gradient */}
+                  <div className={`mb-4 w-12 h-12 rounded-lg bg-gradient-to-br ${feature.color} p-0.5 group-hover:scale-110 transition-transform`}>
+                    <div className="w-full h-full rounded-lg bg-black flex items-center justify-center text-white">
+                      {feature.icon}
+                    </div>
+                  </div>
+
+                  <h3 className="text-sm font-bold text-white mb-2">{feature.title}</h3>
+                  <p className="text-xs text-white/60 leading-relaxed">{feature.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+          </ScrollRevealSection>
+
+          {/* About Section - Updated */}
+          <ScrollRevealSection delay={0.3} isMobile={isMobile}>
             <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-8">
               About GitCheck
             </h2>
 
             <div className="space-y-4 text-sm md:text-base text-white/60 leading-relaxed">
               <p>
-                GitCheck transforms your GitHub profile into a comprehensive analytics dashboard. We analyze your repositories, contributions, and coding patterns to provide actionable insights that help you understand and improve your developer journey.
+                GitCheck is a public GitHub analytics platform that transforms raw GitHub data into meaningful developer insights. Using advanced statistical algorithms and z-score normalization, we calculate a 0-100 developer score based on four weighted components: <strong className="text-white/80">Impact (35%)</strong>, <strong className="text-white/80">Code Quality (30%)</strong>, <strong className="text-white/80">Consistency (20%)</strong>, and <strong className="text-white/80">Collaboration (15%)</strong>.
               </p>
               <p>
-                Built with modern web technologies and powered by advanced algorithms, GitCheck processes millions of data points from your GitHub activity to generate detailed reports on code quality, collaboration patterns, and technical expertise.
+                Built with Next.js 16, React 19, TypeScript, and PostgreSQL on Neon, GitCheck processes GitHub GraphQL and REST API data to analyze up to 100 repositories per profile. Our scoring system compares developers against a baseline population of 100,000+ users, ensuring percentile-based scores remain meaningful over time.
               </p>
               <p>
-                Our platform serves developers, technical recruiters, and engineering teams who need quantifiable metrics to make informed decisions. Whether you're tracking personal growth, evaluating candidates, or assessing team performance, GitCheck provides the data-driven insights you need.
+                <strong className="text-white/80">Privacy is paramount.</strong> We require no authentication or OAuth permissions—simply enter any public GitHub username to analyze. All data accessed is already publicly available on GitHub. We implement 24-hour smart caching, IP-based rate limiting (5 req/15min), and honeypot bot protection to ensure fair usage.
               </p>
               <p className="text-white/80 font-medium">
-                Join thousands of developers who trust GitCheck to measure what matters.
+                Whether you're tracking personal growth, evaluating candidates, or benchmarking against peers, GitCheck provides the quantifiable metrics you need.
               </p>
             </div>
           </ScrollRevealSection>
@@ -786,7 +985,11 @@ function LeaderboardCard({
       {/* Empty State */}
       {!loading && count === 0 && (
         <div className="py-8 text-center">
-          <div className="text-4xl mb-3">🏆</div>
+          <div className="flex justify-center mb-3">
+            <svg className="w-10 h-10 text-white/20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
           <p className="text-xs text-white/60 mb-2 font-medium">No rankings yet</p>
           <p className="text-[10px] text-white/40 leading-relaxed">
             Be the first to analyze
