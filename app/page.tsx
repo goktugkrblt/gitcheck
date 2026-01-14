@@ -557,16 +557,8 @@ export default function HomePage() {
                   )
                 }
               ].map((item, i) => (
-                <motion.div
+                <div
                   key={i}
-                  initial={{ opacity: 0, y: isMobile ? 0 : 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{
-                    delay: isMobile ? 0 : i * 0.1,
-                    duration: 0.5,
-                    ease: "easeOut"
-                  }}
                   className="relative p-6 rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] hover:border-white/20 transition-all duration-300 group"
                 >
                   {/* Step Number */}
@@ -582,7 +574,7 @@ export default function HomePage() {
                   {/* Content */}
                   <h3 className="text-lg font-bold text-white mb-2 relative z-10">{item.title}</h3>
                   <p className="text-sm text-white/60 leading-relaxed relative z-10">{item.desc}</p>
-                </motion.div>
+                </div>
               ))}
             </div>
           </ScrollRevealSection>
@@ -640,14 +632,6 @@ export default function HomePage() {
               ].map((feature, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: isMobile ? 0 : 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{
-                    delay: isMobile ? 0 : i * 0.08,
-                    duration: 0.4,
-                    ease: "easeOut"
-                  }}
                   whileHover={!isMobile ? { y: -5 } : {}}
                   className="p-5 rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] hover:border-white/20 transition-all duration-300 group"
                 >
@@ -701,14 +685,6 @@ export default function HomePage() {
               ].map((feature, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: isMobile ? 0 : 15 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{
-                    delay: isMobile ? 0 : i * 0.08,
-                    duration: 0.4,
-                    ease: "easeOut"
-                  }}
                   whileHover={!isMobile ? {
                     y: -5,
                     transition: { duration: 0.2 }
@@ -755,12 +731,8 @@ export default function HomePage() {
                 { feature: "AI Recommendations", free: false, pro: true },
                 { feature: "Detailed Breakdown", free: false, pro: true },
               ].map((row, i) => (
-                <motion.div
+                <div
                   key={i}
-                  initial={{ opacity: 0, x: isMobile ? 0 : -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ delay: isMobile ? 0 : i * 0.03, duration: 0.3, ease: "easeOut" }}
                   className="grid grid-cols-3 gap-4 md:gap-6 items-center p-3 md:p-4 rounded-xl border border-white/[0.08] bg-white/[0.02] hover:border-white/15 transition-all duration-200"
                 >
                   {/* Feature Name */}
@@ -805,7 +777,7 @@ export default function HomePage() {
                       <div className="text-white/20 text-sm">—</div>
                     )}
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </ScrollRevealSection>
@@ -1061,21 +1033,11 @@ function LeaderboardCard({
   );
 }
 
-// ScrollRevealSection Component
+// ScrollRevealSection Component - No animations, just styling
 function ScrollRevealSection({ children, delay = 0, isMobile }: { children: React.ReactNode; delay?: number; isMobile: boolean }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const prefersReducedMotion = useReducedMotion();
-
   return (
-    <motion.section
-      ref={ref}
-      initial={{ opacity: 0, y: (prefersReducedMotion || isMobile) ? 0 : 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: (prefersReducedMotion || isMobile) ? 0 : 30 }}
-      transition={{ duration: 0.5, delay: isMobile ? 0 : delay, ease: "easeOut" }}
-      className="mb-12 md:mb-20 pt-12 md:pt-20 border-t border-white/[0.06]"
-    >
+    <section className="mb-12 md:mb-20 pt-12 md:pt-20 border-t border-white/[0.06]">
       {children}
-    </motion.section>
+    </section>
   );
 }
