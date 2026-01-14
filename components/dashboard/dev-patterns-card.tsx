@@ -229,11 +229,15 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             </div>
 
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
-            <div 
+            <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.commitPatterns.score)} transition-all duration-1000`}
                 style={{ width: `${(data.patterns.commitPatterns.score / 10) * 100}%` }}
             />
             </div>
+
+            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+              When you code most and how consistently - regular patterns show dedication and discipline.
+            </p>
         </div>
 
         {/* 2. Code Quality */}
@@ -271,11 +275,15 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             </div>
 
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
-            <div 
+            <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.codeQuality.score)} transition-all duration-1000`}
                 style={{ width: `${(data.patterns.codeQuality.score / 10) * 100}%` }}
             />
             </div>
+
+            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+              How you write code - small commits, clean branches, docs, and review engagement all matter.
+            </p>
         </div>
 
         {/* 3. Work-Life Balance */}
@@ -313,11 +321,15 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             </div>
 
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
-            <div 
+            <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.workLifeBalance.score)} transition-all duration-1000`}
                 style={{ width: `${(data.patterns.workLifeBalance.score / 10) * 100}%` }}
             />
             </div>
+
+            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+              Balance matters - too much weekend/night coding can lead to burnout. Higher score = better balance.
+            </p>
         </div>
 
         {/* 4. Collaboration */}
@@ -355,11 +367,15 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             </div>
 
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
-            <div 
+            <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.collaboration.score)} transition-all duration-1000`}
                 style={{ width: `${(data.patterns.collaboration.score / 10) * 100}%` }}
             />
             </div>
+
+            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+              How you work with others - PR reviews, contributions to other repos, and team involvement.
+            </p>
         </div>
 
         {/* 5. Technology */}
@@ -397,11 +413,15 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             </div>
 
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
-            <div 
+            <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.technology.score)} transition-all duration-1000`}
                 style={{ width: `${(data.patterns.technology.score / 10) * 100}%` }}
             />
             </div>
+
+            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+              Your tech stack choices - modern frameworks, cutting-edge tools, and willingness to learn new tech.
+            </p>
         </div>
 
         {/* 6. Productivity */}
@@ -439,11 +459,15 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             </div>
 
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
-            <div 
+            <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.productivity.score)} transition-all duration-1000`}
                 style={{ width: `${(data.patterns.productivity.score / 10) * 100}%` }}
             />
             </div>
+
+            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+              Focus and flow - long coding sessions, low context switching, and peak performance times.
+            </p>
         </div>
         
         </div>

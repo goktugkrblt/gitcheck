@@ -372,15 +372,15 @@ function calculateCareerInsights(data: {
   // 7. PROFESSIONAL METRICS
   // ==========================================
   
-  // Portfolio Strength (0-100)
+  // Portfolio Strength (0-10)
   const diversityScore = Math.min(technicalBreadth * 10, 25);
   const consistencyScore = Math.min((consistency / 100) * 25, 25);
   const impactScore = Math.min((collaborationSkill / 10) * 25, 25);
   const visibilityScore = Math.min((documentation / 10) * 25, 25);
-  
+
   const portfolioStrength = Math.round(
-    diversityScore + consistencyScore + impactScore + visibilityScore
-  );
+    (diversityScore + consistencyScore + impactScore + visibilityScore) / 10 * 10
+  ) / 10;
   
   // Market Value
   let marketValue: 'Entry' | 'Competitive' | 'High-Value' | 'Elite' = 'Entry';
@@ -393,19 +393,19 @@ function calculateCareerInsights(data: {
     marketValue = 'Competitive';
   }
   
-  // Visibility (GitHub presence)
+  // Visibility (GitHub presence) - 0-10
   const visibility = Math.round(
-    (documentation * 0.3 + 
-     (reviewParticipation / 100) * 0.3 + 
-     (collaborationSkill / 10) * 0.4) * 100
-  );
+    (documentation * 0.3 +
+     (reviewParticipation / 100) * 10 * 0.3 +
+     collaborationSkill * 0.4) * 10
+  ) / 10;
   
-  // Consistency (long-term commitment)
+  // Consistency (long-term commitment) - 0-10
   const consistencyMetric = Math.round(
-    (consistency * 0.5 + 
-     (maintenance.activeDaysRatio || 0) * 0.3 + 
-     (sustainablePace / 100) * 0.2)
-  );
+    ((consistency / 100) * 10 * 0.5 +
+     ((maintenance.activeDaysRatio || 0) / 100) * 10 * 0.3 +
+     (sustainablePace / 100) * 10 * 0.2) * 10
+  ) / 10;
 
   // ==========================================
   // 8. STRENGTHS IDENTIFICATION

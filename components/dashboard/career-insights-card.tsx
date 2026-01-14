@@ -328,15 +328,18 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
                 <span className="text-sm font-medium text-[#919191]">Portfolio Strength</span>
               </div>
               <span className="text-2xl font-black text-[#e0e0e0]">
-                {safeData.professionalMetrics.portfolioStrength}%
+                {safeData.professionalMetrics.portfolioStrength}/10
               </span>
             </div>
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-1000"
-                style={{ width: `${safeData.professionalMetrics.portfolioStrength}%` }}
+                style={{ width: `${(safeData.professionalMetrics.portfolioStrength / 10) * 100}%` }}
               />
             </div>
+            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+              Overall portfolio quality - tech diversity, consistency, impact, and visibility combined.
+            </p>
           </div>
 
           {/* Visibility */}
@@ -347,15 +350,18 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
                 <span className="text-sm font-medium text-[#919191]">Visibility</span>
               </div>
               <span className="text-2xl font-black text-[#e0e0e0]">
-                {safeData.professionalMetrics.visibility}%
+                {safeData.professionalMetrics.visibility}/10
               </span>
             </div>
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-1000"
-                style={{ width: `${safeData.professionalMetrics.visibility}%` }}
+                style={{ width: `${(safeData.professionalMetrics.visibility / 10) * 100}%` }}
               />
             </div>
+            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+              Your GitHub presence - docs, reviews, and collaboration make you discoverable.
+            </p>
           </div>
 
           {/* Consistency */}
@@ -366,15 +372,18 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
                 <span className="text-sm font-medium text-[#919191]">Consistency</span>
               </div>
               <span className="text-2xl font-black text-[#e0e0e0]">
-                {safeData.professionalMetrics.consistency}%
+                {safeData.professionalMetrics.consistency}/10
               </span>
             </div>
             <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-gradient-to-r from-green-500 to-emerald-500 transition-all duration-1000"
-                style={{ width: `${safeData.professionalMetrics.consistency}%` }}
+                style={{ width: `${(safeData.professionalMetrics.consistency / 10) * 100}%` }}
               />
             </div>
+            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+              Long-term commitment - daily contributions, active maintenance, and sustainable pace.
+            </p>
           </div>
 
           {/* Market Value */}

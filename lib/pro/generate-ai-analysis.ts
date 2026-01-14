@@ -146,10 +146,9 @@ export async function generateAIAnalysis(
     apiKey: process.env.ANTHROPIC_API_KEY!,
   });
 
-  // ✅ ULTRA KISALTILMIŞ PROMPT - TAM ANALİZ GARANTİSİ
+  // ✅ CREATIVE GITHUB STORY - NO ROADMAPS, JUST PERSONAL NARRATIVE
   // Extract rich context for personalization
   const persona = proData.devPatterns.developerPersona;
-  const experienceLevel = proData.careerInsights.experienceLevel;
   const profileType = proData.careerInsights.profileType;
   const marketValue = proData.careerInsights.professional.marketValue;
   const peakHours = proData.devPatterns.patterns.commitPatterns.peakHours;
@@ -161,7 +160,6 @@ export async function generateAIAnalysis(
 
 🎯 WHO IS ${username.toUpperCase()}?
 ━━━━━━━━━━━━━━━━━━━━━━━━
-• Experience: ${experienceLevel} developer
 • Profile: ${profileType}
 • Work Style: ${persona}
 • Market Positioning: ${marketValue}
@@ -186,8 +184,8 @@ README Quality: ${proData.readmeQuality.overallScore}/10
 Repository Health: ${proData.repoHealth.overallScore}/10
 Developer Patterns: ${proData.devPatterns.overallScore}/10
 
-Portfolio Strength: ${proData.careerInsights.professional.portfolioStrength}%
-Visibility: ${proData.careerInsights.professional.visibility}%
+Portfolio Strength: ${proData.careerInsights.professional.portfolioStrength}/10
+Visibility: ${proData.careerInsights.professional.visibility}/10
 
 💪 KEY STRENGTHS:
 ${proData.careerInsights.strengths.map((s, i) => `${i + 1}. ${s}`).join('\n')}
@@ -199,175 +197,117 @@ ${proData.repoHealth.insights.concerns?.slice(0, 3).map((c, i) => `${i + 1}. ${c
 
 🎯 YOUR MISSION:
 
-Write a DEEPLY PERSONALIZED, ENGAGING analysis that makes ${username} feel SEEN and UNDERSTOOD.
+Write a CREATIVE, DEEPLY PERSONAL GITHUB STORY that makes ${username} feel TRULY UNDERSTOOD.
+
+THIS IS A STORY, NOT A REPORT:
+• Tell the story of who ${username} is as a developer
+• Paint a picture of their coding life and patterns
+• Make them feel like someone really "gets" their journey
+• Be creative, engaging, and narrative-driven
 
 TONE & STYLE:
 • Address ${username} directly ("You", "Your")
-• Reference their ${persona} style naturally
-• Acknowledge their ${experienceLevel} journey
-• Use their actual numbers and patterns
-• Be encouraging but honest
-• Make it feel like a 1-on-1 conversation with a senior dev who "gets them"
+• Reference their ${persona} style naturally throughout
+• Use their actual numbers to tell their story
+• Be encouraging, honest, and insightful
+• Make it feel like a thoughtful letter from a senior dev mentor who truly understands them
 
 AVOID:
 ❌ Generic advice that could apply to anyone
-❌ Robotic listing of stats
+❌ Robotic listing of stats or roadmaps
+❌ 90-day plans, weekly action items, or task lists
+❌ Career level mentions (Junior/Senior/Mid/etc)
 ❌ Ignoring their unique ${profileType} profile
-❌ Unrealistic goals
 ❌ Forgetting to reference their ${peakHours[0]}:00 peak hours or ${peakDays[0]} activity
 
 INCLUDE:
-✅ Specific references to THEIR numbers
-✅ Personalized insights based on ${persona} style
-✅ Realistic action items fitting their ${burnoutRisk}% burnout risk
-✅ Concrete examples from their actual patterns
-✅ Motivational but grounded career guidance
+✅ Specific references to THEIR numbers woven into narrative
+✅ Story-driven insights based on ${persona} style
+✅ What makes them unique as a ${profileType}
+✅ Concrete observations from their actual patterns
+✅ Motivational but grounded perspective on their journey
 
 ---
 
-STRUCTURE (COMPLETE EVERYTHING - NO STOPPING):
+STRUCTURE - WRITE A CREATIVE GITHUB STORY:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ## 👋 Hey ${username},
 
-[2-3 engaging paragraphs that:
-• Acknowledge their ${persona} style
-• Highlight their ${experienceLevel} journey
-• Reference specific numbers (${consistency}% consistency, ${burnoutRisk}% burnout risk)
-• Make them feel UNDERSTOOD
-• Set the tone: "I analyzed your GitHub deeply, and here's what stands out..."]
+[3-4 paragraphs of engaging narrative that tells their coding story:
+• Paint a picture of who they are: "${persona}" who codes at ${peakHours[0]}:00 on ${peakDays[0]}s
+• Use vivid, creative language - make it feel like you're telling a story about a real person
+• Weave in their numbers naturally: ${consistency}% consistency, ${burnoutRisk}% burnout risk
+• Highlight what makes them unique as a ${profileType}
+• Make them feel TRULY SEEN and UNDERSTOOD
+• Be personal, warm, and insightful]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## 💪 Your Superpowers
+## ✨ What Makes You Stand Out
 
-### 1. [Biggest Strength from their data - with specific number]
-**What this means:** [Explain the strength in their context]
-**Real-world impact:** [How this helps them as a ${profileType}]
-**How to leverage:** [Concrete way to use this strength more]
-
-[Example: "Your 8.5/10 documentation score puts you in the top 15% of developers. For a ${profileType}, this is gold - it means teams trust your work documentation and onboarding becomes effortless."]
-
-### 2. [Second strength - different category]
-[Same deep dive format]
-
-### 3. [Third strength]
-[Same format]
+[3-4 paragraphs of narrative storytelling about their strengths:
+• Don't just list - tell the story of their strengths
+• Reference specific scores: "Your ${proData.careerInsights.skills.documentation}/10 documentation..."
+• Explain what this reveals about who they are as a developer
+• Be creative and engaging - avoid bullet points
+• Make comparisons vivid: "While most devs treat docs as an afterthought, you..."
+• Connect strengths to their ${profileType} identity]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## 🎯 Growth Edges (Honest But Kind)
+## 🌱 Room to Grow
 
-### 1. [Biggest improvement area with actual number]
-**Current state:** [Their specific number/metric]
-**Why this matters:** [Impact on their ${marketValue} positioning]
-**Quick win (This week - 2-3 hours):**
-1. [Specific actionable task]
-2. [Another specific task]
-3. [Measurement to track]
-
-**Medium-term (Month 1-2):**
-[Realistic steps that fit their ${burnoutRisk}% burnout risk and ${peakHours[0]}:00 schedule]
-
-### 2. [Second opportunity]
-[Same detailed format with their context]
-
-### 3. [Third opportunity]
-[Same format]
+[2-3 paragraphs of honest but encouraging narrative:
+• Tell the story of where they could grow
+• Reference actual numbers from their weakest areas
+• Frame it as part of their journey, not failures
+• Be specific but kind
+• Connect growth areas to their ${persona} style
+• No action items or roadmaps - just thoughtful observations]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## 🗓️ Your 90-Day Personalized Roadmap
+## 📊 Your GitHub at a Glance
 
-**Based on:** Your ${persona} style + ${consistency}% consistency + ${burnoutRisk}% burnout risk
+**Your Scores:**
+- Technical Breadth: ${proData.careerInsights.skills.technicalBreadth}/10
+- Documentation: ${proData.careerInsights.skills.documentation}/10
+- Collaboration: ${proData.careerInsights.skills.collaboration}/10
+- Code Quality: ${proData.careerInsights.skills.codeQuality}/10
+- Productivity: ${proData.careerInsights.skills.productivity}/10
 
-### 🎯 Month 1: [Specific Theme Based on Their Data]
-**Main Goal:** [Something achievable for their level]
+**Your Portfolio:**
+- Strength: ${proData.careerInsights.professional.portfolioStrength}/10
+- Visibility: ${proData.careerInsights.professional.visibility}/10
+- Consistency: ${consistency}%
 
-**Week 1-2:**
-- [ ] [Task tied to their lowest score] - Est. 3-4 hours
-- [ ] [Task that leverages their strength] - Est. 2-3 hours
-- [ ] [Task aligned with ${peakDays[0]} peak days] - Est. 1-2 hours
-
-**Week 3-4:**
-- [ ] [Progressive task] - Est. 4-5 hours
-- [ ] [Another task fitting their ${profileType}] - Est. 2-3 hours
-
-**Expected outcome:** [Concrete improvement with numbers]
-
-### 🚀 Month 2: [Next theme]
-[Same detailed week-by-week breakdown]
-
-### 🏆 Month 3: [Final theme]
-[Same format]
+**Your Positioning:** ${marketValue}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-## 🔥 This Week's Action Plan
+## 💭 Final Reflections
 
-**Time Budget:** 5-8 hours total (fits your ${burnoutRisk < 50 ? 'sustainable' : 'busy'} schedule)
-
-### 1. [Highest ROI task from growth edges] - 2 hours
-**What:** [Specific task]
-**Why it matters:** [Direct benefit]
-**How to do it:**
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
-
-**Best time:** ${peakHours[0]}:00-${peakHours[0] + 2}:00 on ${peakDays[0]} (your peak hours!)
-
-### 2. [Second priority] - 1.5 hours
-[Same format]
-
-### 3. [Third task] - 1 hour
-[Same format]
-
-### 4-5. [Two more quick wins]
-[Brief format for each]
+[2-3 paragraphs wrapping up their story:
+• Reflect on who they are as a ${profileType}
+• Acknowledge their ${persona} superpower
+• Leave them with an encouraging, memorable thought
+• Make it personal and warm
+• NO action items, NO tasks, NO roadmaps - just a thoughtful conclusion to their story]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-## 📊 Your Numbers vs. Market
-
-| Skill | You | ${experienceLevel} Avg | Gap | Next Milestone |
-|-------|-----|------------------------|-----|----------------|
-| Technical Breadth | ${proData.careerInsights.skills.technicalBreadth}/10 | [realistic avg] | [+ or -] | [What to reach] |
-| Documentation | ${proData.careerInsights.skills.documentation}/10 | [avg] | [gap] | [milestone] |
-| Collaboration | ${proData.careerInsights.skills.collaboration}/10 | [avg] | [gap] | [milestone] |
-| Code Quality | ${proData.careerInsights.skills.codeQuality}/10 | [avg] | [gap] | [milestone] |
-
-**Market positioning:** ${marketValue} → [Next tier and what it takes]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
----
-
-## 🎯 Final Thoughts, ${username}
-
-[2-3 sentences that:
-• Acknowledge their unique journey as a ${experienceLevel} ${profileType}
-• Remind them of their ${persona} superpower
-• Motivate them with specific next step
-• Make it personal and memorable]
-
-**Your first win:** [One specific action from This Week section]
-
-**Next check-in:** 90 days - We'll track your ${consistency}% → [target]% consistency, skill improvements, and career momentum.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
----
 
 CRITICAL INSTRUCTIONS:
-• WRITE EVERYTHING from "Hey ${username}" to "Next check-in"
-• Use ALL their specific numbers (${consistency}%, ${burnoutRisk}%, ${peakHours[0]}:00, etc.)
-• Reference ${persona}, ${profileType}, ${experienceLevel} naturally throughout
-• Make it feel like a 1-on-1 with a senior dev mentor
-• NO generic advice - ONLY personalized to their actual data
-• COMPLETE ALL SECTIONS BEFORE ENDING
-• DO NOT say "would you like" or "let me know" - JUST DELIVER THE FULL ANALYSIS`;
+• This is a STORY, not a report - be creative and narrative-driven
+• Use ALL their specific numbers naturally in the narrative
+• Reference ${persona} and ${profileType} throughout
+• Make it feel like a thoughtful letter from someone who truly understands them
+• NO bullet points in the main narrative sections
+• NO 90-day plans, NO weekly tasks, NO roadmaps, NO action items
+• NO career level mentions (Junior/Senior/etc)
+• Be warm, insightful, and personal
+• COMPLETE ALL SECTIONS - write the full story`;
 
   try {
     console.log('🚀 Starting AI analysis with Haiku...');
