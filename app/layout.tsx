@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     default: "GitCheck - GitHub Checked",
     template: "%s | GitCheck"
   },
-  description: "Analyze your GitHub profile with advanced developer analytics. Real-time metrics, developer scoring, and comprehensive insights powered by intelligent algorithms.",
+  description: "Public GitHub analytics platform with no authentication required. Enter any username to get a 0-100 developer score, global ranking, and comprehensive insights using statistical algorithms.",
   keywords: [
     "GitHub analytics",
     "developer tools",
@@ -31,7 +31,12 @@ export const metadata: Metadata = {
     "developer portfolio",
     "gitcheck",
     "github verified",
-    "github checked"
+    "github checked",
+    "public github analytics",
+    "no login github analytics",
+    "github developer ranking",
+    "z-score github",
+    "statistical github analysis"
   ],
   authors: [{ name: "Goktug Karabulut", url: "https://goktug.info" }],
   creator: "Goktug Karabulut",
@@ -45,7 +50,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://gitcheck.me",
     title: "GitCheck - GitHub Checked",
-    description: "Analyze your GitHub profile with advanced developer analytics. Real-time metrics, scoring, and comprehensive insights.",
+    description: "Public GitHub analytics platform. No authentication required - enter any username to get statistical developer scoring, global ranking, and comprehensive insights.",
     siteName: "GitCheck",
     images: [
       {
@@ -59,7 +64,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "GitCheck - GitHub Checked",
-    description: "Analyze your GitHub profile with advanced developer analytics and real-time insights.",
+    description: "Public GitHub analytics - no login required. Statistical developer scoring, global ranking, and comprehensive insights for any GitHub username.",
     images: ["/og-image.png"], 
     creator: "@goktugkrblt"
   },
@@ -102,7 +107,7 @@ export default function RootLayout({
               "name": "GitCheck",
               "url": "https://gitcheck.me",
               "logo": "https://gitcheck.me/og-image.jpg",
-              "description": "Advanced GitHub profile analytics and developer scoring platform",
+              "description": "Public GitHub analytics platform with statistical developer scoring, global rankings, and comprehensive insights. No authentication required - analyze any GitHub username.",
               "founder": {
                 "@type": "Person",
                 "name": "Goktug Karabulut",
@@ -125,7 +130,7 @@ export default function RootLayout({
               "@type": "WebSite",
               "name": "GitCheck",
               "url": "https://gitcheck.me",
-              "description": "Analyze your GitHub profile with advanced developer analytics",
+              "description": "Public GitHub analytics platform - no login required. Statistical developer scoring for any GitHub username.",
               "potentialAction": {
                 "@type": "SearchAction",
                 "target": "https://gitcheck.me/dashboard?username={search_term_string}",
@@ -174,7 +179,7 @@ export default function RootLayout({
                   "name": "Is my GitHub data secure?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Yes. We only access public repository data via GitHub OAuth. We never request write permissions or access to private repos. All data is transmitted over encrypted connections."
+                    "text": "Yes. GitCheck is a public analytics service - we only access data that is already publicly visible on GitHub. No authentication required, no OAuth permissions, no access to private repositories. We use GitHub's public API to analyze publicly available information only."
                   }
                 },
                 {
@@ -182,23 +187,15 @@ export default function RootLayout({
                   "name": "What's included in the PRO plan?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "PRO includes 5 advanced analytics modules: README Quality Analysis (20%), Repository Health (25%), Developer Patterns (30%), Career Insights (25%), and AI Career Analysis (bonus). You get a comprehensive developer score with detailed breakdowns plus personalized AI-powered career recommendations."
+    "text": "The platform provides a comprehensive 0-100 developer score based on four weighted components: Impact (35%), Code Quality (30%), Consistency (20%), and Collaboration (15%). Scores use z-score normalization against a baseline of 100K+ developers for meaningful percentile-based rankings."
                   }
                 },
                 {
                   "@type": "Question",
-                  "name": "Is this a subscription or one-time payment?",
+                  "name": "Do I need to create an account?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "It's a one-time payment of $2.99 for lifetime access. No recurring charges, no hidden fees, not a subscription. Pay once, keep PRO features forever."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Can I cancel my PRO access?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Since it's a one-time purchase with lifetime access, there's no subscription to cancel. You own PRO features permanently after purchase."
+                    "text": "No. GitCheck is a public analytics service - simply enter any GitHub username to analyze. No registration, no authentication, no OAuth permissions required."
                   }
                 },
                 {
@@ -206,15 +203,15 @@ export default function RootLayout({
                   "name": "How is my developer score calculated?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Your score is calculated from 4 weighted components: README Quality (20%), Repository Health (25%), Developer Patterns (30%), and Career Insights (25%). Each analyzes different aspects of your GitHub presence."
+                    "text": "Your score is calculated from 4 weighted components: Impact (35%) - stars, forks, watchers; Code Quality (30%) - README, documentation; Consistency (20%) - commit frequency, contribution patterns; Collaboration (15%) - PRs, issues, discussions. Uses z-score normalization for percentile-based 0-100 scoring."
                   }
                 },
                 {
                   "@type": "Question",
-                  "name": "Do I need to reconnect my GitHub account regularly?",
+                  "name": "How often can I analyze a profile?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "No. Once you sign in with GitHub OAuth, you stay authenticated. You can revoke access anytime from your GitHub Settings if needed."
+                    "text": "Each GitHub username can be analyzed once every 24 hours due to our caching system. This prevents API abuse and ensures fast response times (~50ms for cached results vs 30-45s for full analysis)."
                   }
                 },
                 {
@@ -230,7 +227,7 @@ export default function RootLayout({
                   "name": "How often is my data updated?",
                   "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "FREE users can re-analyze anytime. PRO analysis results are cached for 1 hour for performance, then auto-refresh. You can manually refresh anytime via the dashboard."
+                    "text": "Analysis results are cached for 24 hours to respect GitHub API limits and improve performance. After the cache expires, the next analysis will fetch fresh data. Real-time global rankings are updated continuously as new profiles are analyzed."
                   }
                 }
               ]
@@ -238,32 +235,25 @@ export default function RootLayout({
           }}
         />
 
-        {/* ✅ PRODUCT SCHEMA - FİYAT GÜNCELLENDİ $2.99 */}
+        {/* ✅ SERVICE SCHEMA - FREE PUBLIC SERVICE */}
         <Script
-          id="product-schema"
+          id="service-schema"
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Product",
-              "name": "GitCheck PRO - Lifetime Access",
-              "description": "Advanced GitHub analytics with README Quality Analysis, Repository Health, Developer Patterns, Career Insights, and AI Career Analysis",
-              "brand": {
-                "@type": "Brand",
+              "@type": "Service",
+              "name": "GitCheck - Public GitHub Analytics",
+              "description": "Free public GitHub analytics service with statistical developer scoring, global rankings, and comprehensive insights. No authentication required.",
+              "provider": {
+                "@type": "Organization",
                 "name": "GitCheck"
               },
-              "offers": {
-                "@type": "Offer",
-                "price": "2.99",
-                "priceCurrency": "USD",
-                "availability": "https://schema.org/InStock",
-                "url": "https://gitcheck.me",
-                "priceValidUntil": "2026-12-31"
-              },
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "4.9",
-                "reviewCount": "87"
+              "serviceType": "Developer Analytics Platform",
+              "areaServed": "Worldwide",
+              "availableChannel": {
+                "@type": "ServiceChannel",
+                "serviceUrl": "https://gitcheck.me"
               }
             })
           }}
