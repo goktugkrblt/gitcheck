@@ -80,15 +80,8 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
         return;
       }
 
-      // Success - redirect to dashboard with extracted username and cache info
-      let redirectUrl = `/dashboard?username=${extractedUsername}`;
-
-      // Add cache info to URL if data was cached
-      if (data.cached && data.nextScanAvailable && data.hoursRemaining) {
-        redirectUrl += `&cached=true&nextScan=${encodeURIComponent(data.nextScanAvailable)}&hoursRemaining=${data.hoursRemaining}`;
-      }
-
-      router.push(redirectUrl);
+      // Success - redirect to dashboard with just username (cache info comes from API)
+      router.push(`/dashboard?username=${extractedUsername}`);
     } catch (err) {
       setError("Network error. Please try again.");
       setAnalyzing(false);

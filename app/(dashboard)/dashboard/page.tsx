@@ -68,19 +68,6 @@ export default function DashboardPage() {
   const shouldShowScore = proAnalysisStatus === 'complete';
 
   useEffect(() => {
-    // Check for cache info in URL params
-    const urlParams = new URLSearchParams(window.location.search);
-    const cached = urlParams.get('cached');
-    const nextScan = urlParams.get('nextScan');
-    const hoursRemaining = urlParams.get('hoursRemaining');
-
-    if (cached === 'true' && nextScan && hoursRemaining) {
-      setCacheInfo({
-        nextScanAvailable: nextScan,
-        hoursRemaining: parseInt(hoursRemaining),
-      });
-    }
-
     fetchProfile();
   }, []);
 
@@ -229,6 +216,18 @@ export default function DashboardPage() {
       setProfileData(data.profile);
       setHasProfile(true);
       setUserPlan(data.user?.plan || "FREE");
+
+      // ✅ Check if profile is cached
+      if (data.cached && data.nextScanAvailable) {
+        const nextScan = new Date(data.nextScanAvailable);
+        const now = new Date();
+        const hoursRemaining = Math.ceil((nextScan.getTime() - now.getTime()) / (1000 * 60 * 60));
+
+        setCacheInfo({
+          nextScanAvailable: data.nextScanAvailable,
+          hoursRemaining: Math.max(0, hoursRemaining),
+        });
+      }
 
       // ✅ YENİ: Score > 0 ise analiz tamamlanmış
       if (!initialCheckDone) {

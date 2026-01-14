@@ -77,6 +77,18 @@ export async function GET(req: NextRequest) {
       console.log('✅ scoreComponents created for frontend');
     }
 
+    // ✅ Check if profile was scanned recently (24 hour cache)
+    const now = new Date();
+    const scannedAt = profile.scannedAt ? new Date(profile.scannedAt) : null;
+    const hoursSinceLastScan = scannedAt
+      ? (now.getTime() - scannedAt.getTime()) / (1000 * 60 * 60)
+      : 25; // If no scan date, treat as expired
+
+    const isCached = hoursSinceLastScan < 24;
+    const nextScanAvailable = scannedAt
+      ? new Date(scannedAt.getTime() + 24 * 60 * 60 * 1000)
+      : null;
+
     const response = {
       user: {
         plan: "FREE", // Default plan for non-authenticated users
@@ -89,6 +101,8 @@ export async function GET(req: NextRequest) {
         scoreStrengths: scoringResult?.strengths || null,
         scoreImprovements: scoringResult?.improvements || null,
       },
+      cached: isCached,
+      nextScanAvailable: nextScanAvailable?.toISOString() || null,
     };
 
     console.log('📤 Sending response with scoreComponents:', !!response.profile.scoreComponents);
