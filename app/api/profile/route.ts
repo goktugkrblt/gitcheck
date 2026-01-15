@@ -22,6 +22,15 @@ export async function GET(req: NextRequest) {
 
     const profile = await prisma.profile.findUnique({
       where: { username },
+      include: {
+        user: {
+          select: {
+            plan: true,
+            email: true,
+            name: true
+          }
+        }
+      }
     });
 
     if (!profile) {
@@ -91,7 +100,7 @@ export async function GET(req: NextRequest) {
 
     const response = {
       user: {
-        plan: "FREE", // Default plan for non-authenticated users
+        plan: profile.user?.plan || "FREE", // Get plan from user or default to FREE
       },
       profile: {
         ...profile,

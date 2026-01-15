@@ -260,7 +260,7 @@ export default function HomePage() {
       <div className="relative z-10">
         
       {/* HEADER SECTION */}
-<div className="max-w-5xl mx-auto px-5 md:px-12 py-6 md:py-12">
+<div className="max-w-5xl mx-auto px-6 md:px-12 py-6 md:py-12">
   
   {/* ✅ TOP BAR: Logo (centered on mobile, left on desktop) */}
   <div className="flex items-center justify-center md:justify-start mb-4 md:mb-20">
@@ -513,8 +513,28 @@ export default function HomePage() {
 </div>
 
         {/* REST OF CONTENT */}
-        <main className="max-w-4xl mx-auto px-4 md:px-8">
-          
+        <main className="max-w-5xl mx-auto px-6 md:px-12 py-0">
+           {/* About Section - Updated */}
+          <ScrollRevealSection delay={0.3} isMobile={isMobile}>
+            <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-8">
+              About GitCheck
+            </h2>
+
+            <div className="space-y-4 text-sm md:text-base text-white/60 leading-relaxed">
+              <p>
+                GitCheck is a public GitHub analytics platform that transforms raw GitHub data into meaningful developer insights. Using advanced statistical algorithms and z-score normalization, we calculate a 0-100 developer score based on four weighted components: <strong className="text-white/80">Impact (35%)</strong>, <strong className="text-white/80">Code Quality (30%)</strong>, <strong className="text-white/80">Consistency (20%)</strong>, and <strong className="text-white/80">Collaboration (15%)</strong>.
+              </p>
+              <p>
+                Built with Next.js 16, React 19, TypeScript, and PostgreSQL on Neon, GitCheck processes GitHub GraphQL and REST API data to analyze up to 100 repositories per profile. Our scoring system compares developers against a baseline population of 100,000+ users, ensuring percentile-based scores remain meaningful over time.
+              </p>
+              <p>
+                <strong className="text-white/80">Privacy is paramount.</strong> We require no authentication or OAuth permissions—simply enter any public GitHub username to analyze. All data accessed is already publicly available on GitHub. We implement 24-hour smart caching, IP-based rate limiting (5 req/15min), and honeypot bot protection to ensure fair usage.
+              </p>
+              <p className="text-white/80 font-medium">
+                Whether you're tracking personal growth, evaluating candidates, or benchmarking against peers, GitCheck provides the quantifiable metrics you need.
+              </p>
+            </div>
+          </ScrollRevealSection>
           {/* How It Works Section */}
           <ScrollRevealSection isMobile={isMobile}>
             <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-10">
@@ -647,29 +667,7 @@ export default function HomePage() {
                 </motion.div>
               ))}
             </div>
-          </ScrollRevealSection>
-
-          {/* About Section - Updated */}
-          <ScrollRevealSection delay={0.3} isMobile={isMobile}>
-            <h2 className="text-xs font-mono text-white/40 uppercase tracking-widest mb-8">
-              About GitCheck
-            </h2>
-
-            <div className="space-y-4 text-sm md:text-base text-white/60 leading-relaxed">
-              <p>
-                GitCheck is a public GitHub analytics platform that transforms raw GitHub data into meaningful developer insights. Using advanced statistical algorithms and z-score normalization, we calculate a 0-100 developer score based on four weighted components: <strong className="text-white/80">Impact (35%)</strong>, <strong className="text-white/80">Code Quality (30%)</strong>, <strong className="text-white/80">Consistency (20%)</strong>, and <strong className="text-white/80">Collaboration (15%)</strong>.
-              </p>
-              <p>
-                Built with Next.js 16, React 19, TypeScript, and PostgreSQL on Neon, GitCheck processes GitHub GraphQL and REST API data to analyze up to 100 repositories per profile. Our scoring system compares developers against a baseline population of 100,000+ users, ensuring percentile-based scores remain meaningful over time.
-              </p>
-              <p>
-                <strong className="text-white/80">Privacy is paramount.</strong> We require no authentication or OAuth permissions—simply enter any public GitHub username to analyze. All data accessed is already publicly available on GitHub. We implement 24-hour smart caching, IP-based rate limiting (5 req/15min), and honeypot bot protection to ensure fair usage.
-              </p>
-              <p className="text-white/80 font-medium">
-                Whether you're tracking personal growth, evaluating candidates, or benchmarking against peers, GitCheck provides the quantifiable metrics you need.
-              </p>
-            </div>
-          </ScrollRevealSection>
+          </ScrollRevealSection>         
 
           {/* Comparison Table Section */}
           <ScrollRevealSection delay={0.25} isMobile={isMobile}>
@@ -827,9 +825,9 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="mt-12 md:mt-20 mb-8 md:mb-12 px-4 md:px-8"
+            className="mt-16 md:mt-24 mb-16 md:mb-24"
           >
-            <div className="max-w-4xl mx-auto bg-white/[0.02] border border-white/[0.06] rounded-xl p-6 md:p-8">
+            <div className="max-w-4xl mx-auto ml-0 bg-white/[0.02] border border-white/[0.06] rounded-xl p-6 md:p-8">
               <h3 className="text-sm font-bold text-white/80 mb-3 flex items-center gap-2">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -848,7 +846,7 @@ export default function HomePage() {
           </motion.div>
 
           {/* Footer */}
-          <footer className="pt-8 md:pt-12 border-t border-white/[0.06] mb-12 md:mb-20">
+          <footer className="pt-16 md:pt-24 border-t border-white/[0.06] mb-16 md:mb-24">
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -1034,7 +1032,7 @@ function LeaderboardCard({
 // ScrollRevealSection Component - No animations, just styling
 function ScrollRevealSection({ children, delay = 0, isMobile }: { children: React.ReactNode; delay?: number; isMobile: boolean }) {
   return (
-    <section className="mb-12 md:mb-20 pt-12 md:pt-20 border-t border-white/[0.06]">
+    <section className="mb-16 md:mb-24 pt-16 md:pt-24 border-t border-white/[0.06]">
       {children}
     </section>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Copy, Check, Code } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -12,8 +12,15 @@ interface BadgeEmbedProps {
 export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
   const [copied, setCopied] = useState<string | null>(null);
   const [selectedStyle, setSelectedStyle] = useState<"markdown" | "html">("markdown");
+  const [badgeKey, setBadgeKey] = useState(Date.now());
+
+  // Update badge key when username changes to force refresh
+  useEffect(() => {
+    setBadgeKey(Date.now());
+  }, [username]);
 
   const badgeUrl = `https://gitcheck.me/api/badge/${username}`;
+  const badgePreviewUrl = `${badgeUrl}?v=${badgeKey}`;
   const profileUrl = `https://gitcheck.me/dashboard/${username}`;
 
   const markdownCode = `[![GitCheck Score](${badgeUrl})](${profileUrl})`;
@@ -58,9 +65,10 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
       {/* Badge Preview */}
       <div className="mb-4 p-4 rounded-lg bg-black/30 border border-white/5 flex items-center justify-center">
         <img
-          src={badgeUrl}
+          src={badgePreviewUrl}
           alt="GitCheck Score Badge"
           className="max-w-full h-auto"
+          key={badgeKey}
         />
       </div>
 

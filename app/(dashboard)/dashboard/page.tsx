@@ -60,6 +60,9 @@ export default function DashboardPage() {
     percentile: number;
   } | null>(null);
 
+  // ✅ Check if user is PRO (from database)
+  const isProUser = userPlan === "PRO";
+
   const effectivePlan = process.env.NODE_ENV === 'development' && devMockPlan
     ? devMockPlan
     : userPlan;
@@ -528,12 +531,26 @@ const fetchGlobalRank = async (username: string) => {
                       alt={displayData.username}
                       className="w-20 h-20 md:w-28 md:h-28 rounded-full border-2 md:border-4 border-white/10"
                     />
+                    {/* PRO Badge */}
+                    {isProUser && (
+                      <div className="absolute -bottom-1 -right-1 md:-bottom-2 md:-right-2 w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center border-2 border-[#050307] shadow-lg">
+                        <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-white tracking-tight mb-1 md:mb-2 truncate">
-                      {displayData.username}
-                    </h2>
+                    <div className="flex items-center gap-2 mb-1 md:mb-2">
+                      <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-white tracking-tight truncate">
+                        {displayData.username}
+                      </h2>
+                      {isProUser && (
+                        <div className="px-2 md:px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center gap-1 flex-shrink-0">
+                          <Sparkles className="w-3 h-3 text-white" />
+                          <span className="text-[10px] md:text-xs font-black text-white tracking-wider">PRO</span>
+                        </div>
+                      )}
+                    </div>
                     <p className="text-xs md:text-sm text-white/40 mb-3 md:mb-4">
                       GitHub Developer
                     </p>
@@ -557,7 +574,7 @@ const fetchGlobalRank = async (username: string) => {
                     <img
                       src={`/api/badge/${displayData.username}`}
                       alt={`${displayData.username} badge`}
-                      className="w-full lg:w-[220px] h-auto"
+                      className="w-full lg:w-[210px] h-auto"
                     />
                   </div>
                 )}
