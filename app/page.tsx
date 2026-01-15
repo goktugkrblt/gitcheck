@@ -260,7 +260,7 @@ export default function HomePage() {
       <div className="relative z-10">
         
       {/* HEADER SECTION */}
-<div className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-12">
+<div className="max-w-5xl mx-auto px-4 md:px-12 py-6 md:py-12">
   
   {/* ✅ TOP BAR: Logo (centered on mobile, left on desktop) */}
   <div className="flex items-center justify-center md:justify-start mb-12 md:mb-20">
@@ -513,7 +513,7 @@ export default function HomePage() {
 </div>
 
         {/* REST OF CONTENT */}
-        <main className="max-w-4xl mx-auto px-4 md:px-6">
+        <main className="max-w-4xl mx-auto px-4 md:px-8">
           
           {/* How It Works Section */}
           <ScrollRevealSection isMobile={isMobile}>
