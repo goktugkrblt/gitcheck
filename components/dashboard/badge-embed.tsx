@@ -68,7 +68,7 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
       <div className="flex gap-2 mb-3">
         <button
           onClick={() => setSelectedStyle("markdown")}
-          className={`flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
+          className={`flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
             selectedStyle === "markdown"
               ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
               : "bg-white/5 text-white/40 border border-white/10 hover:bg-white/10"
@@ -78,7 +78,7 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
         </button>
         <button
           onClick={() => setSelectedStyle("html")}
-          className={`flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
+          className={`flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
             selectedStyle === "html"
               ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
               : "bg-white/5 text-white/40 border border-white/10 hover:bg-white/10"

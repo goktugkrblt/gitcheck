@@ -517,36 +517,50 @@ const fetchGlobalRank = async (username: string) => {
         <>
           {/* ✅ CHANGED: Stacked layout instead of grid */}
           <div className="space-y-6 px-4 md:px-0">
-            {/* Profile Card - Full width */}
+            {/* Profile Card - Full width with Badge */}
             <div className="bg-[#050307] rounded-xl border border-white/10 p-6 md:p-8 backdrop-blur-sm lg:motion-safe:animate-slideInLeft">
-              <div className="flex items-center gap-4 md:gap-8 w-full max-w-4xl">
-                <div className="relative flex-shrink-0">
-                  <img 
-                    src={displayData.avatarUrl} 
-                    alt={displayData.username}
-                    className="w-20 h-20 md:w-32 lg:w-48 md:h-32 lg:h-48 rounded-full border-2 md:border-4 border-white/10"
-                  />                 
-                </div>
+              <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6 lg:gap-8 w-full">
+                {/* Left: Profile Info */}
+                <div className="flex items-center gap-4 md:gap-6 flex-1">
+                  <div className="relative flex-shrink-0">
+                    <img
+                      src={displayData.avatarUrl}
+                      alt={displayData.username}
+                      className="w-20 h-20 md:w-28 md:h-28 rounded-full border-2 md:border-4 border-white/10"
+                    />
+                  </div>
 
-                <div className="flex-1 min-w-0">
-                  <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-white tracking-tight mb-1 md:mb-2 truncate">
-                    {displayData.username}
-                  </h2>
-                  <p className="text-xs md:text-sm text-white/40 mb-3 md:mb-6">
-                    GitHub Developer
-                  </p>
-                  
-                  <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-6 text-xs md:text-sm">
-                    <div className="flex items-center gap-1.5 md:gap-2">
-                      <Users className="w-3 h-3 md:w-4 md:h-4 text-white/40" />
-                      <span className="text-white/60 font-medium">{displayData.followersCount} followers</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 md:gap-2">
-                      <Package className="w-3 h-3 md:w-4 md:h-4 text-white/40" />
-                      <span className="text-white/60 font-medium">{displayData.totalRepos} repos</span>
+                  <div className="flex-1 min-w-0">
+                    <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-white tracking-tight mb-1 md:mb-2 truncate">
+                      {displayData.username}
+                    </h2>
+                    <p className="text-xs md:text-sm text-white/40 mb-3 md:mb-4">
+                      GitHub Developer
+                    </p>
+
+                    <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-6 text-xs md:text-sm">
+                      <div className="flex items-center gap-1.5 md:gap-2">
+                        <Users className="w-3 h-3 md:w-4 md:h-4 text-white/40" />
+                        <span className="text-white/60 font-medium">{displayData.followersCount} followers</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 md:gap-2">
+                        <Package className="w-3 h-3 md:w-4 md:h-4 text-white/40" />
+                        <span className="text-white/60 font-medium">{displayData.totalRepos} repos</span>
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                {/* Right: Badge */}
+                {globalRank && (
+                  <div className="flex-shrink-0 w-full lg:w-auto">
+                    <img
+                      src={`/api/badge/${displayData.username}`}
+                      alt={`${displayData.username} badge`}
+                      className="w-full lg:w-[220px] h-auto"
+                    />
+                  </div>
+                )}
               </div>
             </div>
 

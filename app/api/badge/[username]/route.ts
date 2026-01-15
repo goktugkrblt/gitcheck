@@ -1,5 +1,7 @@
+
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { calculateDeveloperScore } from '@/lib/scoring/developer-score';
 
 export async function GET(
   request: NextRequest,
@@ -8,17 +10,13 @@ export async function GET(
   try {
     const { username } = await params;
 
-    // Fetch profile from database
+    // Fetch full profile from database
     const profile = await prisma.profile.findUnique({
       where: { username },
-      select: {
-        score: true,
-        username: true,
-      },
     });
 
-    // If not found or no score, return placeholder badge
-    if (!profile || profile.score === null) {
+    // If not found, return placeholder badge
+    if (!profile) {
       return new NextResponse(generatePlaceholderBadge(username), {
         headers: {
           "Content-Type": "image/svg+xml",
@@ -29,17 +27,71 @@ export async function GET(
       });
     }
 
-    // Get global rank
+    // Parse Pro analysis data if available
+    const analysisData = profile.codeQualityCache
+      ? (typeof profile.codeQualityCache === 'string'
+          ? JSON.parse(profile.codeQualityCache)
+          : profile.codeQualityCache)
+      : null;
+
+    // Calculate current score using the same logic as profile API
+    const scoringResult = calculateDeveloperScore({
+      readmeQuality: analysisData?.readmeQuality || undefined,
+      repoHealth: analysisData?.repoHealth || undefined,
+      devPatterns: analysisData?.devPatterns || undefined,
+      careerInsights: analysisData?.careerInsights || undefined,
+      basicMetrics: {
+        totalCommits: profile.totalCommits || 0,
+        totalRepos: profile.totalRepos || 0,
+        totalStars: profile.totalStars || 0,
+        totalForks: profile.totalForks || 0,
+        totalPRs: profile.totalPRs || 0,
+        mergedPRs: profile.mergedPRs || 0,
+        openPRs: profile.openPRs || 0,
+        totalIssuesOpened: profile.totalIssuesOpened || 0,
+        totalReviews: profile.totalReviews || 0,
+        currentStreak: profile.currentStreak || 0,
+        longestStreak: profile.longestStreak || 0,
+        averageCommitsPerDay: profile.averageCommitsPerDay || 0,
+        weekendActivity: profile.weekendActivity || 0,
+        followersCount: profile.followersCount || 0,
+        followingCount: profile.followingCount || 0,
+        organizationsCount: profile.organizationsCount || 0,
+        gistsCount: profile.gistsCount || 0,
+        accountAge: profile.accountAge || 0,
+        totalContributions: profile.totalContributions || 0,
+        mostActiveDay: profile.mostActiveDay || 'Monday',
+        averageRepoSize: profile.averageRepoSize || 0,
+        totalWatchers: profile.totalWatchers || 0,
+        totalOpenIssues: profile.totalOpenIssues || 0,
+      },
+    });
+
+    const currentScore = scoringResult.overallScore;
+
+    // If no score calculated, return placeholder
+    if (!currentScore || currentScore === 0) {
+      return new NextResponse(generatePlaceholderBadge(username), {
+        headers: {
+          "Content-Type": "image/svg+xml",
+          "Cache-Control": process.env.NODE_ENV === 'development'
+            ? "no-cache, no-store, must-revalidate"
+            : "public, max-age=3600",
+        },
+      });
+    }
+
+    // Get global rank based on current score
     const higherScores = await prisma.profile.count({
-      where: { score: { gt: profile.score } },
+      where: { score: { gt: currentScore } },
     });
     const rank = higherScores + 1;
 
     // Determine badge style based on rank
     const isTopTen = rank <= 10;
     const badgeSVG = isTopTen
-      ? generateTopTenBadge(profile.score, rank)
-      : generateRegularBadge(profile.score, rank);
+      ? generateTopTenBadge(currentScore, rank)
+      : generateRegularBadge(currentScore, rank);
 
     return new NextResponse(badgeSVG, {
       headers: {
@@ -92,17 +144,17 @@ function generateMinimalistBadge(score: number, rank: number): string {
   </g>
 
   <!-- Rank Text -->
-  <text x="50" y="22.5" font-family="system-ui, -apple-system, sans-serif"
+  <text x="42" y="22.5" font-family="system-ui, -apple-system, sans-serif"
         font-size="14" font-weight="700" fill="#FFFFFF"
         dominant-baseline="central">
     Rank #${rank.toLocaleString()}
   </text>
 
   <!-- Divider -->
-  <rect x="155" y="14" width="1" height="17" fill="#30363D"/>
+  <rect x="150" y="14" width="1" height="17" fill="#30363D"/>
 
   <!-- Score Text -->
-  <text x="200" y="22.5" font-family="system-ui, -apple-system, sans-serif"
+  <text x="195" y="22.5" font-family="system-ui, -apple-system, sans-serif"
         font-size="13" font-weight="700" fill="#8B949E"
         text-anchor="end" dominant-baseline="central">
     ${score.toFixed(1)}
@@ -130,7 +182,7 @@ function generatePlaceholderBadge(username: string): string {
   </g>
 
   <!-- Not Analyzed Text -->
-  <text x="50" y="22.5" font-family="system-ui, -apple-system, sans-serif"
+  <text x="42" y="22.5" font-family="system-ui, -apple-system, sans-serif"
         font-size="14" font-weight="600" fill="#8B949E"
         dominant-baseline="central">
     Not Analyzed Yet
@@ -158,7 +210,7 @@ function generateErrorBadge(): string {
   </g>
 
   <!-- Error Text -->
-  <text x="50" y="22.5" font-family="system-ui, -apple-system, sans-serif"
+  <text x="42" y="22.5" font-family="system-ui, -apple-system, sans-serif"
         font-size="14" font-weight="600" fill="#EF4444"
         dominant-baseline="central">
     Error - Try Again
