@@ -260,10 +260,10 @@ export default function HomePage() {
       <div className="relative z-10">
         
       {/* HEADER SECTION */}
-<div className="max-w-5xl mx-auto px-4 md:px-12 py-6 md:py-12">
+<div className="max-w-5xl mx-auto px-5 md:px-12 py-6 md:py-12">
   
   {/* ✅ TOP BAR: Logo (centered on mobile, left on desktop) */}
-  <div className="flex items-center justify-center md:justify-start mb-12 md:mb-20">
+  <div className="flex items-center justify-center md:justify-start mb-4 md:mb-20">
     {/* Logo */}
     <motion.div
       initial={{ opacity: 0, scale: isMobile ? 1 : 0.5, rotate: isMobile ? 0 : -180 }}
@@ -312,7 +312,7 @@ export default function HomePage() {
     {/* Hero Content */}
     <motion.div
       className="flex-1 max-w-2xl"
-      style={!isMobile && !prefersReducedMotion ? { 
+      style={!isMobile && !prefersReducedMotion ? {
         y: headerY,
         opacity: headerOpacity,
         scale: headerScale
@@ -323,7 +323,7 @@ export default function HomePage() {
   initial={{ opacity: 0, y: isMobile ? 0 : -20 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ delay: isMobile ? 0 : 0.3, duration: isMobile ? 0 : 0.6 }}
-  className="relative inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-6 md:mb-8 backdrop-blur-sm w-fit"
+  className="relative flex md:inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-6 md:mb-8 backdrop-blur-sm w-fit mx-auto md:mx-0"
 >
   {/* Animated glow */}
   <motion.div
@@ -404,7 +404,7 @@ export default function HomePage() {
         initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: isMobile ? 0 : 0.5, duration: isMobile ? 0 : 0.8 }}
-        className="text-5xl md:text-6xl lg:text-8xl font-bold text-white mb-4 md:mb-6"
+        className="text-5xl md:text-6xl lg:text-8xl font-bold text-white mb-4 md:mb-6 text-center md:text-left"
       >
         GitHub
         <br />
@@ -416,7 +416,7 @@ export default function HomePage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: isMobile ? 0 : 0.65 }}
-        className="text-sm text-white/40 font-mono mb-4 md:mb-6"
+        className="text-sm text-white/40 font-mono mb-4 md:mb-6 text-center md:text-left"
       >
         <span className="text-white/30">$</span> analyze --profile --repos --activity
       </motion.div>
@@ -426,7 +426,7 @@ export default function HomePage() {
         initial={{ opacity: 0, y: isMobile ? 0 : 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: isMobile ? 0 : 0.7, duration: isMobile ? 0 : 0.8 }}
-        className="text-base md:text-lg text-white/60 mb-8 md:mb-10 max-w-xl leading-relaxed"
+        className="text-base md:text-lg text-white/60 mb-8 md:mb-10 max-w-xl leading-relaxed text-center md:text-left mx-auto md:mx-0"
       >
         Quantifiable metrics from your GitHub activity.
         <br className="hidden lg:block" />
@@ -447,7 +447,7 @@ export default function HomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: isMobile ? 0 : 1.1 }}
-          className="flex items-center gap-3 mt-6"
+          className="flex items-center justify-center md:justify-start gap-3 mt-6"
         >
           {/* Scanning Indicator */}
           <motion.div

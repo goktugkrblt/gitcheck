@@ -70,7 +70,7 @@ export default function DocsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-16"
+          className="hidden md:grid md:grid-cols-4 gap-4 mb-16"
         >
           <a href="#how-it-works" className="group">
             <div className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-all cursor-pointer">
@@ -128,7 +128,7 @@ export default function DocsPage() {
               <div className="space-y-6">
                 <div className="bg-white/5 border border-blue-500/30 rounded-xl p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 text-white font-black text-xl">
+                    <div className="hidden md:flex w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 text-white font-black text-xl">
                       1
                     </div>
                     <div className="flex-1">
@@ -136,7 +136,7 @@ export default function DocsPage() {
                       <p className="text-white/60 mb-4">
                         User submits a GitHub username through the homepage input. The system validates the input and checks rate limits:
                       </p>
-                      <div className="bg-black/30 rounded-lg p-4 font-mono text-sm text-blue-300">
+                      <div className="bg-black/30 rounded-lg p-4 font-mono overflow-x-auto text-sm text-blue-300">
                         <div className="space-y-1">
                           <div>• Honeypot field validation (bot detection)</div>
                           <div>• Request timing check (minimum 1 second after page load)</div>
@@ -150,7 +150,7 @@ export default function DocsPage() {
 
                 <div className="bg-white/5 border border-green-500/30 rounded-xl p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center flex-shrink-0 text-white font-black text-xl">
+                    <div className="hidden md:flex w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center flex-shrink-0 text-white font-black text-xl">
                       2
                     </div>
                     <div className="flex-1">
@@ -158,7 +158,7 @@ export default function DocsPage() {
                       <p className="text-white/60 mb-4">
                         Before making expensive API calls, the system checks if the profile was recently analyzed:
                       </p>
-                      <div className="bg-black/30 rounded-lg p-4 font-mono text-sm text-green-300">
+                      <div className="bg-black/30 rounded-lg p-4 font-mono overflow-x-auto text-sm text-green-300">
                         <div className="space-y-1">
                           <div>• Query PostgreSQL for existing profile</div>
                           <div>• Check if <span className="text-yellow-300">scannedAt</span> timestamp is within 24 hours</div>
@@ -178,7 +178,7 @@ export default function DocsPage() {
 
                 <div className="bg-white/5 border border-purple-500/30 rounded-xl p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0 text-white font-black text-xl">
+                    <div className="hidden md:flex w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0 text-white font-black text-xl">
                       3
                     </div>
                     <div className="flex-1">
@@ -186,8 +186,8 @@ export default function DocsPage() {
                       <p className="text-white/60 mb-4">
                         The system uses GitHub's GraphQL API to efficiently fetch repository data in a single request:
                       </p>
-                      <div className="bg-black/30 rounded-lg p-4 font-mono text-xs text-purple-300 overflow-x-auto">
-                        <pre className="whitespace-pre">{`query($username: String!, $repoCount: Int!) {
+                      <div className="bg-black/30 rounded-lg overflow-hidden">
+                        <pre className="text-xs text-purple-300 font-mono whitespace-pre overflow-x-auto p-4 max-w-[280px] sm:max-w-full">{`query($username: String!, $repoCount: Int!) {
   user(login: $username) {
     login
     name
@@ -233,7 +233,7 @@ export default function DocsPage() {
   }
 }`}</pre>
                       </div>
-                      <div className="mt-4 grid grid-cols-2 gap-3">
+                      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-3">
                           <p className="text-xs text-purple-300 font-semibold mb-1">📊 Data Retrieved:</p>
                           <ul className="text-xs text-white/60 space-y-0.5">
@@ -259,7 +259,7 @@ export default function DocsPage() {
 
                 <div className="bg-white/5 border border-yellow-500/30 rounded-xl p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center flex-shrink-0 text-white font-black text-xl">
+                    <div className="hidden md:flex w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500 to-orange-500 flex items-center justify-center flex-shrink-0 text-white font-black text-xl">
                       4
                     </div>
                     <div className="flex-1">
@@ -325,7 +325,7 @@ export default function DocsPage() {
 
                 <div className="bg-white/5 border border-red-500/30 rounded-xl p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center flex-shrink-0 text-white font-black text-xl">
+                    <div className="hidden md:flex w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center flex-shrink-0 text-white font-black text-xl">
                       5
                     </div>
                     <div className="flex-1">
@@ -393,7 +393,7 @@ export default function DocsPage() {
 
                 <div className="bg-white/5 border border-cyan-500/30 rounded-xl p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center flex-shrink-0 text-white font-black text-xl">
+                    <div className="hidden md:flex w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center flex-shrink-0 text-white font-black text-xl">
                       6
                     </div>
                     <div className="flex-1">
@@ -401,7 +401,7 @@ export default function DocsPage() {
                       <p className="text-white/60 mb-4">
                         All computed metrics are stored in PostgreSQL with automatic cache invalidation:
                       </p>
-                      <div className="bg-black/30 rounded-lg p-4 font-mono text-xs text-cyan-300">
+                      <div className="bg-black/30 rounded-lg p-4 font-mono overflow-x-auto text-xs text-cyan-300">
                         <div className="space-y-1">
                           <div>• Profile data (score, percentile, component scores)</div>
                           <div>• Repository metrics (stars, forks, languages)</div>
@@ -410,7 +410,7 @@ export default function DocsPage() {
                           <div>• Scoring method: "fallback" (statistical) or "pro" (advanced)</div>
                         </div>
                       </div>
-                      <div className="mt-4 grid grid-cols-2 gap-3">
+                      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-lg p-3">
                           <p className="text-xs text-cyan-300 font-semibold mb-1">💾 Database:</p>
                           <p className="text-xs text-white/60">
@@ -998,7 +998,7 @@ export default function DocsPage() {
                 <h3 className="text-2xl font-bold text-white mb-6">Database Schema</h3>
 
                 <div className="bg-black/30 rounded-lg p-4 overflow-x-auto">
-                  <pre className="text-xs text-green-300 font-mono">{`model Profile {
+                  <pre className="overflow-x-auto text-xs text-green-300 font-mono">{`model Profile {
   id                    String   @id @default(cuid())
   userId                String?  @unique
   username              String   @unique
@@ -1265,7 +1265,7 @@ export default function DocsPage() {
                   <div>
                     <h4 className="text-sm font-bold text-white mb-2">Request Body:</h4>
                     <div className="bg-black/30 rounded-lg p-4">
-                      <pre className="text-xs text-green-300 font-mono">{`{
+                      <pre className="overflow-x-auto text-xs text-green-300 font-mono">{`{
   "username": "torvalds",
   "_honeypot": "",           // Must be empty (bot detection)
   "_timestamp": 1704067200000 // Page load time (timing validation)
@@ -1276,7 +1276,7 @@ export default function DocsPage() {
                   <div>
                     <h4 className="text-sm font-bold text-white mb-2">Success Response (200 OK):</h4>
                     <div className="bg-black/30 rounded-lg p-4">
-                      <pre className="text-xs text-green-300 font-mono">{`{
+                      <pre className="overflow-x-auto text-xs text-green-300 font-mono">{`{
   "success": true,
   "cached": false,
   "profile": {
@@ -1333,7 +1333,7 @@ export default function DocsPage() {
                   <div>
                     <h4 className="text-sm font-bold text-white mb-2">Example Usage (JavaScript):</h4>
                     <div className="bg-black/30 rounded-lg p-4">
-                      <pre className="text-xs text-cyan-300 font-mono">{`const response = await fetch('/api/analyze-username', {
+                      <pre className="overflow-x-auto text-xs text-cyan-300 font-mono">{`const response = await fetch('/api/analyze-username', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
@@ -1380,7 +1380,7 @@ if (data.success) {
                   <div>
                     <h4 className="text-sm font-bold text-white mb-2">Success Response (200 OK):</h4>
                     <div className="bg-black/30 rounded-lg p-4">
-                      <pre className="text-xs text-green-300 font-mono">{`{
+                      <pre className="overflow-x-auto text-xs text-green-300 font-mono">{`{
   "user": { "plan": "FREE" },
   "profile": {
     "username": "torvalds",
@@ -1407,7 +1407,7 @@ if (data.success) {
                   <div>
                     <h4 className="text-sm font-bold text-white mb-2">Example Usage (JavaScript):</h4>
                     <div className="bg-black/30 rounded-lg p-4">
-                      <pre className="text-xs text-cyan-300 font-mono">{`const response = await fetch('/api/profile?username=torvalds');
+                      <pre className="overflow-x-auto text-xs text-cyan-300 font-mono">{`const response = await fetch('/api/profile?username=torvalds');
 const data = await response.json();
 
 console.log(\`Score: \${data.profile.score}/100\`);
@@ -1442,7 +1442,7 @@ console.log(\`Total Stars: \${data.profile.totalStars.toLocaleString()}\`);`}</p
                   <div>
                     <h4 className="text-sm font-bold text-white mb-2">Success Response (200 OK):</h4>
                     <div className="bg-black/30 rounded-lg p-4">
-                      <pre className="text-xs text-green-300 font-mono">{`{
+                      <pre className="overflow-x-auto text-xs text-green-300 font-mono">{`{
   "rank": 3,
   "totalProfiles": 1247,
   "percentile": 99.76,
@@ -1454,7 +1454,7 @@ console.log(\`Total Stars: \${data.profile.totalStars.toLocaleString()}\`);`}</p
                   <div>
                     <h4 className="text-sm font-bold text-white mb-2">Calculation Logic:</h4>
                     <div className="bg-black/30 rounded-lg p-4">
-                      <pre className="text-xs text-purple-300 font-mono">{`// Count profiles with higher scores
+                      <pre className="overflow-x-auto text-xs text-purple-300 font-mono">{`// Count profiles with higher scores
 const higherScores = await prisma.profile.count({
   where: { score: { gt: userScore } }
 });
@@ -1470,7 +1470,7 @@ const percentile = ((totalProfiles - rank + 1) / totalProfiles) * 100;`}</pre>
                   <div>
                     <h4 className="text-sm font-bold text-white mb-2">Example Usage (JavaScript):</h4>
                     <div className="bg-black/30 rounded-lg p-4">
-                      <pre className="text-xs text-cyan-300 font-mono">{`const response = await fetch('/api/global-rank?username=torvalds');
+                      <pre className="overflow-x-auto text-xs text-cyan-300 font-mono">{`const response = await fetch('/api/global-rank?username=torvalds');
 const { rank, totalProfiles, percentile } = await response.json();
 
 console.log(\`Rank #\${rank} of \${totalProfiles}\`);

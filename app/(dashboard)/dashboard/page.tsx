@@ -376,7 +376,7 @@ const fetchGlobalRank = async (username: string) => {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl p-4"
+          className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl p-4 mx-4 md:mx-0"
         >
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
@@ -408,7 +408,7 @@ const fetchGlobalRank = async (username: string) => {
         <motion.div
           initial={{ opacity: 0, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl p-4"
+          className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/30 rounded-xl p-4 mx-4 md:mx-0"
         >
           <div className="flex items-center gap-4">
             <div className="animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full flex-shrink-0"></div>
@@ -600,10 +600,10 @@ const fetchGlobalRank = async (username: string) => {
             </div>
           </div>
 
-          {/* ✅ Tabs section with padding */}
-          <div className="px-4 md:px-0">
+          {/* ✅ Tabs section */}
+          <div>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="overflow-x-auto px-4 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <TabsList className="bg-white/5 border border-white/10 p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-6 rounded-xl h-auto backdrop-blur-sm">
                 
                 <TabsTrigger 
@@ -791,7 +791,7 @@ const fetchGlobalRank = async (username: string) => {
             </TabsContent>
 
             <TabsContent value="compare" className="space-y-6 mt-6 px-4 md:px-0">
-              <div className="bg-white/5 rounded-xl border border-white/10 p-8 text-center backdrop-blur-sm">
+              <div className="bg-white/5 rounded-xl border border-white/10 p-8 px-[10px] text-center backdrop-blur-sm">
                 <CompareTab userProfile={profileData} />
               </div>
             </TabsContent>

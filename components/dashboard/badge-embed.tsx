@@ -95,15 +95,51 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
-          className="relative"
+          className="space-y-3"
         >
-          <div className="p-3 rounded-lg bg-black/40 border border-white/10 font-mono text-xs text-white/80 overflow-x-auto">
-            <code className="whitespace-nowrap">
-              {selectedStyle === "markdown" ? markdownCode : htmlCode}
-            </code>
+          {/* Code Display */}
+          <div className="relative">
+            <div className="p-3 pr-12 md:pr-3 rounded-lg bg-black/40 border border-white/10 font-mono text-xs text-white/80 overflow-x-auto">
+              <code className="whitespace-nowrap">
+                {selectedStyle === "markdown" ? markdownCode : htmlCode}
+              </code>
+            </div>
+
+            {/* Copy Button - Desktop (absolute positioned) */}
+            <button
+              onClick={() =>
+                copyToClipboard(
+                  selectedStyle === "markdown" ? markdownCode : htmlCode,
+                  selectedStyle
+                )
+              }
+              className="hidden md:block absolute top-2 right-2 p-2 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 transition-all group"
+            >
+              <AnimatePresence mode="wait">
+                {copied === selectedStyle ? (
+                  <motion.div
+                    key="check"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                  >
+                    <Check className="w-4 h-4 text-green-400" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="copy"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                  >
+                    <Copy className="w-4 h-4 text-white/40 group-hover:text-white/60" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
           </div>
 
-          {/* Copy Button */}
+          {/* Copy Button - Mobile (full width below) */}
           <button
             onClick={() =>
               copyToClipboard(
@@ -111,7 +147,7 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
                 selectedStyle
               )
             }
-            className="absolute top-2 right-2 p-2 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 transition-all group"
+            className="md:hidden w-full p-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-all flex items-center justify-center gap-2 font-semibold text-sm"
           >
             <AnimatePresence mode="wait">
               {copied === selectedStyle ? (
@@ -120,8 +156,10 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0 }}
+                  className="flex items-center gap-2"
                 >
                   <Check className="w-4 h-4 text-green-400" />
+                  <span className="text-green-400">Copied!</span>
                 </motion.div>
               ) : (
                 <motion.div
@@ -129,8 +167,10 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   exit={{ scale: 0 }}
+                  className="flex items-center gap-2"
                 >
-                  <Copy className="w-4 h-4 text-white/40 group-hover:text-white/60" />
+                  <Copy className="w-4 h-4 text-white/60" />
+                  <span className="text-white/60">Copy Code</span>
                 </motion.div>
               )}
             </AnimatePresence>

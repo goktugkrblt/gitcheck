@@ -207,7 +207,7 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="flex items-start gap-2 p-2 rounded-lg bg-gradient-to-r from-blue-500/5 to-cyan-500/5 border border-blue-500/10"
+            className="flex items-center gap-2 p-2 rounded-lg bg-gradient-to-r from-blue-500/5 to-cyan-500/5 border border-blue-500/10"
           >
             <span className="text-blue-400 text-sm shrink-0">ℹ️</span>
             <p className="text-xs text-blue-300/70 font-mono leading-relaxed">

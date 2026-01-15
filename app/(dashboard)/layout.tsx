@@ -103,7 +103,7 @@ export default function DashboardLayout({
       </nav>
 
       {/* Main Content */}
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-[15px] sm:pt-12 pb-12">
         {children}
       </main>
     </div>

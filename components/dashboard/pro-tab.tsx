@@ -276,8 +276,8 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
         )}
 
         {/* ✅ CHANGED: Removed absolute positioning, now flows naturally */}
-        <div className="flex items-center justify-center py-8 md:py-12 px-4">
-          <div className="w-full max-w-2xl bg-[#050307] border-2 border-purple-500/30 rounded-2xl p-6 md:p-8 shadow-2xl">
+        <div className="flex items-center justify-center py-8 md:py-12 px-0 md:px-4">
+          <div className="w-full max-w-2xl bg-[#050307] border-2 border-purple-500/30 rounded-2xl p-6 px-[15px] md:p-8 shadow-2xl">
             {/* Header */}
             <div className="text-center mb-6">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 mb-4">
@@ -326,7 +326,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                 </p>
               </div>
 
-              <div className="space-y-2 mb-4 text-center">
+              <div className="space-y-2 mb-4 text-left">
                 {[
                   "All premium features included",
                   "Complete profile analysis",
