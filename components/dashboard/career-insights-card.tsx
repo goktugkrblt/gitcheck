@@ -20,8 +20,6 @@ import {
 interface CareerInsightsCardProps {
   data: {
     overallScore: number;
-    experienceLevel: 'Junior' | 'Mid-Level' | 'Senior' | 'Staff+';
-    experiencePoints: number;
     skills: {
       technicalBreadth: number;
       documentation: number;
@@ -48,8 +46,6 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
   // 🛡️ SAFETY GUARDS: Provide defaults if data is incomplete
   const safeData = {
     overallScore: data?.overallScore || 0,
-    experienceLevel: data?.experienceLevel || 'Junior',
-    experiencePoints: data?.experiencePoints || 0,
     skills: data?.skills || {
       technicalBreadth: 0,
       documentation: 0,
@@ -71,13 +67,6 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
     grade: data?.grade || 'N/A',
   };
 
-  const getLevelColor = (level: string) => {
-    if (level === 'Staff+') return 'from-purple-500 to-pink-500';
-    if (level === 'Senior') return 'from-blue-500 to-cyan-500';
-    if (level === 'Mid-Level') return 'from-green-500 to-emerald-500';
-    return 'from-yellow-500 to-orange-500';
-  };
-
   const getScoreColor = (score: number) => {
     if (score >= 80) return "from-green-500 to-emerald-500";
     if (score >= 60) return "from-blue-500 to-cyan-500";
@@ -93,7 +82,7 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
   };
 
   const scorePercentage = safeData.overallScore; // Already 0-100
-  const experiencePercentage = (safeData.experiencePoints / 18) * 100;
+  const levelColor = getScoreColor(safeData.overallScore);
 
   return (
     <motion.div
@@ -103,12 +92,12 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
     >
       {/* Main Header Card */}
       <div className="relative overflow-hidden bg-[#050307] border border-[#131c26] rounded-2xl p-8">
-        <div className={`absolute inset-0 bg-gradient-to-br ${getLevelColor(safeData.experienceLevel)} opacity-5`} />
-        
+        <div className={`absolute inset-0 bg-gradient-to-br ${levelColor} opacity-5`} />
+
         <div className="relative z-10">
           <div className="flex items-start justify-between mb-8">
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-              <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${getLevelColor(safeData.experienceLevel)} flex items-center justify-center shadow-lg`}>
+              <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${levelColor} flex items-center justify-center shadow-lg`}>
                 <Target className="w-8 h-8 text-white" />
               </div>
               <div>
@@ -122,7 +111,7 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
             </div>
 
             <div className="flex flex-col gap-2 items-end">
-              <div className={`px-6 py-3 rounded-full bg-gradient-to-r ${getLevelColor(safeData.experienceLevel)} border border-[#131c26]`}>
+              <div className={`px-6 py-3 rounded-full bg-gradient-to-r ${levelColor} border border-[#131c26]`}>
                 <span className="text-2xl font-black text-white">
                   {safeData.grade}
                 </span>

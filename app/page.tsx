@@ -260,7 +260,7 @@ export default function HomePage() {
       <div className="relative z-10">
         
       {/* HEADER SECTION */}
-<div className="max-w-5xl mx-auto px-6 py-8 md:py-12">
+<div className="max-w-5xl mx-auto px-4 md:px-6 py-6 md:py-12">
   
   {/* ✅ TOP BAR: Logo (centered on mobile, left on desktop) */}
   <div className="flex items-center justify-center md:justify-start mb-12 md:mb-20">
@@ -513,7 +513,7 @@ export default function HomePage() {
 </div>
 
         {/* REST OF CONTENT */}
-        <main className="max-w-4xl mx-auto px-6">
+        <main className="max-w-4xl mx-auto px-4 md:px-6">
           
           {/* How It Works Section */}
           <ScrollRevealSection isMobile={isMobile}>
@@ -822,9 +822,34 @@ export default function HomePage() {
             </div>
           </ScrollRevealSection>
 
+          {/* Disclaimer */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="mt-12 md:mt-20 mb-8 md:mb-12 px-4 md:px-8"
+          >
+            <div className="max-w-4xl mx-auto bg-white/[0.02] border border-white/[0.06] rounded-xl p-6 md:p-8">
+              <h3 className="text-sm font-bold text-white/80 mb-3 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Disclaimer
+              </h3>
+              <p className="text-xs md:text-sm text-white/50 leading-relaxed">
+                GitCheck provides automated analysis of publicly available GitHub profiles using our proprietary algorithms.
+                This is <strong className="text-white/70">not a professional developer assessment</strong> or evaluation service.
+                Our scoring system analyzes visible GitHub activity, repository metrics, and contribution patterns to generate
+                insights for educational and informational purposes only. Results should not be used as the sole basis for
+                employment decisions or professional evaluations. Actual developer capabilities, experience, and skills may
+                vary significantly from automated metrics.
+              </p>
+            </div>
+          </motion.div>
+
           {/* Footer */}
-          <footer className="pt-12 md:pt-20 border-t border-white/[0.06] mt-12 md:mt-20 mb-12 md:mb-20">
-            <motion.div 
+          <footer className="pt-8 md:pt-12 border-t border-white/[0.06] mb-12 md:mb-20">
+            <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}

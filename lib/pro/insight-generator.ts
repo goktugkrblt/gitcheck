@@ -515,7 +515,6 @@ export function generateDevPatternsInsights(data: {
 // ==========================================
 
 export function generateCareerInsights(data: {
-  experienceLevel: string;
   overallScore: number;
   skills: {
     technicalBreadth: number;
@@ -540,7 +539,7 @@ export function generateCareerInsights(data: {
   const strengths: string[] = [];
   const recommendations: string[] = [];
 
-  const { skills, professionalMetrics, experienceLevel, profileType } = data;
+  const { skills, professionalMetrics, profileType } = data;
 
   // ✅ STRENGTHS
   if (skills.technicalBreadth >= 8) {
@@ -627,15 +626,15 @@ export function generateCareerInsights(data: {
     );
   }
 
-  if (experienceLevel === 'Junior' && data.overallScore >= 6) {
+  if (data.overallScore >= 6 && data.overallScore < 7.5) {
     recommendations.push(
-      `You're ready for mid-level roles! Update your resume, highlight your ${skills.technicalBreadth >= 7 ? 'diverse tech stack' : skills.codeQuality >= 7 ? 'quality code practices' : 'consistent contributions'}`
+      `Keep building your portfolio - highlight your ${skills.technicalBreadth >= 7 ? 'diverse tech stack' : skills.codeQuality >= 7 ? 'quality code practices' : 'consistent contributions'}`
     );
   }
 
-  if (experienceLevel === 'Mid-Level' && data.overallScore >= 7.5) {
+  if (data.overallScore >= 7.5) {
     recommendations.push(
-      `Approaching senior level: focus on mentoring others, architectural decisions, and documenting your technical judgment`
+      `Focus on leadership and mentoring: architectural decisions and documenting your technical judgment will strengthen your profile`
     );
   }
 
@@ -649,13 +648,13 @@ export function generateCareerInsights(data: {
   let story = '';
 
   if (data.overallScore >= 8) {
-    story = `You're a **${experienceLevel} ${profileType}** with elite-level execution. Your profile shows ${skills.technicalBreadth >= 8 ? 'impressive technical range, ' : ''}${skills.collaboration >= 8 ? 'strong collaboration, ' : ''}${skills.codeQuality >= 8 ? 'quality-focused code, ' : ''}and ${professionalMetrics.consistency >= 70 ? 'remarkable consistency' : 'solid fundamentals'}. Market value: **${professionalMetrics.marketValue}** - companies actively seek developers with your profile. ${professionalMetrics.portfolioStrength >= 80 ? 'Your GitHub is interview-ready.' : ''} You're not just employable, you're **in-demand**. Keep this up and doors will open before you knock.`;
+    story = `You're a **${profileType}** with elite-level execution. Your profile shows ${skills.technicalBreadth >= 8 ? 'impressive technical range, ' : ''}${skills.collaboration >= 8 ? 'strong collaboration, ' : ''}${skills.codeQuality >= 8 ? 'quality-focused code, ' : ''}and ${professionalMetrics.consistency >= 70 ? 'remarkable consistency' : 'solid fundamentals'}. Market value: **${professionalMetrics.marketValue}** - companies actively seek developers with your profile. ${professionalMetrics.portfolioStrength >= 80 ? 'Your GitHub is interview-ready.' : ''} You're not just employable, you're **in-demand**. Keep this up and doors will open before you knock.`;
   } else if (data.overallScore >= 6) {
-    story = `As a **${experienceLevel} ${profileType}**, you have a **solid professional foundation**. ${skills.technicalBreadth >= 7 ? 'Your tech stack is diverse, ' : ''}${skills.projectManagement >= 7 ? 'you ship consistently, ' : ''}and ${skills.collaboration >= 7 ? 'you work well with others' : 'you execute reliably'}. Market value: **${professionalMetrics.marketValue}** - you're competitive in the job market. To level up: ${skills[weakestSkill as keyof typeof skills] < 6 ? `strengthen your ${skillLabels[weakestSkill]} ` : ''}${professionalMetrics.visibility < 50 ? 'and increase visibility. ' : ''}${experienceLevel === 'Junior' && data.overallScore >= 6.5 ? 'You\'re actually ready for mid-level roles - don\'t undersell yourself!' : 'Focus on depth in one area rather than breadth everywhere.'}`;
+    story = `As a **${profileType}**, you have a **solid professional foundation**. ${skills.technicalBreadth >= 7 ? 'Your tech stack is diverse, ' : ''}${skills.projectManagement >= 7 ? 'you ship consistently, ' : ''}and ${skills.collaboration >= 7 ? 'you work well with others' : 'you execute reliably'}. Market value: **${professionalMetrics.marketValue}** - you're competitive in the job market. To level up: ${skills[weakestSkill as keyof typeof skills] < 6 ? `strengthen your ${skillLabels[weakestSkill]} ` : ''}${professionalMetrics.visibility < 50 ? 'and increase visibility. ' : ''}Focus on depth in one area rather than breadth everywhere.`;
   } else if (data.overallScore >= 4) {
-    story = `You're a **${experienceLevel} ${profileType}** with **clear potential**. ${skills.technicalBreadth >= 5 ? 'Your technical foundation is there, ' : ''}but ${skills[weakestSkill as keyof typeof skills] < 5 ? `${skillLabels[weakestSkill]} needs work. ` : 'consistency is key. '}Market value: **${professionalMetrics.marketValue}** - you're employable but not yet standing out. Good news: the gap from "hireable" to "sought-after" is smaller than you think. ${professionalMetrics.portfolioStrength < 50 ? 'Focus on 2-3 showcase projects. ' : ''}${skills.documentation < 5 ? 'Document your work. ' : ''}${professionalMetrics.consistency < 50 ? 'Build daily coding habits. ' : ''}These compound over 6 months into dramatic career shifts.`;
+    story = `You're a **${profileType}** with **clear potential**. ${skills.technicalBreadth >= 5 ? 'Your technical foundation is there, ' : ''}but ${skills[weakestSkill as keyof typeof skills] < 5 ? `${skillLabels[weakestSkill]} needs work. ` : 'consistency is key. '}Market value: **${professionalMetrics.marketValue}** - you're employable but not yet standing out. Good news: the gap from "hireable" to "sought-after" is smaller than you think. ${professionalMetrics.portfolioStrength < 50 ? 'Focus on 2-3 showcase projects. ' : ''}${skills.documentation < 5 ? 'Document your work. ' : ''}${professionalMetrics.consistency < 50 ? 'Build daily coding habits. ' : ''}These compound over 6 months into dramatic career shifts.`;
   } else {
-    story = `As a **${experienceLevel} ${profileType}**, you're **building your foundation**. Market value: **${professionalMetrics.marketValue}** - you're at the start of your journey, and that's okay! Every senior dev started here. Focus: ${skills.codeQuality < 5 ? '1) Code quality over speed, ' : '1) Consistent daily practice, '}${skills.documentation < 5 ? '2) Document everything you learn, ' : '2) Complete small projects end-to-end, '}${professionalMetrics.visibility < 30 ? '3) Share your work publicly' : '3) Contribute to open source'}. Don't compare yourself to seniors - compare yourself to last month's you. ${professionalMetrics.consistency < 30 ? 'Build the habit first, speed comes later.' : 'You\'re doing the work, keep going!'} In 12 months of consistent effort, you'll be amazed at your growth.`;
+    story = `As a **${profileType}**, you're **building your foundation**. Market value: **${professionalMetrics.marketValue}** - you're at the start of your journey, and that's okay! Focus: ${skills.codeQuality < 5 ? '1) Code quality over speed, ' : '1) Consistent daily practice, '}${skills.documentation < 5 ? '2) Document everything you learn, ' : '2) Complete small projects end-to-end, '}${professionalMetrics.visibility < 30 ? '3) Share your work publicly' : '3) Contribute to open source'}. ${professionalMetrics.consistency < 30 ? 'Build the habit first, speed comes later.' : 'You\'re doing the work, keep going!'} In 12 months of consistent effort, you'll be amazed at your growth.`;
   }
 
   return {

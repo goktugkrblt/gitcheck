@@ -92,7 +92,6 @@ interface ScoringResult {
   improvements: string[];
   rawTotal: number;
   breakdown: string;
-  experienceLevel: 'Beginner' | 'Junior' | 'Mid-Level' | 'Senior' | 'Principal' | 'Elite';
 
   statistics: {
     compositeZScore: number;
@@ -395,7 +394,6 @@ function calculatePureStatisticalScore(metrics: ScoringInput['basicMetrics']): S
   const outlierStatus = getOutlierStatus(compositeZ);
 
   const grade = getGrade(overallScore);
-  const experienceLevel = getExperienceLevel(overallScore, accountAge);
   const { strengths, improvements } = analyzePerformance(components);
 
   const breakdown = `Composite Z = (${codeQualityZ.toFixed(2)} × 30%) + (${impactZ.toFixed(2)} × 35%) + (${consistencyZ.toFixed(2)} × 20%) + (${collaborationZ.toFixed(2)} × 15%) = ${compositeZ.toFixed(2)}`;
@@ -410,7 +408,6 @@ function calculatePureStatisticalScore(metrics: ScoringInput['basicMetrics']): S
     improvements,
     rawTotal: compositeZ,
     breakdown,
-    experienceLevel,
     statistics: {
       compositeZScore: Math.round(compositeZ * 100) / 100,
       standardError: Math.round(standardError * 100) / 100,
@@ -489,9 +486,7 @@ function calculateHybridScore(input: ScoringInput): ScoringResult {
     },
   };
 
-  const accountAge = input.basicMetrics.accountAge || 1;
   const grade = getGrade(overallScore);
-  const experienceLevel = getExperienceLevel(overallScore, accountAge);
   const { strengths, improvements } = analyzePerformance(components);
 
   // Percentile from score
@@ -509,7 +504,6 @@ function calculateHybridScore(input: ScoringInput): ScoringResult {
     improvements,
     rawTotal: overallScore,
     breakdown,
-    experienceLevel,
     statistics: statResult.statistics,
   };
 }
@@ -635,19 +629,6 @@ function getGrade(score: number): 'S+' | 'S' | 'A' | 'B+' | 'B' | 'C' | 'D' | 'F
   if (score >= 50) return 'C';   // Above median
   if (score >= 30) return 'D';   // Below median
   return 'F';                     // Bottom 30%
-}
-
-function getExperienceLevel(
-  score: number,
-  accountAge: number
-): 'Beginner' | 'Junior' | 'Mid-Level' | 'Senior' | 'Principal' | 'Elite' {
-  // Based on score primarily, age secondarily
-  if (score >= 95 && accountAge >= 5) return 'Elite';
-  if (score >= 90 || accountAge >= 10) return 'Principal';
-  if (score >= 80 || accountAge >= 7) return 'Senior';
-  if (score >= 70 || accountAge >= 4) return 'Mid-Level';
-  if (score >= 50 || accountAge >= 2) return 'Junior';
-  return 'Beginner';
 }
 
 function analyzePerformance(components: {

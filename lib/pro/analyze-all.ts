@@ -11,7 +11,6 @@ import {
 } from "./insight-generator";
 
 export interface CareerInsights {
-  experienceLevel: 'Junior' | 'Mid-Level' | 'Senior' | 'Staff+';
   profileType: string;
   overallScore: number;
   grade: string;
@@ -114,7 +113,6 @@ export async function analyzeAllPro(
 
     // Enrich Career Insights with story
     const careerInsightsEnriched = generateCareerInsights({
-      experienceLevel: careerInsightsBase.experienceLevel,
       overallScore: careerInsightsBase.overallScore,
       skills: careerInsightsBase.skills,
       professionalMetrics: {
@@ -230,48 +228,41 @@ function calculateCareerInsights(data: {
   const activity = repoMetrics.activity || {};
 
   // ==========================================
-  // 2. EXPERIENCE LEVEL CALCULATION
+  // 2. EXPERIENCE POINTS CALCULATION
   // ==========================================
-  
-  let experienceLevel: CareerInsights['experienceLevel'] = 'Junior';
+
   let experiencePoints = 0;
-  
+
   // Consistency score (daily commits)
   if (consistency >= 80) experiencePoints += 3;
   else if (consistency >= 60) experiencePoints += 2;
   else if (consistency >= 40) experiencePoints += 1;
-  
+
   // Repository health (maintenance quality)
   if (repoHealth.overallScore >= 8) experiencePoints += 3;
   else if (repoHealth.overallScore >= 6) experiencePoints += 2;
   else if (repoHealth.overallScore >= 4) experiencePoints += 1;
-  
+
   // Collaboration (team work)
   if (collaborationScore >= 7) experiencePoints += 3;
   else if (collaborationScore >= 5) experiencePoints += 2;
   else if (collaborationScore >= 3) experiencePoints += 1;
-  
+
   // Technology adoption
   if (cuttingEdge >= 60) experiencePoints += 2;
   else if (modernFrameworks >= 70) experiencePoints += 1;
-  
+
   // Code quality & documentation
   if (codeQualityScore >= 8 && documentationHabits >= 70) experiencePoints += 2;
   else if (codeQualityScore >= 6) experiencePoints += 1;
-  
+
   // Leadership indicators
   const contributorCount = activity.contributorCount || 1;
   if (contributorCount >= 10) experiencePoints += 3;
   else if (contributorCount >= 5) experiencePoints += 2;
   else if (contributorCount >= 3) experiencePoints += 1;
-  
-  // Assign level based on points
-  if (experiencePoints >= 14) experienceLevel = 'Staff+';
-  else if (experiencePoints >= 10) experienceLevel = 'Senior';
-  else if (experiencePoints >= 6) experienceLevel = 'Mid-Level';
-  else experienceLevel = 'Junior';
 
-  console.log(`  Experience Points: ${experiencePoints}/18 → ${experienceLevel}`);
+  console.log(`  Experience Points: ${experiencePoints}/18`);
 
   // ==========================================
   // 3. PROFILE TYPE DETECTION
@@ -385,12 +376,12 @@ function calculateCareerInsights(data: {
   
   // Market Value
   let marketValue: 'Entry' | 'Competitive' | 'High-Value' | 'Elite' = 'Entry';
-  
-  if (experienceLevel === 'Staff+' && overallScore >= 8.5) {
+
+  if (experiencePoints >= 14 && overallScore >= 8.5) {
     marketValue = 'Elite';
-  } else if (experienceLevel === 'Senior' && overallScore >= 7.5) {
+  } else if (experiencePoints >= 10 && overallScore >= 7.5) {
     marketValue = 'High-Value';
-  } else if (experienceLevel === 'Mid-Level' || overallScore >= 6.5) {
+  } else if (experiencePoints >= 6 || overallScore >= 6.5) {
     marketValue = 'Competitive';
   }
   
@@ -435,8 +426,8 @@ function calculateCareerInsights(data: {
   if (burnoutRisk < 30) {
     strengths.push('🌟 Sustainable work-life balance');
   }
-  if (experienceLevel === 'Staff+' || experienceLevel === 'Senior') {
-    strengths.push('👔 Senior-level experience and leadership');
+  if (experiencePoints >= 10) {
+    strengths.push('👔 Strong leadership and collaboration experience');
   }
 
   // ==========================================
@@ -496,20 +487,19 @@ function calculateCareerInsights(data: {
   }
   
   // Career advancement
-  if (experienceLevel === 'Junior' && overallScore >= 6) {
-    recommendations.push('📈 You\'re ready for Mid-Level roles - showcase your portfolio');
+  if (experiencePoints < 6 && overallScore >= 6) {
+    recommendations.push('📈 Keep building your portfolio - you\'re making great progress');
   }
-  if (experienceLevel === 'Mid-Level' && overallScore >= 7.5) {
-    recommendations.push('🎯 You\'re approaching Senior level - focus on leadership and mentoring');
+  if (experiencePoints >= 6 && experiencePoints < 10 && overallScore >= 7.5) {
+    recommendations.push('🎯 Focus on leadership and mentoring to advance your career');
   }
 
   console.log(`  Overall Career Score: ${overallScore}/10 (${grade})`);
-  console.log(`  Experience Level: ${experienceLevel}`);
+  console.log(`  Experience Points: ${experiencePoints}/18`);
   console.log(`  Profile Type: ${profileType}`);
   console.log(`  Market Value: ${marketValue}`);
 
   return {
-    experienceLevel,
     profileType,
     overallScore,
     grade,
