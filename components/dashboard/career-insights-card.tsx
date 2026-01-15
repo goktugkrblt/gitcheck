@@ -393,6 +393,19 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
         </div>
       </div>
 
+      {/* Story Section - Career Narrative */}
+      {safeData.story && (
+        <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl p-8">
+          <div className="flex items-center gap-3 mb-4">
+            <Target className="w-6 h-6 text-green-400" />
+            <h3 className="text-2xl font-black text-[#e0e0e0]">Your Career Narrative</h3>
+          </div>
+          <p className="text-sm text-[#e0e0e0] leading-relaxed text-left">
+            {safeData.story}
+          </p>
+        </div>
+      )}
+
       {/* Profile Type & Strengths */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Profile Type */}
@@ -429,19 +442,6 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
           </div>
         )}
       </div>
-
-      {/* Story Section - NEW! */}
-      {safeData.story && (
-        <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl p-8">
-          <div className="flex items-center gap-3 mb-4">
-            <Target className="w-6 h-6 text-green-400" />
-            <h3 className="text-2xl font-black text-[#e0e0e0]">Your Career Narrative</h3>
-          </div>
-          <p className="text-sm text-[#e0e0e0] leading-relaxed text-left">
-            {safeData.story}
-          </p>
-        </div>
-      )}
 
       {/* Recommendations */}
       {safeData.recommendations.length > 0 && (
