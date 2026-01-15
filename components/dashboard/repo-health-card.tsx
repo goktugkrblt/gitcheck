@@ -179,13 +179,26 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
 
           {/* Progress Bar */}
           <div className="w-full h-3 bg-[#050307] rounded-full overflow-hidden">
-            <div 
+            <div
               className={`h-full bg-gradient-to-r ${getScoreColor(data.overallScore)} transition-all duration-1000 ease-out relative`}
               style={{ width: `${scorePercentage}%` }}
             >
               <div className="absolute inset-0 bg-white/20 animate-pulse" />
             </div>
           </div>
+
+          {/* Story Section - MOVED TO TOP! */}
+          {data.insights.story && (
+            <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl p-6 mt-8">
+              <div className="flex items-center gap-2 mb-4">
+                <Activity className="w-5 h-5 text-blue-400" />
+                <h4 className="text-lg font-black text-[#e0e0e0]">Health Assessment</h4>
+              </div>
+              <p className="text-sm text-[#e0e0e0] leading-relaxed text-left">
+                {data.insights.story}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -335,19 +348,6 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
           </div>
         </div>
       </div>
-
-      {/* Story Section - NEW! */}
-      {data.insights.story && (
-        <div className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Shield className="w-5 h-5 text-blue-400" />
-            <h4 className="text-lg font-black text-[#e0e0e0]">Health Assessment</h4>
-          </div>
-          <p className="text-sm text-[#e0e0e0] leading-relaxed text-left">
-            {data.insights.story}
-          </p>
-        </div>
-      )}
 
       {/* Insights */}
      {/* Insights - 3 BÖLÜM */}

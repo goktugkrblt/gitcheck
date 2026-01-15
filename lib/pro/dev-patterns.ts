@@ -58,6 +58,7 @@ export async function analyzeDeveloperPatterns(
     patterns: string[];
     recommendations: string[];
   };
+  story?: string;
   developerPersona: string;
 }> {
   const startTime = Date.now();
@@ -822,6 +823,18 @@ export async function analyzeDeveloperPatterns(
     if (documentationHabits < 50) recommendations.push('Add README files and documentation to more projects');
     if (collaborationScore < 6) recommendations.push('Engage more with open source - contribute to other projects via PRs');
 
+    // Generate personalized story
+    let story = "";
+    if (overallScore >= 85) {
+      story = `Your development patterns are exceptional. You're a ${persona} with ${totalCommits} commits showing ${consistency}% consistency. ${deepWorkSessions >= 8 ? 'Your deep work sessions demonstrate strong focus.' : ''} ${modernFrameworks >= 70 ? 'You stay current with modern tech stacks.' : ''} This combination of consistency, quality, and modern practices sets you apart.`;
+    } else if (overallScore >= 70) {
+      story = `You show strong development patterns. As a ${persona}, you've built ${totalCommits} commits with ${consistency}% consistency. ${burnoutRisk > 60 ? 'Consider work-life balance to maintain sustainable pace.' : 'Your pace appears sustainable.'} Focus on ${codeQualityScore100 < 70 ? 'code quality habits (smaller commits, more reviews)' : collaborationScore100 < 70 ? 'collaboration (PRs, reviews)' : 'maintaining your strong patterns'}.`;
+    } else if (overallScore >= 50) {
+      story = `Your development patterns are developing. You're a ${persona} with ${totalCommits} commits. ${consistency < 50 ? 'Building daily consistency would strengthen your profile.' : 'Good consistency foundation.'} Priority improvements: ${commitMessageQuality < 60 ? 'better commit messages (use conventional commits)' : documentationHabits < 50 ? 'add documentation to projects' : modernFrameworks < 50 ? 'explore modern frameworks' : 'maintain current momentum'}.`;
+    } else {
+      story = `Your development patterns are just beginning. With ${totalCommits} commits, you're building your coding journey. ${consistency < 40 ? 'Focus on daily coding habits - consistency compounds over time.' : ''} Start with: ${commitMessageQuality < 50 ? 'meaningful commit messages,' : ''} ${documentationHabits < 40 ? 'adding READMEs to projects,' : ''} and exploring modern tools. Small daily improvements create lasting impact.`;
+    }
+
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
     console.log(`✅ [DEV PATTERNS] Complete in ${duration}s - Score: ${overallScore.toFixed(2)}/100`);
 
@@ -879,6 +892,7 @@ export async function analyzeDeveloperPatterns(
         patterns,
         recommendations,
       },
+      story,
       developerPersona: persona,
     };
   } catch (error) {

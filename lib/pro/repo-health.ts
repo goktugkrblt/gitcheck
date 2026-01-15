@@ -40,6 +40,7 @@ export async function analyzeRepositoryHealth(
     concerns: string[];
     recommendations: string[];
   };
+  story?: string;
   trend: 'improving' | 'stable' | 'declining';
 }> {
   const startTime = Date.now();
@@ -444,6 +445,18 @@ export async function analyzeRepositoryHealth(
     if (maintenanceScore >= 70 && lastCommitDays <= 14) trend = 'improving';
     else if (lastCommitDays > 60 || maintenanceScore < 40) trend = 'declining';
 
+    // Generate personalized story
+    let story = "";
+    if (overallScore >= 85) {
+      story = `Your repositories are exceptionally well-maintained. With ${Math.round(commitFrequency * 10) / 10} commits per week and ${Math.round(openClosedRatio)}% issue resolution rate, you demonstrate professional-grade repository management. This level of maintenance shows strong commitment to code quality and user support.`;
+    } else if (overallScore >= 70) {
+      story = `Your repositories show solid health metrics. You maintain ${Math.round(commitFrequency * 10) / 10} commits per week with active development. ${lastCommitDays <= 14 ? 'Recent activity shows continued engagement.' : 'Consider more frequent commits to show active maintenance.'} Focus on ${issueScore < 70 ? 'improving issue resolution times' : prScore < 70 ? 'streamlining your PR workflow' : 'maintaining current momentum'} to reach exceptional status.`;
+    } else if (overallScore >= 50) {
+      story = `Your repositories have good foundations but room for improvement. With ${lastCommitDays} days since last commit, ${lastCommitDays > 30 ? 'more frequent updates would signal active maintenance' : 'you\'re staying engaged'}. Priority areas: ${maintenanceScore < 60 ? 'increase commit frequency' : issueScore < 60 ? 'faster issue resolution' : 'better PR management'}. These improvements will significantly boost repository health.`;
+    } else {
+      story = `Your repositories need more consistent maintenance. ${lastCommitDays > 60 ? 'Repositories appear inactive - regular commits signal active development.' : ''} Focus on establishing consistent patterns: commit regularly, ${openClosedRatio < 50 ? 'resolve issues promptly,' : ''} and maintain active branches. Repository health directly impacts user trust and adoption.`;
+    }
+
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
     console.log(`✅ [REPO HEALTH] Complete in ${duration}s - Score: ${overallScore.toFixed(2)}/100`);
 
@@ -483,6 +496,7 @@ export async function analyzeRepositoryHealth(
         concerns,
         recommendations,
       },
+      story,
       trend,
     };
   } catch (error) {
