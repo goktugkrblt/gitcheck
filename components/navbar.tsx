@@ -14,7 +14,7 @@ interface NavbarProps {
 export function Navbar({ maxWidth = "max-w-5xl", sticky = true }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, mounted } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -100,44 +100,48 @@ export function Navbar({ maxWidth = "max-w-5xl", sticky = true }: NavbarProps) {
                   ))}
 
                   {/* Theme Toggle */}
-                  <button
-                    onClick={toggleTheme}
-                    className="ml-2 p-2 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-all duration-200 cursor-pointer"
-                    aria-label="Toggle theme"
-                  >
-                    <motion.div
-                      initial={false}
-                      animate={{ rotate: theme === "dark" ? 0 : 180 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                  {mounted && (
+                    <button
+                      onClick={toggleTheme}
+                      className="ml-2 p-2 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-all duration-200 cursor-pointer"
+                      aria-label="Toggle theme"
                     >
-                      {theme === "dark" ? (
-                        <Sun className="w-5 h-5" />
-                      ) : (
-                        <Moon className="w-5 h-5" />
-                      )}
-                    </motion.div>
-                  </button>
+                      <motion.div
+                        initial={false}
+                        animate={{ rotate: theme === "dark" ? 0 : 180 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                      >
+                        {theme === "dark" ? (
+                          <Sun className="w-5 h-5" />
+                        ) : (
+                          <Moon className="w-5 h-5" />
+                        )}
+                      </motion.div>
+                    </button>
+                  )}
                 </div>
 
                 {/* Mobile: Theme Toggle + Menu Button */}
                 <div className="md:hidden flex items-center gap-2">
-                  <button
-                    onClick={toggleTheme}
-                    className="p-2 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-all cursor-pointer"
-                    aria-label="Toggle theme"
-                  >
-                    <motion.div
-                      initial={false}
-                      animate={{ rotate: theme === "dark" ? 0 : 180 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                  {mounted && (
+                    <button
+                      onClick={toggleTheme}
+                      className="p-2 text-black/70 dark:text-white/70 hover:text-black dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-all cursor-pointer"
+                      aria-label="Toggle theme"
                     >
-                      {theme === "dark" ? (
-                        <Sun className="w-5 h-5" />
-                      ) : (
-                        <Moon className="w-5 h-5" />
-                      )}
-                    </motion.div>
-                  </button>
+                      <motion.div
+                        initial={false}
+                        animate={{ rotate: theme === "dark" ? 0 : 180 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                      >
+                        {theme === "dark" ? (
+                          <Sun className="w-5 h-5" />
+                        ) : (
+                          <Moon className="w-5 h-5" />
+                        )}
+                      </motion.div>
+                    </button>
+                  )}
 
                   <button
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

@@ -70,15 +70,15 @@ export default function LeaderboardPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Trophy className="w-12 h-12 text-purple-500" />
-            <h1 className="text-4xl md:text-5xl font-black text-black dark:text-white tracking-tighter">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <Trophy className="w-8 h-8 text-purple-500" />
+            <h1 className="text-3xl md:text-4xl font-black text-black dark:text-white tracking-tighter">
               Leaderboard
             </h1>
           </div>
-          <p className="text-lg text-black/60 dark:text-white/40">
+          <p className="text-sm text-black/60 dark:text-white/40">
             Top developers ranked by GitCheck score
           </p>
         </motion.div>
@@ -88,30 +88,30 @@ export default function LeaderboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mb-8 flex flex-col md:flex-row gap-4 items-center justify-center"
+          className="mb-6 flex flex-col md:flex-row gap-3 items-center justify-center"
         >
           {/* Filter Type Toggle */}
-          <div className="flex gap-2 bg-black/5 dark:bg-white/5 p-1.5 rounded-xl border border-black/10 dark:border-white/10">
+          <div className="flex gap-2 bg-black/5 dark:bg-white/5 p-1 rounded-lg border border-black/10 dark:border-white/10">
             <button
               onClick={() => setFilterType("global")}
-              className={`px-6 py-2 rounded-lg font-bold text-sm transition-all ${
+              className={`px-4 py-1.5 rounded-md font-semibold text-xs transition-all ${
                 filterType === "global"
                   ? "bg-black/10 dark:bg-white/10 text-black dark:text-white"
                   : "text-black/40 dark:text-white/40 hover:text-black/60 dark:hover:text-white/60"
               }`}
             >
-              <Globe className="w-4 h-4 inline mr-2" />
+              <Globe className="w-3.5 h-3.5 inline mr-1.5" />
               Global
             </button>
             <button
               onClick={() => setFilterType("country")}
-              className={`px-6 py-2 rounded-lg font-bold text-sm transition-all ${
+              className={`px-4 py-1.5 rounded-md font-semibold text-xs transition-all ${
                 filterType === "country"
                   ? "bg-black/10 dark:bg-white/10 text-black dark:text-white"
                   : "text-black/40 dark:text-white/40 hover:text-black/60 dark:hover:text-white/60"
               }`}
             >
-              <MapPin className="w-4 h-4 inline mr-2" />
+              <MapPin className="w-3.5 h-3.5 inline mr-1.5" />
               By Country
             </button>
           </div>
@@ -121,7 +121,7 @@ export default function LeaderboardPage() {
             <select
               value={selectedCountry}
               onChange={(e) => setSelectedCountry(e.target.value)}
-              className="px-4 py-2 rounded-lg bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 text-black dark:text-white font-medium text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="px-3 py-1.5 rounded-lg bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 text-black dark:text-white font-medium text-xs focus:outline-none focus:ring-2 focus:ring-purple-500"
             >
               <option value="">Select Country</option>
               {availableCountries.map((country) => (
@@ -138,26 +138,26 @@ export default function LeaderboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4"
+          className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-3"
         >
-          <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-6 text-center">
-            <TrendingUp className="w-8 h-8 text-purple-500 mx-auto mb-2" />
-            <p className="text-2xl font-black text-black dark:text-white">{users.length}</p>
-            <p className="text-xs text-black/40 dark:text-white/40">Total Developers</p>
+          <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg p-4 text-center">
+            <TrendingUp className="w-6 h-6 text-purple-500 mx-auto mb-1.5" />
+            <p className="text-xl font-black text-black dark:text-white">{users.length}</p>
+            <p className="text-[10px] text-black/40 dark:text-white/40 uppercase tracking-wider">Total Developers</p>
           </div>
-          <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-6 text-center">
-            <Crown className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
-            <p className="text-2xl font-black text-black dark:text-white">
+          <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg p-4 text-center">
+            <Crown className="w-6 h-6 text-yellow-500 mx-auto mb-1.5" />
+            <p className="text-xl font-black text-black dark:text-white">
               {users[0]?.score || 0}
             </p>
-            <p className="text-xs text-black/40 dark:text-white/40">Top Score</p>
+            <p className="text-[10px] text-black/40 dark:text-white/40 uppercase tracking-wider">Top Score</p>
           </div>
-          <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-6 text-center">
-            <Globe className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-            <p className="text-2xl font-black text-black dark:text-white">
+          <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg p-4 text-center">
+            <Globe className="w-6 h-6 text-blue-500 mx-auto mb-1.5" />
+            <p className="text-xl font-black text-black dark:text-white">
               {availableCountries.length}
             </p>
-            <p className="text-xs text-black/40 dark:text-white/40">Countries</p>
+            <p className="text-[10px] text-black/40 dark:text-white/40 uppercase tracking-wider">Countries</p>
           </div>
         </motion.div>
 
@@ -185,11 +185,11 @@ export default function LeaderboardPage() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className={`flex items-center gap-4 p-4 rounded-xl border ${getRankBackground(user.rank)} hover:scale-[1.02] transition-all cursor-pointer`}
+                className={`flex items-center gap-3 p-3 rounded-lg border ${getRankBackground(user.rank)} hover:scale-[1.01] transition-all cursor-pointer`}
                 onClick={() => window.location.href = `/dashboard?username=${user.username}`}
               >
                 {/* Rank */}
-                <div className="w-16 flex items-center justify-center flex-shrink-0">
+                <div className="w-12 flex items-center justify-center flex-shrink-0">
                   {getRankIcon(user.rank)}
                 </div>
 
@@ -197,17 +197,17 @@ export default function LeaderboardPage() {
                 <img
                   src={user.avatarUrl}
                   alt={user.username}
-                  className="w-12 h-12 rounded-full border-2 border-black/10 dark:border-white/10"
+                  className="w-9 h-9 rounded-full border-2 border-black/10 dark:border-white/10"
                 />
 
                 {/* User Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-bold text-black dark:text-white truncate">
+                    <h3 className="text-sm font-bold text-black dark:text-white truncate">
                       {user.username}
                     </h3>
                     {user.country && (
-                      <span className="text-xs px-2 py-1 rounded-full bg-black/10 dark:bg-white/10 text-black/60 dark:text-white/60">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-black/10 dark:bg-white/10 text-black/60 dark:text-white/60">
                         {user.country}
                       </span>
                     )}
@@ -216,10 +216,10 @@ export default function LeaderboardPage() {
 
                 {/* Score */}
                 <div className="text-right flex-shrink-0">
-                  <p className="text-2xl font-black bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+                  <p className="text-lg font-black bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
                     {user.score}
                   </p>
-                  <p className="text-xs text-black/40 dark:text-white/40">score</p>
+                  <p className="text-[10px] text-black/40 dark:text-white/40">score</p>
                 </div>
               </motion.div>
             ))
