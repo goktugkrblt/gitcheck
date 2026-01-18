@@ -454,8 +454,8 @@ export default function HomePage() {
       transition={{ delay: isMobile ? 0 : 1.2, duration: isMobile ? 0 : 0.8 }}
       className="hidden lg:block w-[260px] flex-shrink-0"
     >
-      <LeaderboardCard 
-        profiles={leaderboard}
+      <LeaderboardCard
+        profiles={leaderboard.slice(0, 10)}
         count={leaderboardCount}
         loading={leaderboardLoading}
         isMobile={isMobile} 
@@ -465,8 +465,8 @@ export default function HomePage() {
 
   {/* Mobile Leaderboard */}
   <motion.div className="lg:hidden mb-12 mt-8">
-    <LeaderboardCard 
-      profiles={leaderboard}
+    <LeaderboardCard
+      profiles={leaderboard.slice(0, 10)}
       count={leaderboardCount}
       loading={leaderboardLoading}
       isMobile={isMobile} 
@@ -731,9 +731,9 @@ export default function HomePage() {
                   q: "What's included in the PRO plan?", 
                   a: "PRO includes 5 advanced analytics modules: README Quality Analysis (20%), Repository Health (25%), Developer Patterns (30%), Career Insights (25%), and AI Career Analysis (bonus). You get comprehensive scoring, detailed breakdowns, and personalized AI-powered career recommendations." 
                 },
-                { 
-                  q: "How does the payment work?", 
-                  a: "It's a simple one-time payment of $2.99 to unlock your PRO analysis. No subscriptions, no recurring charges. After payment via Stripe, you'll have instant access to all advanced features and insights for your profile." 
+                {
+                  q: "How does the payment work?",
+                  a: "Pay $4 for your first PRO analysis, then $2 for each subsequent re-analysis. No subscriptions, no recurring charges. After payment via Stripe, you'll have instant access to all advanced features and insights for your profile."
                 },
                 { 
                   q: "Can I request a refund?", 
@@ -821,6 +821,7 @@ export default function HomePage() {
                   { label: "Documentation", href: "/docs" },
                   { label: "Privacy", href: "/privacy" },
                   { label: "Terms", href: "/terms" },
+                  { label: "Refund Policy", href: "/refund" },
                 ].map((link, i) => (
                   <Link
                     key={i}

@@ -244,7 +244,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                       </svg>
-                      Re-analyze ($1)
+                      Re-analyze ($2)
                     </>
                   )}
                 </Button>
@@ -353,7 +353,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
 
                 <div className="bg-gradient-to-r from-black/5 to-black/5 dark:from-blue-500/10 dark:to-cyan-500/10 border border-black/10 dark:border-blue-500/20 rounded-xl p-4 mb-6">
                   <div className="text-center">
-                    <div className="text-4xl font-black text-black dark:text-white mb-1">$1.00</div>
+                    <div className="text-4xl font-black text-black dark:text-white mb-1">$2.00</div>
                     <p className="text-xs text-black/60 dark:text-white/60">One-time payment for fresh analysis</p>
                   </div>
                 </div>
@@ -391,7 +391,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                         Processing...
                       </>
                     ) : (
-                      <>Pay $1 & Re-analyze</>
+                      <>Pay $2 & Re-analyze</>
                     )}
                   </Button>
                 </div>
@@ -470,10 +470,10 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
               <div className="text-center mb-4">
                 <p className="text-xs text-black/60 dark:text-purple-400 font-bold mb-2">ONE-TIME PAYMENT</p>
                 <div className="flex items-baseline justify-center gap-2 mb-1">
-                  <span className="text-5xl font-black text-black dark:text-[#e0e0e0]">$2.99</span>
+                  <span className="text-5xl font-black text-black dark:text-[#e0e0e0]">$4.00</span>
                 </div>
                 <p className="text-xs text-black/60 dark:text-[#666]">
-                  One-time payment • Lifetime access
+                  First analysis • $2 for re-analysis
                 </p>
               </div>
 
@@ -504,7 +504,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                   </>
                 ) : (
                   <>
-                    Unlock PRO – $2.99
+                    Unlock PRO – $4.00
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </>
                 )}
@@ -621,7 +621,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                   </>
                 ) : (
                   <>
-                    Unlock PRO – $2.99
+                    Unlock PRO – $4.00
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </>
                 )}

@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
+import { Navbar } from "@/components/navbar";
 
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-[#050307] relative overflow-hidden">
+      <Navbar />
       
       {/* ✨ STATIC BACKGROUND (NO ANIMATION) */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -58,16 +60,14 @@ export default function PrivacyPage() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-16">
+      <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-12 pt-32 md:pt-40 pb-16">
         {/* Back Button */}
-        <Link href="/">
-          <motion.button
-            whileHover={{ x: -5 }}
-            className="flex items-center gap-2 text-black/40 dark:text-white/40 hover:text-black/70 hover:dark:text-white/70 mb-12 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm cursor-pointer">Back to Home</span>
-          </motion.button>
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors mb-8"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Home
         </Link>
 
         {/* Header */}
@@ -314,6 +314,10 @@ export default function PrivacyPage() {
         >
           <Link href="/terms" className="hover:text-black/70 hover:dark:text-white/70 transition-colors">
             Terms of Service
+          </Link>
+          <span>•</span>
+          <Link href="/refund" className="hover:text-black/70 hover:dark:text-white/70 transition-colors">
+            Refund Policy
           </Link>
           <span>•</span>
           <Link href="/docs" className="hover:text-black/70 hover:dark:text-white/70 transition-colors">
