@@ -87,16 +87,16 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
   };
 
   const getScoreBgColor = (score: number) => {
-    if (score >= 80) return "from-green-500/10 to-emerald-500/10";
-    if (score >= 60) return "from-blue-500/10 to-cyan-500/10";
-    if (score >= 40) return "from-yellow-500/10 to-orange-500/10";
-    return "from-red-500/10 to-pink-500/10";
+    if (score >= 80) return "from-black/5 to-black/5 dark:from-green-500/10 dark:to-emerald-500/10";
+    if (score >= 60) return "from-black/5 to-black/5 dark:from-blue-500/10 dark:to-cyan-500/10";
+    if (score >= 40) return "from-black/5 to-black/5 dark:from-yellow-500/10 dark:to-orange-500/10";
+    return "from-black/5 to-black/5 dark:from-red-500/10 dark:to-pink-500/10";
   };
 
   return (
     <div className="space-y-6">
       {/* Main Score Card */}
-      <div className="relative overflow-hidden bg-[#050307] border border-[#131c26] rounded-2xl p-8">
+      <div className="relative overflow-hidden bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-2xl p-8">
         <div className={`absolute inset-0 bg-gradient-to-br ${getScoreBgColor(data.overallScore)} opacity-50`} />
         
         <div className="relative z-10">
@@ -104,27 +104,27 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
           <div className="flex items-start justify-between mb-8 sm:items-center">
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
               <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${getScoreColor(data.overallScore)} flex items-center justify-center shadow-lg`}>
-                <Sparkles className="w-8 h-8 text-white" />
+                <Sparkles className="w-8 h-8 text-black dark:text-white" />
               </div>
               <div className="text-left">
-                <h3 className="text-2xl font-black text-[#e0e0e0] mb-1">
+                <h3 className="text-2xl font-black text-black dark:text-[#e0e0e0] mb-1">
                   Developer Patterns
                 </h3>
-                <p className="text-sm text-[#666]">
+                <p className="text-sm text-black/60 dark:text-[#666]">
                   Deep insights into your coding behavior
                 </p>
               </div>
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row items-center">
-              <div className={`px-6 py-3 rounded-full bg-gradient-to-r ${getScoreBgColor(data.overallScore)} border border-[#131c26]`}>
+              <div className={`px-6 py-3 rounded-full bg-gradient-to-r ${getScoreBgColor(data.overallScore)} border border-black/10 dark:border-[#131c26]`}>
                 <span className={`text-2xl font-black bg-gradient-to-r ${getScoreColor(data.overallScore)} bg-clip-text text-transparent`}>
                   {data.grade}
                 </span>
               </div>
 
-              <div className="hidden sm:block px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-[#131c26]">
-                <span className="text-sm font-bold text-purple-400">
+              <div className="hidden sm:block px-4 py-2 rounded-full bg-gradient-to-r from-black/5 to-black/5 dark:from-purple-500/10 dark:to-pink-500/10 border border-black/10 dark:border-[#131c26]">
+                <span className="text-sm font-bold text-black/60 dark:text-purple-400">
                   {data.developerPersona}
                 </span>
               </div>
@@ -137,7 +137,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
               <div className={`text-8xl font-black bg-gradient-to-r ${getScoreColor(data.overallScore)} bg-clip-text text-transparent`}>
                 {data.overallScore.toFixed(2)}
               </div>
-              <div className="text-4xl text-[#666] mb-4">/100</div>
+              <div className="text-4xl text-black/60 dark:text-[#666] mb-4">/100</div>
             </div>
 
             {/* Circular Progress */}
@@ -150,7 +150,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
                   stroke="currentColor"
                   strokeWidth="8"
                   fill="none"
-                  className="text-[#050307]"
+                  className="text-black dark:text-[#050307]"
                 />
                 <circle
                   cx="64"
@@ -171,28 +171,28 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
                 </defs>
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-black text-[#e0e0e0]">{Math.round(scorePercentage)}%</span>
+                <span className="text-2xl font-black text-black dark:text-[#e0e0e0]">{Math.round(scorePercentage)}%</span>
               </div>
             </div>
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full h-3 bg-[#050307] rounded-full overflow-hidden">
+          <div className="w-full h-3 bg-white dark:bg-[#050307] rounded-full overflow-hidden">
             <div 
               className={`h-full bg-gradient-to-r ${getScoreColor(data.overallScore)} transition-all duration-1000 ease-out relative`}
               style={{ width: `${scorePercentage}%` }}
             >
-              <div className="absolute inset-0 bg-white/20 animate-pulse" />
+              <div className="absolute inset-0 bg-black/20 dark:bg-white/20 animate-pulse" />
             </div>
           </div>
           {/* Story Section - MOVED TO TOP! */}
           {data.insights.story && (
-            <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-6 mt-8">
+            <div className="bg-gradient-to-br from-black/5 to-black/5 dark:from-purple-500/10 dark:to-pink-500/10 border border-black/10 dark:border-purple-500/20 rounded-xl p-6 mt-8">
               <div className="flex items-center gap-2 mb-4">
-                <Activity className="w-5 h-5 text-purple-400" />
-                <h4 className="text-lg font-black text-[#e0e0e0]">Your Developer Story</h4>
+                <Activity className="w-5 h-5 text-black/60 dark:text-purple-400" />
+                <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Your Developer Story</h4>
               </div>
-              <p className="text-sm text-[#e0e0e0] leading-relaxed text-left">
+              <p className="text-sm text-black dark:text-[#e0e0e0] leading-relaxed text-left">
                 {data.insights.story}
               </p>
             </div>
@@ -205,280 +205,280 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
       {/* TODO: Weekly Pattern Chart */}
       {/* TODO: Insights */}
 
-      <div className="text-center text-[#666] py-8">
+      <div className="text-center text-black/60 dark:text-[#666] py-8">
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* 1. Commit Patterns */}
-        <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-                <Clock className="w-5 h-5 text-[#666]" />
-                <h4 className="font-bold text-[#e0e0e0]">Commit Patterns</h4>
+                <Clock className="w-5 h-5 text-black/60 dark:text-[#666]" />
+                <h4 className="font-bold text-black dark:text-[#e0e0e0]">Commit Patterns</h4>
             </div>
             <div className="flex items-center gap-1">
-                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.commitPatterns.score.toFixed(2)}</span>
-                <span className="text-sm text-[#666]">/100</span>
+                <span className="text-2xl font-black text-black dark:text-[#e0e0e0]">{data.patterns.commitPatterns.score.toFixed(2)}</span>
+                <span className="text-sm text-black/60 dark:text-[#666]">/100</span>
             </div>
             </div>
 
             <div className="space-y-3">
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Peak Hours</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Peak Hours</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.commitPatterns.peakHours.join(', ')}:00
                 </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Most Active</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Most Active</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.commitPatterns.peakDays[0]}
                 </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Consistency</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Consistency</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.commitPatterns.consistency}%
                 </span>
             </div>
             </div>
 
-            <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
+            <div className="w-full h-2 bg-white dark:bg-[#050307] rounded-full overflow-hidden mt-4">
             <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.commitPatterns.score)} transition-all duration-1000`}
                 style={{ width: `${data.patterns.commitPatterns.score}%` }}
             />
             </div>
 
-            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+            <p className="text-xs text-black/60 dark:text-[#666] mt-3 leading-relaxed text-left">
               When you code most and how consistently - regular patterns show dedication and discipline.
             </p>
         </div>
 
         {/* 2. Code Quality */}
-        <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-                <Code className="w-5 h-5 text-[#666]" />
-                <h4 className="font-bold text-[#e0e0e0]">Code Quality</h4>
+                <Code className="w-5 h-5 text-black/60 dark:text-[#666]" />
+                <h4 className="font-bold text-black dark:text-[#e0e0e0]">Code Quality</h4>
             </div>
             <div className="flex items-center gap-1">
-                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.codeQuality.score.toFixed(2)}</span>
-                <span className="text-sm text-[#666]">/100</span>
+                <span className="text-2xl font-black text-black dark:text-[#e0e0e0]">{data.patterns.codeQuality.score.toFixed(2)}</span>
+                <span className="text-sm text-black/60 dark:text-[#666]">/100</span>
             </div>
             </div>
 
             <div className="space-y-3">
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Branch Mgmt</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Branch Mgmt</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.codeQuality.branchManagement}%
                 </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Commit Size</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Commit Size</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.codeQuality.commitSize}%
                 </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Documentation</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Documentation</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.codeQuality.documentationHabits}%
                 </span>
             </div>
             </div>
 
-            <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
+            <div className="w-full h-2 bg-white dark:bg-[#050307] rounded-full overflow-hidden mt-4">
             <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.codeQuality.score)} transition-all duration-1000`}
                 style={{ width: `${data.patterns.codeQuality.score}%` }}
             />
             </div>
 
-            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+            <p className="text-xs text-black/60 dark:text-[#666] mt-3 leading-relaxed text-left">
               How you write code - small commits, clean branches, docs, and review engagement all matter.
             </p>
         </div>
 
         {/* 3. Work-Life Balance */}
-        <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-                <Zap className="w-5 h-5 text-[#666]" />
-                <h4 className="font-bold text-[#e0e0e0]">Work-Life Balance</h4>
+                <Zap className="w-5 h-5 text-black/60 dark:text-[#666]" />
+                <h4 className="font-bold text-black dark:text-[#e0e0e0]">Work-Life Balance</h4>
             </div>
             <div className="flex items-center gap-1">
-                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.workLifeBalance.score.toFixed(2)}</span>
-                <span className="text-sm text-[#666]">/100</span>
+                <span className="text-2xl font-black text-black dark:text-[#e0e0e0]">{data.patterns.workLifeBalance.score.toFixed(2)}</span>
+                <span className="text-sm text-black/60 dark:text-[#666]">/100</span>
             </div>
             </div>
 
             <div className="space-y-3">
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Weekend Activity</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Weekend Activity</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.workLifeBalance.weekendActivity}%
                 </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Night Coding</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Night Coding</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.workLifeBalance.nightCoding}%
                 </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Burnout Risk</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Burnout Risk</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.workLifeBalance.burnoutRisk}%
                 </span>
             </div>
             </div>
 
-            <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
+            <div className="w-full h-2 bg-white dark:bg-[#050307] rounded-full overflow-hidden mt-4">
             <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.workLifeBalance.score)} transition-all duration-1000`}
                 style={{ width: `${data.patterns.workLifeBalance.score}%` }}
             />
             </div>
 
-            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+            <p className="text-xs text-black/60 dark:text-[#666] mt-3 leading-relaxed text-left">
               Balance matters - too much weekend/night coding can lead to burnout. Higher score = better balance.
             </p>
         </div>
 
         {/* 4. Collaboration */}
-        <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-                <Users className="w-5 h-5 text-[#666]" />
-                <h4 className="font-bold text-[#e0e0e0]">Collaboration</h4>
+                <Users className="w-5 h-5 text-black/60 dark:text-[#666]" />
+                <h4 className="font-bold text-black dark:text-[#e0e0e0]">Collaboration</h4>
             </div>
             <div className="flex items-center gap-1">
-                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.collaboration.score.toFixed(2)}</span>
-                <span className="text-sm text-[#666]">/100</span>
+                <span className="text-2xl font-black text-black dark:text-[#e0e0e0]">{data.patterns.collaboration.score.toFixed(2)}</span>
+                <span className="text-sm text-black/60 dark:text-[#666]">/100</span>
             </div>
             </div>
 
             <div className="space-y-3">
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Solo vs Team</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Solo vs Team</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.collaboration.soloVsTeam}%
                 </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">PR Response</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">PR Response</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.collaboration.prResponseTime}h
                 </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Review Rate</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Review Rate</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.collaboration.reviewParticipation}%
                 </span>
             </div>
             </div>
 
-            <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
+            <div className="w-full h-2 bg-white dark:bg-[#050307] rounded-full overflow-hidden mt-4">
             <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.collaboration.score)} transition-all duration-1000`}
                 style={{ width: `${data.patterns.collaboration.score}%` }}
             />
             </div>
 
-            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+            <p className="text-xs text-black/60 dark:text-[#666] mt-3 leading-relaxed text-left">
               How you work with others - PR reviews, contributions to other repos, and team involvement.
             </p>
         </div>
 
         {/* 5. Technology */}
-        <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-                <Sparkles className="w-5 h-5 text-[#666]" />
-                <h4 className="font-bold text-[#e0e0e0]">Technology</h4>
+                <Sparkles className="w-5 h-5 text-black/60 dark:text-[#666]" />
+                <h4 className="font-bold text-black dark:text-[#e0e0e0]">Technology</h4>
             </div>
             <div className="flex items-center gap-1">
-                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.technology.score.toFixed(2)}</span>
-                <span className="text-sm text-[#666]">/100</span>
+                <span className="text-2xl font-black text-black dark:text-[#e0e0e0]">{data.patterns.technology.score.toFixed(2)}</span>
+                <span className="text-sm text-black/60 dark:text-[#666]">/100</span>
             </div>
             </div>
 
             <div className="space-y-3">
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Modern Stack</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Modern Stack</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.technology.modernFrameworks}%
                 </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Cutting Edge</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Cutting Edge</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.technology.cuttingEdge}%
                 </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Learning Curve</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Learning Curve</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.technology.learningCurve}%
                 </span>
             </div>
             </div>
 
-            <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
+            <div className="w-full h-2 bg-white dark:bg-[#050307] rounded-full overflow-hidden mt-4">
             <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.technology.score)} transition-all duration-1000`}
                 style={{ width: `${data.patterns.technology.score}%` }}
             />
             </div>
 
-            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+            <p className="text-xs text-black/60 dark:text-[#666] mt-3 leading-relaxed text-left">
               Your tech stack choices - modern frameworks, cutting-edge tools, and willingness to learn new tech.
             </p>
         </div>
 
         {/* 6. Productivity */}
-        <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
             <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-                <Target className="w-5 h-5 text-[#666]" />
-                <h4 className="font-bold text-[#e0e0e0]">Productivity</h4>
+                <Target className="w-5 h-5 text-black/60 dark:text-[#666]" />
+                <h4 className="font-bold text-black dark:text-[#e0e0e0]">Productivity</h4>
             </div>
             <div className="flex items-center gap-1">
-                <span className="text-2xl font-black text-[#e0e0e0]">{data.patterns.productivity.score.toFixed(2)}</span>
-                <span className="text-sm text-[#666]">/100</span>
+                <span className="text-2xl font-black text-black dark:text-[#e0e0e0]">{data.patterns.productivity.score.toFixed(2)}</span>
+                <span className="text-sm text-black/60 dark:text-[#666]">/100</span>
             </div>
             </div>
 
             <div className="space-y-3">
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Deep Work</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Deep Work</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.productivity.deepWorkSessions} sessions
                 </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Context Switch</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Context Switch</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.productivity.contextSwitching}%
                 </span>
             </div>
             <div className="flex items-center justify-between text-sm">
-                <span className="text-[#666]">Flow State</span>
-                <span className="font-bold text-[#e0e0e0]">
+                <span className="text-black/60 dark:text-[#666]">Flow State</span>
+                <span className="font-bold text-black dark:text-[#e0e0e0]">
                 {data.patterns.productivity.flowState}%
                 </span>
             </div>
             </div>
 
-            <div className="w-full h-2 bg-[#050307] rounded-full overflow-hidden mt-4">
+            <div className="w-full h-2 bg-white dark:bg-[#050307] rounded-full overflow-hidden mt-4">
             <div
                 className={`h-full bg-gradient-to-r ${getScoreColor(data.patterns.productivity.score)} transition-all duration-1000`}
                 style={{ width: `${data.patterns.productivity.score}%` }}
             />
             </div>
 
-            <p className="text-xs text-[#666] mt-3 leading-relaxed text-left">
+            <p className="text-xs text-black/60 dark:text-[#666] mt-3 leading-relaxed text-left">
               Focus and flow - long coding sessions, low context switching, and peak performance times.
             </p>
         </div>
@@ -487,12 +487,12 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
         {/* Legend */}  
 </div>
      {/* 24-Hour Activity Heatmap - TAM GENİŞLİK */}
-<div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
+<div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
   <div className="flex items-center gap-3 mb-6">
-    <Clock className="w-6 h-6 text-purple-400" />
+    <Clock className="w-6 h-6 text-black/60 dark:text-purple-400" />
     <div>
-      <h3 className="text-xl font-black text-[#e0e0e0]">24-Hour Activity Pattern</h3>
-      <p className="text-sm text-[#666]">Your coding activity throughout the day</p>
+      <h3 className="text-xl font-black text-black dark:text-[#e0e0e0]">24-Hour Activity Pattern</h3>
+      <p className="text-sm text-black/60 dark:text-[#666]">Your coding activity throughout the day</p>
     </div>
   </div>
 
@@ -512,7 +512,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
               className={`
                 h-16 rounded transition-all duration-200
                 ${isPeak ? 'ring-2 ring-purple-400' : ''}
-                ${activity === 0 ? 'bg-[#050307]' : ''}
+                ${activity === 0 ? 'bg-white dark:bg-[#050307]' : ''}
               `}
               style={{
                 backgroundColor: activity > 0 
@@ -522,7 +522,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             />
             
             {/* Tooltip */}
-            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-[#050307] border border-[#131c26] rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
               {hour}:00 - {activity}%
             </div>
           </div>
@@ -531,7 +531,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
     </div>
 
     {/* Hour Labels */}
-    <div className="grid grid-cols-24 gap-1 text-xs text-[#666] text-center mt-2">
+    <div className="grid grid-cols-24 gap-1 text-xs text-black/60 dark:text-[#666] text-center mt-2">
       {Array.from({ length: 24 }, (_, i) => (
         <div key={i} className="font-mono">
           {i % 3 === 0 ? i : ''}
@@ -541,20 +541,20 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
   </div>
 
   {/* Legend */}
-  <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-[#131c26]">
-    <div className="flex items-center gap-2 text-sm text-[#666]">
-      <div className="w-4 h-4 rounded bg-[#050307] border border-[#131c26]" />
+  <div className="flex items-center justify-center gap-6 mt-6 pt-4 border-t border-black/10 dark:border-[#131c26]">
+    <div className="flex items-center gap-2 text-sm text-black/60 dark:text-[#666]">
+      <div className="w-4 h-4 rounded bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26]" />
       <span>No activity</span>
     </div>
-    <div className="flex items-center gap-2 text-sm text-[#666]">
+    <div className="flex items-center gap-2 text-sm text-black/60 dark:text-[#666]">
       <div className="w-4 h-4 rounded bg-purple-500/30" />
       <span>Low</span>
     </div>
-    <div className="flex items-center gap-2 text-sm text-[#666]">
+    <div className="flex items-center gap-2 text-sm text-black/60 dark:text-[#666]">
       <div className="w-4 h-4 rounded bg-purple-500/60" />
       <span>Medium</span>
     </div>
-    <div className="flex items-center gap-2 text-sm text-[#666]">
+    <div className="flex items-center gap-2 text-sm text-black/60 dark:text-[#666]">
       <div className="w-4 h-4 rounded bg-purple-500" />
       <span>High</span>
     </div>
@@ -565,15 +565,15 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
 <div className="grid md:grid-cols-3 gap-6">
   {/* Strengths */}
   {data.insights.strengths.length > 0 && (
-    <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
+    <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
       <div className="flex items-center gap-2 mb-4">
-        <CheckCircle className="w-5 h-5 text-green-400" />
-        <h4 className="text-lg font-black text-[#e0e0e0]">Strengths</h4>
+        <CheckCircle className="w-5 h-5 text-black/60 dark:text-green-400" />
+        <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Strengths</h4>
       </div>
       <div className="text-left space-y-2">
         {data.insights.strengths.map((item, i) => (
-          <div key={i} className="flex items-start gap-2 text-sm text-[#919191]">
-            <CheckCircle className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+          <div key={i} className="flex items-start gap-2 text-sm text-black/50 dark:text-[#919191]">
+            <CheckCircle className="w-4 h-4 text-black/60 dark:text-green-400 mt-0.5 flex-shrink-0" />
             <span>{item}</span>
           </div>
         ))}
@@ -583,15 +583,15 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
 
   {/* Patterns */}
   {data.insights.patterns.length > 0 && (
-    <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
+    <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
       <div className="flex items-center gap-2 mb-4">
-        <Sparkles className="w-5 h-5 text-purple-400" />
-        <h4 className="text-lg font-black text-[#e0e0e0]">Your Patterns</h4>
+        <Sparkles className="w-5 h-5 text-black/60 dark:text-purple-400" />
+        <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Your Patterns</h4>
       </div>
       <div className="text-left space-y-2">
         {data.insights.patterns.map((item, i) => (
-          <div key={i} className="flex items-start gap-2 text-sm text-[#919191]">
-            <Sparkles className="w-4 h-4 text-purple-400 mt-0.5 flex-shrink-0" />
+          <div key={i} className="flex items-start gap-2 text-sm text-black/50 dark:text-[#919191]">
+            <Sparkles className="w-4 h-4 text-black/60 dark:text-purple-400 mt-0.5 flex-shrink-0" />
             <span>{item}</span>
           </div>
         ))}
@@ -601,15 +601,15 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
 
   {/* Recommendations */}
   {data.insights.recommendations.length > 0 && (
-    <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6">
+    <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
       <div className="flex items-center gap-2 mb-4">
-        <TrendingUp className="w-5 h-5 text-blue-400" />
-        <h4 className="text-lg font-black text-[#e0e0e0]">Recommendations</h4>
+        <TrendingUp className="w-5 h-5 text-black/60 dark:text-blue-400" />
+        <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Recommendations</h4>
       </div>
       <div className="text-left space-y-2">
         {data.insights.recommendations.map((item, i) => (
-          <div key={i} className="flex items-start gap-2 text-sm text-[#919191]">
-            <TrendingUp className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
+          <div key={i} className="flex items-start gap-2 text-sm text-black/50 dark:text-[#919191]">
+            <TrendingUp className="w-4 h-4 text-black/60 dark:text-blue-400 mt-0.5 flex-shrink-0" />
             <span>{item}</span>
           </div>
         ))}

@@ -25,7 +25,8 @@ import {
   Target,
   Sparkles,
   Brain,
-  Info // ✅ Info icon eklendi
+  Info, // ✅ Info icon eklendi
+  Crown // ✅ PRO badge için Crown icon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -208,8 +209,8 @@ export default function DashboardPage() {
     const username = urlParams.get('username');
 
     if (!username) {
-      console.error('No username provided');
-      setInitialLoading(false);
+      console.error('No username provided - redirecting to homepage');
+      window.location.href = '/';
       return;
     }
 
@@ -386,19 +387,19 @@ const fetchGlobalRank = async (username: string) => {
               <Info className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-bold text-white mb-1">
+              <h3 className="text-sm font-bold text-black dark:text-white mb-1">
                 Viewing Cached Data
               </h3>
-              <p className="text-xs text-white/70 mb-3">
+              <p className="text-xs text-black dark:text-white/70 mb-3">
                 This profile was recently analyzed. To prevent excessive API usage, you can request a fresh analysis once per day.
               </p>
               <div className="flex items-center gap-2 text-xs">
-                <Calendar className="w-4 h-4 text-blue-400" />
-                <span className="text-white/90 font-medium">
+                <Calendar className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <span className="text-black dark:text-white/90 font-medium">
                   Next scan available in {cacheInfo.hoursRemaining} hour{cacheInfo.hoursRemaining !== 1 ? 's' : ''}
                 </span>
               </div>
-              <div className="mt-2 text-[10px] text-white/50 font-mono">
+              <div className="mt-2 text-[10px] text-black dark:text-white/50 font-mono">
                 Resets at: {new Date(cacheInfo.nextScanAvailable).toLocaleString()}
               </div>
             </div>
@@ -444,10 +445,10 @@ const fetchGlobalRank = async (username: string) => {
         transition={{ duration: 0 }}
         className="lg:motion-safe:animate-fadeIn"
       >
-        <h1 className="text-3xl font-black text-white tracking-tighter px-4 md:px-0">
+        <h1 className="text-3xl font-black text-black dark:text-white tracking-tighter px-4 md:px-0">
           Dashboard
         </h1>
-        <p className="text-white/40 text-sm mt-1 px-4 md:px-0">
+        <p className="text-black/60 dark:text-white/40 text-sm mt-1 px-4 md:px-0">
           Track your GitHub metrics and developer growth
           {process.env.NODE_ENV === 'development' && (
             <span className="ml-2 text-purple-400 text-xs">
@@ -457,71 +458,12 @@ const fetchGlobalRank = async (username: string) => {
         </p>
       </motion.div>
 
-      {!hasProfile ? (
-        <div className="bg-white/5 rounded-2xl p-8 md:p-16 border border-white/10 text-center backdrop-blur-sm mx-4 md:mx-0">
-          <div className="max-w-md mx-auto space-y-6">
-            <div className="w-20 h-20 rounded-full border-2 border-white/10 flex items-center justify-center mx-auto mb-6">
-              <TrendingUp className="h-10 w-10 text-white/60" />
-            </div>
-            <h2 className="text-3xl font-black text-white tracking-tighter">
-              Analyze Your Profile
-            </h2>
-            <p className="text-white/60 font-light">
-              Get insights into your coding activity, discover your strengths, and see how you compare to other developers.
-            </p>
-            <Button 
-              size="lg" 
-              className="bg-white text-black hover:bg-white/90 px-12 py-7 text-base font-bold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
-              onClick={handleAnalyze}
-              disabled={loading}
-            >
-              {loading ? (
-                <span className="flex items-center gap-3">
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle 
-                      className="opacity-25" 
-                      cx="12" 
-                      cy="12" 
-                      r="10" 
-                      stroke="currentColor" 
-                      strokeWidth="4"
-                      fill="none"
-                    />
-                    <path 
-                      className="opacity-75" 
-                      fill="currentColor" 
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    />
-                  </svg>
-                  Analyzing Your Profile...
-                </span>
-              ) : (
-                <span className="relative z-10">Start Analysis</span>
-              )}
-              {!loading && (
-                <span className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
-              )}
-            </Button>
-            <p className="text-xs text-white/40 font-mono">
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <span className="inline-block w-1 h-1 bg-white/40 rounded-full animate-pulse" />
-                  <span className="inline-block w-1 h-1 bg-white/40 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
-                  <span className="inline-block w-1 h-1 bg-white/40 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
-                  <span className="ml-2">Fetching your GitHub data...</span>
-                </span>
-              ) : (
-                "✓ FREE SCAN • NO LIMITS"
-              )}
-            </p>
-          </div>
-        </div>
-      ) : (
+      {hasProfile ? (
         <>
           {/* ✅ CHANGED: Stacked layout instead of grid */}
           <div className="space-y-6 px-4 md:px-0">
             {/* Profile Card - Full width with Badge */}
-            <div className="bg-[#050307] rounded-xl border border-white/10 p-6 md:p-8 backdrop-blur-sm lg:motion-safe:animate-slideInLeft">
+            <div className="bg-white dark:bg-[#050307] rounded-xl border border-black/10 dark:border-white/10 p-6 md:p-8 backdrop-blur-sm lg:motion-safe:animate-slideInLeft">
               <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6 lg:gap-8 w-full">
                 {/* Left: Profile Info */}
                 <div className="flex items-center gap-4 md:gap-6 flex-1">
@@ -529,40 +471,40 @@ const fetchGlobalRank = async (username: string) => {
                     <img
                       src={displayData.avatarUrl}
                       alt={displayData.username}
-                      className="w-20 h-20 md:w-28 md:h-28 rounded-full border-2 md:border-4 border-white/10"
+                      className="w-20 h-20 md:w-28 md:h-28 rounded-full border-2 md:border-4 border-black/10 dark:border-white/10"
                     />
                     {/* PRO Badge */}
                     {isProUser && (
-                      <div className="absolute -bottom-1 -right-1 md:-bottom-2 md:-right-2 w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center border-2 border-[#050307] shadow-lg">
-                        <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-white" />
+                      <div className="absolute -bottom-1 -right-1 md:-bottom-2 md:-right-2 w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center border-2 border-white dark:border-[#050307] shadow-lg">
+                        <Crown className="w-4 h-4 md:w-5 md:h-5 text-white" />
                       </div>
                     )}
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1 md:mb-2">
-                      <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-white tracking-tight truncate">
+                      <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-black dark:text-white tracking-tight truncate">
                         {displayData.username}
                       </h2>
                       {isProUser && (
                         <div className="px-2 md:px-3 py-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center gap-1 flex-shrink-0">
-                          <Sparkles className="w-3 h-3 text-white" />
+                          <Crown className="w-3 h-3 text-white" />
                           <span className="text-[10px] md:text-xs font-black text-white tracking-wider">PRO</span>
                         </div>
                       )}
                     </div>
-                    <p className="text-xs md:text-sm text-white/40 mb-3 md:mb-4">
+                    <p className="text-xs md:text-sm text-black/60 dark:text-white/40 mb-3 md:mb-4">
                       GitHub Developer
                     </p>
 
                     <div className="flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-6 text-xs md:text-sm">
                       <div className="flex items-center gap-1.5 md:gap-2">
-                        <Users className="w-3 h-3 md:w-4 md:h-4 text-white/40" />
-                        <span className="text-white/60 font-medium">{displayData.followersCount} followers</span>
+                        <Users className="w-3 h-3 md:w-4 md:h-4 text-black/60 dark:text-white/40" />
+                        <span className="text-black dark:text-white/60 font-medium">{displayData.followersCount} followers</span>
                       </div>
                       <div className="flex items-center gap-1.5 md:gap-2">
-                        <Package className="w-3 h-3 md:w-4 md:h-4 text-white/40" />
-                        <span className="text-white/60 font-medium">{displayData.totalRepos} repos</span>
+                        <Package className="w-3 h-3 md:w-4 md:h-4 text-black/60 dark:text-white/40" />
+                        <span className="text-black dark:text-white/60 font-medium">{displayData.totalRepos} repos</span>
                       </div>
                     </div>
                   </div>
@@ -574,7 +516,7 @@ const fetchGlobalRank = async (username: string) => {
                     <img
                       src={`/api/badge/${displayData.username}`}
                       alt={`${displayData.username} badge`}
-                      className="w-full lg:w-[210px] h-auto"
+                      className="lg:w-[210px] h-auto"
                     />
                   </div>
                 )}
@@ -621,54 +563,54 @@ const fetchGlobalRank = async (username: string) => {
           <div>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <div className="overflow-x-auto px-4 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              <TabsList className="bg-white/5 border border-white/10 p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-6 rounded-xl h-auto backdrop-blur-sm">
-                
-                <TabsTrigger 
-                  value="overview" 
-                  className="cursor-pointer data-[state=active]:bg-white/10 data-[state=active]:text-white text-white/40 hover:text-white/60 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
+              <TabsList className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-6 rounded-xl h-auto backdrop-blur-sm">
+
+                <TabsTrigger
+                  value="overview"
+                  className="cursor-pointer data-[state=active]:bg-black/10 dark:data-[state=active]:bg-white/10 data-[state=active]:text-black dark:data-[state=active]:text-white text-black/40 dark:text-white/40 hover:text-black/60 dark:hover:text-white/60 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
                 >
                   <BarChart3 className="w-4 h-4 mr-1.5" />
                   OVERVIEW
                 </TabsTrigger>
-                
-                <TabsTrigger 
-                  value="activity" 
-                  className="cursor-pointer data-[state=active]:bg-white/10 data-[state=active]:text-white text-white/40 hover:text-white/60 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
+
+                <TabsTrigger
+                  value="activity"
+                  className="cursor-pointer data-[state=active]:bg-black/10 dark:data-[state=active]:bg-white/10 data-[state=active]:text-black dark:data-[state=active]:text-white text-black/40 dark:text-white/40 hover:text-black/60 dark:hover:text-white/60 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
                 >
                   <Activity className="w-4 h-4 mr-1.5" />
                   ACTIVITY
                 </TabsTrigger>
-                
-                <TabsTrigger 
-                  value="skills" 
-                  className="cursor-pointer data-[state=active]:bg-white/10 data-[state=active]:text-white text-white/40 hover:text-white/60 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
+
+                <TabsTrigger
+                  value="skills"
+                  className="cursor-pointer data-[state=active]:bg-black/10 dark:data-[state=active]:bg-white/10 data-[state=active]:text-black dark:data-[state=active]:text-white text-black/40 dark:text-white/40 hover:text-black/60 dark:hover:text-white/60 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
                 >
                   <Code className="w-4 h-4 mr-1.5" />
                   SKILLS
                 </TabsTrigger>
-                
-                <TabsTrigger 
-                  value="repositories" 
-                  className="cursor-pointer data-[state=active]:bg-white/10 data-[state=active]:text-white text-white/40 hover:text-white/60 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
+
+                <TabsTrigger
+                  value="repositories"
+                  className="cursor-pointer data-[state=active]:bg-black/10 dark:data-[state=active]:bg-white/10 data-[state=active]:text-black dark:data-[state=active]:text-white text-black/40 dark:text-white/40 hover:text-black/60 dark:hover:text-white/60 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
                 >
                   <Package className="w-4 h-4 mr-1.5" />
                   REPOS
                 </TabsTrigger>
-                
-                <TabsTrigger 
-                  value="compare" 
-                  className="cursor-pointer data-[state=active]:bg-white/10 data-[state=active]:text-white text-white/40 hover:text-white/60 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
+
+                <TabsTrigger
+                  value="compare"
+                  className="cursor-pointer data-[state=active]:bg-black/10 dark:data-[state=active]:bg-white/10 data-[state=active]:text-black dark:data-[state=active]:text-white text-black/40 dark:text-white/40 hover:text-black/60 dark:hover:text-white/60 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
                 >
                   <Target className="w-4 h-4 mr-1.5" />
                   COMPARE
                 </TabsTrigger>
-                
-                <TabsTrigger 
-                  value="pro" 
-                  className="relative cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-300 text-purple-400/60 hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
+
+                <TabsTrigger
+                  value="pro"
+                  className="relative cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-300 text-purple-600/60 dark:text-purple-400/60 hover:text-purple-600 dark:hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap"
                 >
-                  <Sparkles className="w-4 h-4 mr-1.5" />
-                  PRO                  
+                  <Crown className="w-4 h-4 mr-1.5" />
+                  PRO
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -676,21 +618,21 @@ const fetchGlobalRank = async (username: string) => {
             {/* ✅ OVERVIEW TAB - Info iconlar eklendi */}
             <TabsContent value="overview" className="space-y-6 mt-6 px-4 md:px-0">
               <div>
-                <h2 className="text-3xl font-black text-white tracking-tighter mb-2">
+                <h2 className="text-3xl font-black text-black dark:text-white tracking-tighter mb-2">
                   Overview
                 </h2>
-                <p className="text-white/40">
+                <p className="text-black/40 dark:text-white/40">
                   Your core GitHub metrics at a glance
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* TOTAL COMMITS */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-sm relative">
+                <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-6 backdrop-blur-sm relative">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold text-white/40 tracking-wider">TOTAL COMMITS</h3>
+                    <h3 className="text-xs font-bold text-black/40 dark:text-white/40 tracking-wider">TOTAL COMMITS</h3>
                     <div className="flex items-center gap-2">
-                      <GitBranch className="h-4 w-4 text-white/40" />
+                      <GitBranch className="h-4 w-4 text-black/40 dark:text-white/40" />
                       <div className="relative group/tooltip">
                         <Info className="h-3.5 w-3.5 text-purple-400 hover:text-purple-300 transition-colors cursor-pointer" />
                         <div className="absolute bottom-full right-0 mb-2 w-56 p-3 bg-black/95 border border-purple-500/30 rounded-lg text-xs text-white/80 opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 pointer-events-none z-50 shadow-xl">
@@ -699,16 +641,16 @@ const fetchGlobalRank = async (username: string) => {
                       </div>
                     </div>
                   </div>
-                  <p className="text-2xl font-black text-white mb-1">{displayData.totalCommits}</p>
-                  <p className="text-xs text-white/40">{displayData.averageCommitsPerDay}/day average</p>
+                  <p className="text-2xl font-black text-black dark:text-white mb-1">{displayData.totalCommits}</p>
+                  <p className="text-xs text-black/40 dark:text-white/40">{displayData.averageCommitsPerDay}/day average</p>
                 </div>
 
                 {/* PULL REQUESTS */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-sm relative">
+                <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-6 backdrop-blur-sm relative">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold text-white/40 tracking-wider">PULL REQUESTS</h3>
+                    <h3 className="text-xs font-bold text-black/40 dark:text-white/40 tracking-wider">PULL REQUESTS</h3>
                     <div className="flex items-center gap-2">
-                      <GitPullRequest className="h-4 w-4 text-white/40" />
+                      <GitPullRequest className="h-4 w-4 text-black/40 dark:text-white/40" />
                       <div className="relative group/tooltip">
                         <Info className="h-3.5 w-3.5 text-purple-400 hover:text-purple-300 transition-colors cursor-pointer" />
                         <div className="absolute bottom-full right-0 mb-2 w-56 p-3 bg-black/95 border border-purple-500/30 rounded-lg text-xs text-white/80 opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 pointer-events-none z-50 shadow-xl">
@@ -717,16 +659,16 @@ const fetchGlobalRank = async (username: string) => {
                       </div>
                     </div>
                   </div>
-                  <p className="text-2xl font-black text-white mb-1">{displayData.totalPRs}</p>
-                  <p className="text-xs text-white/40">{displayData.mergedPRs} merged</p>
+                  <p className="text-2xl font-black text-black dark:text-white mb-1">{displayData.totalPRs}</p>
+                  <p className="text-xs text-black/40 dark:text-white/40">{displayData.mergedPRs} merged</p>
                 </div>
 
                 {/* CURRENT STREAK */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-sm relative">
+                <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-6 backdrop-blur-sm relative">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold text-white/40 tracking-wider">CURRENT STREAK</h3>
+                    <h3 className="text-xs font-bold text-black/40 dark:text-white/40 tracking-wider">CURRENT STREAK</h3>
                     <div className="flex items-center gap-2">
-                      <Zap className="h-4 w-4 text-white/40" />
+                      <Zap className="h-4 w-4 text-black/40 dark:text-white/40" />
                       <div className="relative group/tooltip">
                         <Info className="h-3.5 w-3.5 text-purple-400 hover:text-purple-300 transition-colors cursor-pointer" />
                         <div className="absolute bottom-full right-0 mb-2 w-56 p-3 bg-black/95 border border-purple-500/30 rounded-lg text-xs text-white/80 opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 pointer-events-none z-50 shadow-xl">
@@ -735,16 +677,16 @@ const fetchGlobalRank = async (username: string) => {
                       </div>
                     </div>
                   </div>
-                  <p className="text-2xl font-black text-white mb-1">{displayData.currentStreak} days</p>
-                  <p className="text-xs text-white/40">Longest: {displayData.longestStreak} days</p>
+                  <p className="text-2xl font-black text-black dark:text-white mb-1">{displayData.currentStreak} days</p>
+                  <p className="text-xs text-black/40 dark:text-white/40">Longest: {displayData.longestStreak} days</p>
                 </div>
 
                 {/* COMMUNITY */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-sm relative">
+                <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-6 backdrop-blur-sm relative">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold text-white/40 tracking-wider">COMMUNITY</h3>
+                    <h3 className="text-xs font-bold text-black/40 dark:text-white/40 tracking-wider">COMMUNITY</h3>
                     <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4 text-white/40" />
+                      <Users className="h-4 w-4 text-black/40 dark:text-white/40" />
                       <div className="relative group/tooltip">
                         <Info className="h-3.5 w-3.5 text-purple-400 hover:text-purple-300 transition-colors cursor-pointer" />
                         <div className="absolute bottom-full right-0 mb-2 w-56 p-3 bg-black/95 border border-purple-500/30 rounded-lg text-xs text-white/80 opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 pointer-events-none z-50 shadow-xl">
@@ -753,16 +695,16 @@ const fetchGlobalRank = async (username: string) => {
                       </div>
                     </div>
                   </div>
-                  <p className="text-2xl font-black text-white mb-1">{displayData.followersCount}</p>
-                  <p className="text-xs text-white/40">{displayData.organizationsCount} organizations</p>
+                  <p className="text-2xl font-black text-black dark:text-white mb-1">{displayData.followersCount}</p>
+                  <p className="text-xs text-black/40 dark:text-white/40">{displayData.organizationsCount} organizations</p>
                 </div>
 
                 {/* ISSUES OPENED */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-sm relative">
+                <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-6 backdrop-blur-sm relative">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold text-white/40 tracking-wider">ISSUES OPENED</h3>
+                    <h3 className="text-xs font-bold text-black/40 dark:text-white/40 tracking-wider">ISSUES OPENED</h3>
                     <div className="flex items-center gap-2">
-                      <Activity className="h-4 w-4 text-white/40" />
+                      <Activity className="h-4 w-4 text-black/40 dark:text-white/40" />
                       <div className="relative group/tooltip">
                         <Info className="h-3.5 w-3.5 text-purple-400 hover:text-purple-300 transition-colors cursor-pointer" />
                         <div className="absolute bottom-full right-0 mb-2 w-56 p-3 bg-black/95 border border-purple-500/30 rounded-lg text-xs text-white/80 opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 pointer-events-none z-50 shadow-xl">
@@ -771,16 +713,16 @@ const fetchGlobalRank = async (username: string) => {
                       </div>
                     </div>
                   </div>
-                  <p className="text-2xl font-black text-white mb-1">{displayData.totalIssuesOpened || 0}</p>
-                  <p className="text-xs text-white/40">Contributions made</p>
+                  <p className="text-2xl font-black text-black dark:text-white mb-1">{displayData.totalIssuesOpened || 0}</p>
+                  <p className="text-xs text-black/40 dark:text-white/40">Contributions made</p>
                 </div>
 
                 {/* CODE REVIEWS */}
-                <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-sm relative">
+                <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-6 backdrop-blur-sm relative">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-xs font-bold text-white/40 tracking-wider">CODE REVIEWS</h3>
+                    <h3 className="text-xs font-bold text-black/40 dark:text-white/40 tracking-wider">CODE REVIEWS</h3>
                     <div className="flex items-center gap-2">
-                      <Code className="h-4 w-4 text-white/40" />
+                      <Code className="h-4 w-4 text-black/40 dark:text-white/40" />
                       <div className="relative group/tooltip">
                         <Info className="h-3.5 w-3.5 text-purple-400 hover:text-purple-300 transition-colors cursor-pointer" />
                         <div className="absolute bottom-full right-0 mb-2 w-56 p-3 bg-black/95 border border-purple-500/30 rounded-lg text-xs text-white/80 opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-200 pointer-events-none z-50 shadow-xl">
@@ -789,8 +731,8 @@ const fetchGlobalRank = async (username: string) => {
                       </div>
                     </div>
                   </div>
-                  <p className="text-2xl font-black text-white mb-1">{displayData.totalReviews || 0}</p>
-                  <p className="text-xs text-white/40">Reviews given</p>
+                  <p className="text-2xl font-black text-black dark:text-white mb-1">{displayData.totalReviews || 0}</p>
+                  <p className="text-xs text-black/40 dark:text-white/40">Reviews given</p>
                 </div>
               </div>
             </TabsContent>
@@ -839,7 +781,7 @@ const fetchGlobalRank = async (username: string) => {
           </Tabs>
           </div>
         </>
-      )}
+      ) : null}
     </div>
   );
 }

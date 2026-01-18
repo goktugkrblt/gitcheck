@@ -133,11 +133,11 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
             onKeyDown={handleKeyDown}
             placeholder="username or github.com/username"
             disabled={analyzing || isLoading}
-            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-white/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-4 py-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           />
           {analyzing && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
-              <Loader2 className="w-4 h-4 text-white/60 animate-spin" />
+              <Loader2 className="w-4 h-4 text-black/60 dark:text-white/60 animate-spin" />
             </div>
           )}
         </div>
@@ -150,17 +150,17 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
           className="relative group"
         >
           <motion.div
-            className="absolute inset-0 bg-white/20 rounded-lg blur-xl"
+            className="absolute inset-0 bg-black/20 dark:bg-white/20 rounded-lg blur-xl"
             animate={!isMobile ? { opacity: [0.5, 0.8, 0.5] } : {}}
             transition={{ duration: 2, repeat: Infinity }}
           />
           <Button
             onClick={handleAnalyze}
             disabled={analyzing || isLoading || !username.trim()}
-            className="relative bg-white text-black hover:bg-white/90 text-sm px-6 py-3 w-full sm:w-auto disabled:opacity-50 overflow-hidden h-[48px]"
+            className="relative bg-black dark:bg-white text-white dark:text-black hover:bg-black/90 dark:hover:bg-white/90 text-sm px-6 py-3 w-full sm:w-auto disabled:opacity-50 overflow-hidden h-[48px] font-bold"
           >
             <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 dark:via-black/30 to-transparent"
               animate={!isMobile ? { x: ["-200%", "200%"] } : {}}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
             />
@@ -199,7 +199,7 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-xs text-white/40 font-mono"
+            className="text-xs text-black/50 dark:text-white/40 font-mono"
           >
             Enter any GitHub username or profile URL to analyze
           </motion.p>
@@ -207,10 +207,10 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="flex items-center gap-2 p-2 rounded-lg bg-gradient-to-r from-blue-500/5 to-cyan-500/5 border border-blue-500/10"
+            className="flex items-center gap-2 p-2 rounded-lg bg-gradient-to-r from-blue-500/10 to-cyan-500/10 dark:from-blue-500/5 dark:to-cyan-500/5 border border-blue-500/20 dark:border-blue-500/10"
           >
-            <span className="text-blue-400 text-sm shrink-0">ℹ️</span>
-            <p className="text-xs text-blue-300/70 font-mono leading-relaxed">
+            <span className="text-blue-500 dark:text-blue-400 text-sm shrink-0">ℹ️</span>
+            <p className="text-xs text-blue-600 dark:text-blue-300/70 font-mono leading-relaxed">
               Analysis takes 30-60 seconds. Basic stats appear instantly while we calculate your developer score.
             </p>
           </motion.div>

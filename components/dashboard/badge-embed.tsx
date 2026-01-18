@@ -38,16 +38,16 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-6 rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm"
+      className="p-6 rounded-xl border border-black/10 dark:border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-sm"
     >
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
         <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-          <Code className="w-5 h-5 text-purple-400" />
+          <Code className="w-5 h-5 text-black/60 dark:text-purple-400" />
         </div>
         <div>
-          <h3 className="text-base font-bold text-white">Embed Badge</h3>
-          <p className="text-xs text-white/40">Add to your GitHub README</p>
+          <h3 className="text-base font-bold text-black dark:text-white">Embed Badge</h3>
+          <p className="text-xs text-black dark:text-black/40 dark:text-black/40 dark:text-white/40">Add to your GitHub README</p>
         </div>
         {isTopTen && (
           <motion.div
@@ -63,7 +63,7 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
       </div>
 
       {/* Badge Preview */}
-      <div className="mb-4 p-4 rounded-lg bg-black/30 border border-white/5 flex items-center justify-center">
+      <div className="mb-4 p-4 rounded-lg bg-white dark:bg-black/30 border border-black/10 dark:border-white/5 flex items-center justify-center">
         <img
           src={badgePreviewUrl}
           alt="GitCheck Score Badge"
@@ -78,8 +78,8 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
           onClick={() => setSelectedStyle("markdown")}
           className={`flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
             selectedStyle === "markdown"
-              ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
-              : "bg-white/5 text-white/40 border border-white/10 hover:bg-white/10"
+              ? "bg-black/10 dark:bg-purple-500/20 text-purple-300 border border-purple-500/30"
+              : "bg-black/5 dark:bg-white/5 text-black dark:text-black/40 dark:text-black/40 dark:text-white/40 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-black/10 dark:bg-white/10"
           }`}
         >
           Markdown
@@ -88,8 +88,8 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
           onClick={() => setSelectedStyle("html")}
           className={`flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
             selectedStyle === "html"
-              ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
-              : "bg-white/5 text-white/40 border border-white/10 hover:bg-white/10"
+              ? "bg-black/10 dark:bg-purple-500/20 text-purple-300 border border-purple-500/30"
+              : "bg-black/5 dark:bg-white/5 text-black dark:text-black/40 dark:text-black/40 dark:text-white/40 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-black/10 dark:bg-white/10"
           }`}
         >
           HTML
@@ -107,7 +107,7 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
         >
           {/* Code Display */}
           <div className="relative">
-            <div className="p-3 pr-12 md:pr-3 rounded-lg bg-black/40 border border-white/10 font-mono text-xs text-white/80 overflow-x-auto">
+            <div className="p-3 pr-12 md:pr-3 rounded-lg bg-white dark:bg-black/40 border border-black/10 dark:border-white/10 font-mono text-xs text-black dark:text-white/80 overflow-x-auto">
               <code className="whitespace-nowrap">
                 {selectedStyle === "markdown" ? markdownCode : htmlCode}
               </code>
@@ -121,7 +121,7 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
                   selectedStyle
                 )
               }
-              className="hidden md:block absolute top-2 right-2 p-2 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 transition-all group"
+              className="hidden md:block absolute top-2 right-2 p-2 rounded-md bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-black/10 dark:bg-white/10 border border-black/10 dark:border-white/10 transition-all group"
             >
               <AnimatePresence mode="wait">
                 {copied === selectedStyle ? (
@@ -131,7 +131,7 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
                   >
-                    <Check className="w-4 h-4 text-green-400" />
+                    <Check className="w-4 h-4 text-black/60 dark:text-green-400" />
                   </motion.div>
                 ) : (
                   <motion.div
@@ -140,7 +140,7 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
                   >
-                    <Copy className="w-4 h-4 text-white/40 group-hover:text-white/60" />
+                    <Copy className="w-4 h-4 text-black dark:text-black/40 dark:text-black/40 dark:text-white/40 group-hover:text-black dark:text-black/60 dark:text-white/60" />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -155,7 +155,7 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
                 selectedStyle
               )
             }
-            className="md:hidden w-full p-3 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 transition-all flex items-center justify-center gap-2 font-semibold text-sm"
+            className="md:hidden w-full p-3 rounded-lg bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-black/10 dark:bg-white/10 border border-black/10 dark:border-white/10 transition-all flex items-center justify-center gap-2 font-semibold text-sm"
           >
             <AnimatePresence mode="wait">
               {copied === selectedStyle ? (
@@ -166,8 +166,8 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
                   exit={{ scale: 0 }}
                   className="flex items-center gap-2"
                 >
-                  <Check className="w-4 h-4 text-green-400" />
-                  <span className="text-green-400">Copied!</span>
+                  <Check className="w-4 h-4 text-black/60 dark:text-green-400" />
+                  <span className="text-black/60 dark:text-green-400">Copied!</span>
                 </motion.div>
               ) : (
                 <motion.div
@@ -177,8 +177,8 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
                   exit={{ scale: 0 }}
                   className="flex items-center gap-2"
                 >
-                  <Copy className="w-4 h-4 text-white/60" />
-                  <span className="text-white/60">Copy Code</span>
+                  <Copy className="w-4 h-4 text-black dark:text-black/60 dark:text-white/60" />
+                  <span className="text-black dark:text-black/60 dark:text-white/60">Copy Code</span>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -187,8 +187,8 @@ export function BadgeEmbed({ username, rank }: BadgeEmbedProps) {
       </AnimatePresence>
 
       {/* Info */}
-      <div className="mt-4 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-        <p className="text-xs text-blue-300/80 leading-relaxed">
+      <div className="mt-4 p-3 rounded-lg bg-blue-500/10 border border-black/10 dark:border-blue-500/20">
+        <p className="text-xs text-black dark:text-blue-300/80 leading-relaxed">
           <span className="font-semibold">💡 Tip:</span> Badge updates automatically every hour. Share your score proudly!
         </p>
       </div>

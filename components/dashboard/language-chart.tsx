@@ -27,20 +27,20 @@ export function LanguageChart({ languages }: LanguageChartProps) {
 
   if (data.length === 0) {
     return (
-      <Card className="bg-[#050307] border-[#131c26] p-8">
-        <h3 className="text-xl font-black text-[#e0e0e0] tracking-tighter mb-6">
+      <Card className="bg-white dark:bg-[#050307] border-black/10 dark:border-[#131c26] p-8">
+        <h3 className="text-xl font-black text-black dark:text-[#e0e0e0] tracking-tighter mb-6">
           LANGUAGE DISTRIBUTION
         </h3>
         <div className="flex items-center justify-center h-64">
-          <p className="text-[#666] font-mono text-sm">NO DATA</p>
+          <p className="text-black/60 dark:text-[#666] font-mono text-sm">NO DATA</p>
         </div>
       </Card>
     );
   }
 
   return (
-    <Card className="bg-[#050307] border-[#131c26] p-8">
-      <h3 className="text-xl font-black text-[#e0e0e0] tracking-tighter mb-6">
+    <Card className="bg-white dark:bg-[#050307] border-black/10 dark:border-[#131c26] p-8">
+      <h3 className="text-xl font-black text-black dark:text-[#e0e0e0] tracking-tighter mb-6">
         LANGUAGE DISTRIBUTION
       </h3>
       <ResponsiveContainer width="100%" height={300}>

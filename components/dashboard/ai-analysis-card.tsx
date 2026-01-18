@@ -79,7 +79,7 @@ export function AIAnalysisCard({
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden bg-gradient-to-br from-[#050307] to-[#050307] border border-[#131c26] rounded-2xl"
+        className="relative overflow-hidden bg-gradient-to-br from-white to-white dark:from-[#050307] dark:to-[#050307] border border-black/10 dark:border-[#131c26] rounded-2xl"
       >
         <div className="absolute inset-0 opacity-5">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -99,9 +99,9 @@ export function AIAnalysisCard({
               whileHover={{ scale: 1.05 }}
             >
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#8b5cf6] to-[#6366f1] flex items-center justify-center shadow-lg">
-                <Brain className="w-8 h-8 text-white" />
+                <Brain className="w-8 h-8 text-black dark:text-white" />
                 <motion.div 
-                  className="absolute inset-0 rounded-2xl border-2 border-[#8b5cf6]"
+                  className="absolute inset-0 rounded-2xl border-2 border-purple-500 dark:border-[#8b5cf6]"
                   animate={{ 
                     scale: [1, 1.2, 1.2, 1],
                     opacity: [0.5, 0, 0, 0.5]
@@ -109,25 +109,25 @@ export function AIAnalysisCard({
                   transition={{ duration: 2, repeat: Infinity }}
                 />
               </div>
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#10b981] rounded-full border-2 border-[#050307] animate-pulse" />
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#10b981] rounded-full border-2 border-white dark:border-[#050307] animate-pulse" />
             </motion.div>
             
             <div className="text-left">
-              <h3 className="text-2xl font-black text-[#e0e0e0] mb-1 flex items-center gap-2">
+              <h3 className="text-2xl font-black text-black dark:text-[#e0e0e0] mb-1 flex items-center gap-2">
                 AI Career Analysis              
               </h3>
-              <p className="text-sm text-[#666] text-left">
+              <p className="text-sm text-black/60 dark:text-[#666] text-left">
                 Powered by Claude 3.5 Haiku • Deep Technical Insights
               </p>
             </div>
 
             {analysis && generatedAt && (
               <div className="absolute top-6 right-6">
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#050307] border border-[#131c26]">
-                  <Clock className="w-3 h-3 text-[#8b5cf6]" />
-                  <span className="text-xs text-[#919191]">{getTimeAgo(generatedAt)}</span>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26]">
+                  <Clock className="w-3 h-3 text-purple-600 dark:text-[#8b5cf6]" />
+                  <span className="text-xs text-black/70 dark:text-[#919191]">{getTimeAgo(generatedAt)}</span>
                   {isCached && (
-                    <span className="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 text-xs font-bold border border-blue-500/20">
+                    <span className="px-2 py-0.5 rounded bg-blue-500/10 text-black/60 dark:text-blue-400 text-xs font-bold border border-black/10 dark:border-blue-500/20">
                       Cached
                     </span>
                   )}
@@ -146,7 +146,7 @@ export function AIAnalysisCard({
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -30 }}
-            className="relative overflow-hidden bg-gradient-to-br from-[#050307] to-[#050307] border border-[#131c26] rounded-2xl p-12"
+            className="relative overflow-hidden bg-gradient-to-br from-white to-white dark:from-[#050307] dark:to-[#050307] border border-black/10 dark:border-[#131c26] rounded-2xl p-12"
           >
             <div className="max-w-4xl mx-auto text-center">
               <motion.div 
@@ -155,14 +155,14 @@ export function AIAnalysisCard({
                 transition={{ duration: 2, repeat: Infinity }}
               >
                 <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#8b5cf6] to-[#6366f1] flex items-center justify-center shadow-2xl">
-                  <Brain className="w-12 h-12 text-white" />
+                  <Brain className="w-12 h-12 text-black dark:text-white" />
                 </div>
               </motion.div>
 
-              <h4 className="text-3xl md:text-4xl font-black text-[#e0e0e0] mb-3">
+              <h4 className="text-3xl md:text-4xl font-black text-black dark:text-[#e0e0e0] mb-3">
                 Deep Technical Career Analysis
               </h4>
-              <p className="text-lg text-[#919191] mb-8 max-w-2xl mx-auto">
+              <p className="text-lg text-black/70 dark:text-[#919191] mb-8 max-w-2xl mx-auto">
                 Get comprehensive analysis with technical strengths, growth opportunities, and a 90-day roadmap.
               </p>
 
@@ -180,9 +180,9 @@ export function AIAnalysisCard({
                     whileHover={{ scale: 1.02 }}
                     className={`bg-gradient-to-br ${feature.color} border ${feature.borderColor} rounded-xl p-5`}
                   >
-                    <feature.icon className="w-8 h-8 text-[#e0e0e0] mb-3 mx-auto" />
-                    <h5 className="font-bold text-[#e0e0e0] mb-1">{feature.title}</h5>
-                    <p className="text-sm text-[#919191]">{feature.desc}</p>
+                    <feature.icon className="w-8 h-8 text-black dark:text-[#e0e0e0] mb-3 mx-auto" />
+                    <h5 className="font-bold text-black dark:text-[#e0e0e0] mb-1">{feature.title}</h5>
+                    <p className="text-sm text-black/70 dark:text-[#919191]">{feature.desc}</p>
                   </motion.div>
                 ))}
               </div>
@@ -190,7 +190,7 @@ export function AIAnalysisCard({
               <Button
                 onClick={generateAnalysis}
                 size="lg"
-                className="group bg-gradient-to-r from-[#8b5cf6] to-[#6366f1] hover:from-[#7c3aed] hover:to-[#5b21b6] text-white font-bold rounded-xl px-8 py-6 shadow-lg"
+                className="group bg-gradient-to-r from-[#8b5cf6] to-[#6366f1] hover:from-[#7c3aed] hover:to-purple-800 dark:hover:to-[#5b21b6] text-white font-bold rounded-xl px-8 py-6 shadow-lg"
               >
                 <span className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5" />
@@ -199,7 +199,7 @@ export function AIAnalysisCard({
                 </span>
               </Button>
 
-              <p className="text-sm text-[#666] mt-4">
+              <p className="text-sm text-black/60 dark:text-[#666] mt-4">
                 Takes ~5 seconds • Cached for 24 hours
               </p>
             </div>
@@ -213,7 +213,7 @@ export function AIAnalysisCard({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="bg-gradient-to-br from-[#050307] to-[#050307] border border-[#131c26] rounded-2xl p-12"
+            className="bg-gradient-to-br from-white to-white dark:from-[#050307] dark:to-[#050307] border border-black/10 dark:border-[#131c26] rounded-2xl p-12"
           >
             <div className="max-w-md mx-auto text-center">
               <motion.div 
@@ -223,14 +223,14 @@ export function AIAnalysisCard({
               >
                 <div className="relative w-20 h-20">
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#8b5cf6] to-[#6366f1] opacity-20 blur-xl" />
-                  <div className="absolute inset-0 rounded-2xl border-4 border-[#8b5cf6]/30" />
-                  <div className="absolute inset-0 rounded-2xl border-4 border-[#8b5cf6] border-t-transparent" />
-                  <Brain className="absolute inset-0 m-auto w-9 h-9 text-[#8b5cf6]" />
+                  <div className="absolute inset-0 rounded-2xl border-4 border-purple-500 dark:border-[#8b5cf6]/30" />
+                  <div className="absolute inset-0 rounded-2xl border-4 border-purple-500 dark:border-[#8b5cf6] border-t-transparent" />
+                  <Brain className="absolute inset-0 m-auto w-9 h-9 text-purple-600 dark:text-[#8b5cf6]" />
                 </div>
               </motion.div>
 
-              <h4 className="text-2xl font-bold text-[#e0e0e0] mb-2">Analyzing Profile</h4>
-              <p className="text-[#919191] mb-6">Generating technical insights...</p>
+              <h4 className="text-2xl font-bold text-black dark:text-[#e0e0e0] mb-2">Analyzing Profile</h4>
+              <p className="text-black/70 dark:text-[#919191] mb-6">Generating technical insights...</p>
 
               <div className="space-y-3">
                 {[
@@ -243,14 +243,14 @@ export function AIAnalysisCard({
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.2 }}
-                    className="flex items-center justify-center gap-3 text-sm text-[#666]"
+                    className="flex items-center justify-center gap-3 text-sm text-black/60 dark:text-[#666]"
                   >
                     <motion.div
                       animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
                       transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
-                      className="w-2 h-2 rounded-full bg-[#8b5cf6]"
+                      className="w-2 h-2 rounded-full bg-purple-600 dark:bg-[#8b5cf6]"
                     />
-                    <step.icon className="w-4 h-4 text-[#8b5cf6]" />
+                    <step.icon className="w-4 h-4 text-purple-600 dark:text-[#8b5cf6]" />
                     <span>{step.text}</span>
                   </motion.div>
                 ))}
@@ -266,17 +266,17 @@ export function AIAnalysisCard({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="bg-[#050307] border border-[#ef4444]/30 rounded-2xl p-8"
+            className="bg-white dark:bg-[#050307] border border-red-500/30 dark:border-[#ef4444]/30 rounded-2xl p-8"
           >
             <div className="max-w-md mx-auto text-center">
-              <div className="w-14 h-14 rounded-xl bg-[#ef4444]/10 flex items-center justify-center mx-auto mb-4">
-                <AlertCircle className="w-7 h-7 text-[#ef4444]" />
+              <div className="w-14 h-14 rounded-xl bg-red-500/10 dark:bg-[#ef4444]/10 flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="w-7 h-7 text-red-600 dark:text-[#ef4444]" />
               </div>
-              <h4 className="text-xl font-bold text-[#e0e0e0] mb-2">Analysis Failed</h4>
-              <p className="text-[#919191] mb-6">{error}</p>
+              <h4 className="text-xl font-bold text-black dark:text-[#e0e0e0] mb-2">Analysis Failed</h4>
+              <p className="text-black/70 dark:text-[#919191] mb-6">{error}</p>
               <Button
                 onClick={generateAnalysis}
-                className="bg-[#ef4444]/10 hover:bg-[#ef4444]/20 border border-[#ef4444]/30 text-[#ef4444]"
+                className="bg-red-500/10 dark:bg-[#ef4444]/10 hover:bg-red-500/20 dark:bg-[#ef4444]/20 border border-red-500/30 dark:border-[#ef4444]/30 text-red-600 dark:text-[#ef4444]"
               >
                 Try Again
               </Button>
@@ -290,23 +290,23 @@ export function AIAnalysisCard({
             key="analysis"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-br from-[#050307] to-[#050307] border border-[#131c26] rounded-2xl p-8 md:p-10"
+            className="bg-gradient-to-br from-white to-white dark:from-[#050307] dark:to-[#050307] border border-black/10 dark:border-[#131c26] rounded-2xl p-8 md:p-10"
           >
             <div className="prose prose-invert max-w-none">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
                   h2: ({ node, ...props }) => (
-                    <h2 className="text-2xl md:text-3xl font-black text-[#e0e0e0] mt-10 mb-5 first:mt-0 pb-3 border-b border-[#131c26] text-left" {...props} />
+                    <h2 className="text-2xl md:text-3xl font-black text-black dark:text-[#e0e0e0] mt-10 mb-5 first:mt-0 pb-3 border-b border-black/10 dark:border-[#131c26] text-left" {...props} />
                   ),
                   h3: ({ node, ...props }) => (
-                    <h3 className="text-xl md:text-2xl font-bold text-[#e0e0e0] mt-7 mb-3 flex items-center gap-2 before:content-[''] before:w-1 before:h-6 before:bg-[#8b5cf6] before:rounded-full text-left" {...props} />
+                    <h3 className="text-xl md:text-2xl font-bold text-black dark:text-[#e0e0e0] mt-7 mb-3 flex items-center gap-2 before:content-[''] before:w-1 before:h-6 before:bg-purple-600 dark:bg-[#8b5cf6] before:rounded-full text-left" {...props} />
                   ),
                   h4: ({ node, ...props }) => (
-                    <h4 className="text-lg font-bold text-[#e0e0e0] mt-5 mb-2 text-left" {...props} />
+                    <h4 className="text-lg font-bold text-black dark:text-[#e0e0e0] mt-5 mb-2 text-left" {...props} />
                   ),
                   p: ({ node, ...props }) => (
-                    <p className="text-[#b4b4b4] mb-3 leading-relaxed text-left" {...props} />
+                    <p className="text-black/70 dark:text-[#b4b4b4] mb-3 leading-relaxed text-left" {...props} />
                   ),
                   ul: ({ node, ...props }) => (
                     <ul className="space-y-1.5 mb-4 text-left" {...props} />
@@ -323,12 +323,12 @@ export function AIAnalysisCard({
                       const text = content.replace(/\[(x|X| )\]\s*/, '');
                       
                       return (
-                        <li className="flex items-start gap-3 text-[#b4b4b4] list-none ml-0" {...props}>
+                        <li className="flex items-start gap-3 text-black/70 dark:text-[#b4b4b4] list-none ml-0" {...props}>
                           <div className={`mt-0.5 w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 ${
-                            isChecked ? 'bg-[#8b5cf6]/20 border-[#8b5cf6]' : 'border-[#3a3a3a]'
+                            isChecked ? 'bg-purple-500/20 dark:bg-[#8b5cf6]/20 border-purple-500 dark:border-[#8b5cf6]' : 'border-black/20 dark:border-[#3a3a3a]'
                           }`}>
                             {isChecked && (
-                              <svg className="w-2.5 h-2.5 text-[#8b5cf6]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <svg className="w-2.5 h-2.5 text-purple-600 dark:text-[#8b5cf6]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                               </svg>
                             )}
@@ -339,43 +339,43 @@ export function AIAnalysisCard({
                     }
                     
                     return (
-                      <li className="text-[#b4b4b4] ml-5 list-disc text-left" {...props}>{children}</li>
+                      <li className="text-black/70 dark:text-[#b4b4b4] ml-5 list-disc text-left" {...props}>{children}</li>
                     );
                   },
                   strong: ({ node, ...props }) => (
-                    <strong className="text-[#e0e0e0] font-bold" {...props} />
+                    <strong className="text-black dark:text-[#e0e0e0] font-bold" {...props} />
                   ),
                   code: ({ node, inline, ...props }: any) => 
                     inline ? (
-                      <code className="bg-[#8b5cf6]/10 text-[#a78bfa] px-1.5 py-0.5 rounded text-sm font-mono" {...props} />
+                      <code className="bg-purple-500/10 dark:bg-[#8b5cf6]/10 text-purple-400 dark:text-[#a78bfa] px-1.5 py-0.5 rounded text-sm font-mono" {...props} />
                     ) : (
-                      <code className="block bg-[#131c26] text-[#e0e0e0] p-3 rounded-lg text-sm font-mono overflow-x-auto my-3" {...props} />
+                      <code className="block bg-black/5 dark:bg-[#131c26] text-black dark:text-[#e0e0e0] p-3 rounded-lg text-sm font-mono overflow-x-auto my-3" {...props} />
                     ),
                   blockquote: ({ node, ...props }) => (
-                    <blockquote className="border-l-4 border-[#8b5cf6] pl-4 py-1 text-[#919191] my-4 bg-[#8b5cf6]/5 italic text-left" {...props} />
+                    <blockquote className="border-l-4 border-purple-500 dark:border-[#8b5cf6] pl-4 py-1 text-black/70 dark:text-[#919191] my-4 bg-purple-500/10 dark:bg-[#8b5cf6]/5 italic text-left" {...props} />
                   ),
                   table: ({ node, ...props }) => (
-                    <div className="overflow-x-auto my-4 rounded-lg border border-[#131c26]">
+                    <div className="overflow-x-auto my-4 rounded-lg border border-black/10 dark:border-[#131c26]">
                       <table className="min-w-full text-left" {...props} />
                     </div>
                   ),
                   thead: ({ node, ...props }) => (
-                    <thead className="bg-[#050307]" {...props} />
+                    <thead className="bg-white dark:bg-[#050307]" {...props} />
                   ),
                   th: ({ node, ...props }) => (
-                    <th className="px-4 py-2 text-left text-sm font-bold text-[#e0e0e0] border-b border-[#131c26]" {...props} />
+                    <th className="px-4 py-2 text-left text-sm font-bold text-black dark:text-[#e0e0e0] border-b border-black/10 dark:border-[#131c26]" {...props} />
                   ),
                   tbody: ({ node, ...props }) => (
                     <tbody className="divide-y divide-[#131c26]" {...props} />
                   ),
                   tr: ({ node, ...props }) => (
-                    <tr className="hover:bg-[#050307]/50 transition-colors" {...props} />
+                    <tr className="hover:bg-white dark:bg-[#050307]/50 transition-colors" {...props} />
                   ),
                   td: ({ node, ...props }) => (
-                    <td className="px-4 py-2 text-sm text-[#b4b4b4] text-left" {...props} />
+                    <td className="px-4 py-2 text-sm text-black/70 dark:text-[#b4b4b4] text-left" {...props} />
                   ),
                   a: ({ node, ...props }) => (
-                    <a className="text-[#8b5cf6] hover:text-[#a78bfa] underline" {...props} />
+                    <a className="text-purple-600 dark:text-[#8b5cf6] hover:text-purple-400 dark:text-[#a78bfa] underline" {...props} />
                   ),
                   hr: ({ node, ...props }) => (
                     <hr className="my-6 border-0 h-px bg-gradient-to-r from-[#8b5cf6]/50 via-[#8b5cf6]/20 to-transparent" {...props} />

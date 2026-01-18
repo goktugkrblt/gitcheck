@@ -6,18 +6,18 @@ import { motion } from "framer-motion";
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
+    <div className="min-h-screen bg-white dark:bg-[#050307] relative overflow-hidden">
 
       {/* Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px]" />
-          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-pink-500/10 rounded-full blur-[120px]" />
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/20 dark:bg-purple-500/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 dark:bg-blue-500/10 rounded-full blur-[120px]" />
+          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-pink-500/20 dark:bg-pink-500/10 rounded-full blur-[120px]" />
         </div>
 
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 dark:block hidden"
           style={{
             backgroundImage: `
               linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
@@ -26,8 +26,18 @@ export default function TermsPage() {
             backgroundSize: '80px 80px',
           }}
         />
+        <div
+          className="absolute inset-0 dark:hidden block"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(0,0,0,0.06) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(0,0,0,0.06) 1px, transparent 1px)
+            `,
+            backgroundSize: '80px 80px',
+          }}
+        />
 
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(255,255,255,0.6)_100%)] dark:bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]" />
 
         <div
           className="absolute inset-0 opacity-[0.02]"
@@ -43,7 +53,7 @@ export default function TermsPage() {
         <Link href="/">
           <motion.button
             whileHover={{ x: -5 }}
-            className="flex items-center gap-2 text-white/40 hover:text-white/70 mb-12 transition-colors"
+            className="flex items-center gap-2 text-black/40 dark:text-white/40 hover:text-black/70 dark:hover:text-white/70 mb-12 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm cursor-pointer">Back to Home</span>
@@ -57,10 +67,10 @@ export default function TermsPage() {
           transition={{ duration: 0.6 }}
           className="mb-12"
         >
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+          <h1 className="text-4xl md:text-6xl font-bold text-black dark:text-white mb-4">
             Terms of Service
           </h1>
-          <p className="text-white/40 text-sm">
+          <p className="text-black/40 dark:text-white/40 text-sm">
             Last updated: January 14, 2026
           </p>
         </motion.div>
@@ -72,20 +82,20 @@ export default function TermsPage() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="prose prose-invert max-w-none"
         >
-          <div className="space-y-8 text-white/60 leading-relaxed">
+          <div className="space-y-8 text-black/60 dark:text-white/60 leading-relaxed">
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Agreement to Terms</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Agreement to Terms</h2>
               <p>
                 By accessing or using GitCheck ("Service," "Platform," "we," "us," or "our"), you agree to be bound by these Terms of Service ("Terms"). If you disagree with any part of these terms, you may not access the Service.
               </p>
               <p className="mt-4">
-                GitCheck is a <strong className="text-white">public analytics platform</strong> that does not require user accounts or authentication. By entering a GitHub username for analysis, you acknowledge that you understand and accept these terms.
+                GitCheck is a <strong className="text-black dark:text-white">public analytics platform</strong> that does not require user accounts or authentication. By entering a GitHub username for analysis, you acknowledge that you understand and accept these terms.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Description of Service</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Description of Service</h2>
               <p>
                 GitCheck provides GitHub profile analytics and developer scoring based on publicly available data:
               </p>
@@ -96,15 +106,15 @@ export default function TermsPage() {
                 <li>Performance insights and visualizations</li>
                 <li>24-hour caching for analyzed profiles</li>
               </ul>
-              <p className="mt-4 text-white/50 italic">
+              <p className="mt-4 text-black/50 dark:text-white/50 italic">
                 All analysis is performed on publicly accessible GitHub data through GitHub's official API.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Acceptable Use</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Acceptable Use</h2>
 
-              <h3 className="text-xl font-semibold text-white/90 mb-3 mt-6">You May:</h3>
+              <h3 className="text-xl font-semibold text-black/90 dark:text-white/90 mb-3 mt-6">You May:</h3>
               <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>Analyze any public GitHub profile (including your own or others')</li>
                 <li>View and share analysis results</li>
@@ -112,27 +122,27 @@ export default function TermsPage() {
                 <li>Reference GitCheck in your portfolio or resume</li>
               </ul>
 
-              <h3 className="text-xl font-semibold text-white/90 mb-3 mt-6">You May Not:</h3>
+              <h3 className="text-xl font-semibold text-black/90 dark:text-white/90 mb-3 mt-6">You May Not:</h3>
               <ul className="list-disc list-inside space-y-2 ml-4">
-                <li><strong className="text-white/80">Abuse the Service:</strong> Attempt to bypass rate limits, caching, or bot protection</li>
-                <li><strong className="text-white/80">Automated Access:</strong> Use bots, scrapers, or automated tools without permission</li>
-                <li><strong className="text-white/80">Manipulate Results:</strong> Artificially inflate GitHub metrics to game the scoring system</li>
-                <li><strong className="text-white/80">Harass Others:</strong> Use analysis results to defame, harass, or discriminate against individuals</li>
-                <li><strong className="text-white/80">Reverse Engineer:</strong> Attempt to extract, copy, or reverse engineer our scoring algorithms</li>
-                <li><strong className="text-white/80">Overload Systems:</strong> Make excessive requests that could harm service availability</li>
+                <li><strong className="text-black dark:text-white/80">Abuse the Service:</strong> Attempt to bypass rate limits, caching, or bot protection</li>
+                <li><strong className="text-black dark:text-white/80">Automated Access:</strong> Use bots, scrapers, or automated tools without permission</li>
+                <li><strong className="text-black dark:text-white/80">Manipulate Results:</strong> Artificially inflate GitHub metrics to game the scoring system</li>
+                <li><strong className="text-black dark:text-white/80">Harass Others:</strong> Use analysis results to defame, harass, or discriminate against individuals</li>
+                <li><strong className="text-black dark:text-white/80">Reverse Engineer:</strong> Attempt to extract, copy, or reverse engineer our scoring algorithms</li>
+                <li><strong className="text-black dark:text-white/80">Overload Systems:</strong> Make excessive requests that could harm service availability</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Rate Limits and Restrictions</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Rate Limits and Restrictions</h2>
               <p>
                 To ensure fair usage and protect our infrastructure, we enforce the following limits:
               </p>
               <ul className="list-disc list-inside space-y-2 ml-4">
-                <li><strong className="text-white/80">IP Rate Limit:</strong> 5 analysis requests per 15-minute window</li>
-                <li><strong className="text-white/80">Request Interval:</strong> Minimum 2 seconds between consecutive requests</li>
-                <li><strong className="text-white/80">Cache Duration:</strong> Profiles can be re-analyzed once every 24 hours</li>
-                <li><strong className="text-white/80">Bot Protection:</strong> Automated requests must pass honeypot and timing validation</li>
+                <li><strong className="text-black dark:text-white/80">IP Rate Limit:</strong> 5 analysis requests per 15-minute window</li>
+                <li><strong className="text-black dark:text-white/80">Request Interval:</strong> Minimum 2 seconds between consecutive requests</li>
+                <li><strong className="text-black dark:text-white/80">Cache Duration:</strong> Profiles can be re-analyzed once every 24 hours</li>
+                <li><strong className="text-black dark:text-white/80">Bot Protection:</strong> Automated requests must pass honeypot and timing validation</li>
               </ul>
               <p className="mt-4">
                 Violation of these limits may result in temporary or permanent IP blocks.
@@ -140,9 +150,9 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Public Data and Privacy</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Public Data and Privacy</h2>
               <p>
-                <strong className="text-white/80">Important:</strong> GitCheck only accesses and analyzes publicly available GitHub data. By using this service:
+                <strong className="text-black dark:text-white/80">Important:</strong> GitCheck only accesses and analyzes publicly available GitHub data. By using this service:
               </p>
               <ul className="list-disc list-inside space-y-2 ml-4 mt-4">
                 <li>You acknowledge that analyzed data is already public on GitHub</li>
@@ -150,34 +160,34 @@ export default function TermsPage() {
                 <li>You accept that we store calculated metrics in our database</li>
                 <li>You agree to our Privacy Policy regarding data collection and storage</li>
               </ul>
-              <p className="mt-4 text-white/50 italic">
+              <p className="mt-4 text-black/50 dark:text-white/50 italic">
                 We never access private repositories, non-public data, or require OAuth authentication.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Intellectual Property</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Intellectual Property</h2>
 
-              <h3 className="text-xl font-semibold text-white/90 mb-3 mt-6">Our IP</h3>
+              <h3 className="text-xl font-semibold text-black/90 dark:text-white/90 mb-3 mt-6">Our IP</h3>
               <p>
                 GitCheck's scoring algorithms, statistical models, user interface, codebase, and branding are proprietary intellectual property protected by copyright and trademark laws.
               </p>
 
-              <h3 className="text-xl font-semibold text-white/90 mb-3 mt-6">Your Data</h3>
+              <h3 className="text-xl font-semibold text-black/90 dark:text-white/90 mb-3 mt-6">Your Data</h3>
               <p>
                 You retain all rights to your GitHub data. Our analysis and derived scores are our intellectual property, but you may reference and share your results freely.
               </p>
 
-              <h3 className="text-xl font-semibold text-white/90 mb-3 mt-6">GitHub's Rights</h3>
+              <h3 className="text-xl font-semibold text-black/90 dark:text-white/90 mb-3 mt-6">GitHub's Rights</h3>
               <p>
                 All GitHub data accessed through our service remains subject to GitHub's Terms of Service. We comply with GitHub's API Terms and attribution requirements.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Disclaimers</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Disclaimers</h2>
 
-              <h3 className="text-xl font-semibold text-white/90 mb-3 mt-6">Service "As Is"</h3>
+              <h3 className="text-xl font-semibold text-black/90 dark:text-white/90 mb-3 mt-6">Service "As Is"</h3>
               <p>
                 GitCheck is provided "AS IS" and "AS AVAILABLE" without warranties of any kind, either express or implied, including but not limited to:
               </p>
@@ -188,15 +198,15 @@ export default function TermsPage() {
                 <li>Non-infringement of third-party rights</li>
               </ul>
 
-              <h3 className="text-xl font-semibold text-white/90 mb-3 mt-6">Score Interpretation</h3>
+              <h3 className="text-xl font-semibold text-black/90 dark:text-white/90 mb-3 mt-6">Score Interpretation</h3>
               <p>
-                Developer scores are <strong className="text-white">statistical estimates</strong> based on publicly observable metrics. They should not be used as the sole basis for employment decisions, compensation, or professional evaluation.
+                Developer scores are <strong className="text-black dark:text-white">statistical estimates</strong> based on publicly observable metrics. They should not be used as the sole basis for employment decisions, compensation, or professional evaluation.
               </p>
-              <p className="mt-4 text-white/50 italic">
+              <p className="mt-4 text-black/50 dark:text-white/50 italic">
                 GitCheck scores measure GitHub activity patterns, not developer skill, work ethic, or professional competence.
               </p>
 
-              <h3 className="text-xl font-semibold text-white/90 mb-3 mt-6">External Dependencies</h3>
+              <h3 className="text-xl font-semibold text-black/90 dark:text-white/90 mb-3 mt-6">External Dependencies</h3>
               <p>
                 We rely on GitHub's API availability and data accuracy. We are not responsible for:
               </p>
@@ -208,7 +218,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Limitation of Liability</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Limitation of Liability</h2>
               <p>
                 To the maximum extent permitted by law, GitCheck and its developers shall not be liable for:
               </p>
@@ -225,7 +235,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Indemnification</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Indemnification</h2>
               <p>
                 You agree to indemnify and hold harmless GitCheck, its developers, and service providers from any claims, damages, or expenses arising from:
               </p>
@@ -238,7 +248,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Service Modifications</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Service Modifications</h2>
               <p>
                 We reserve the right to:
               </p>
@@ -254,19 +264,19 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Account Termination</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Account Termination</h2>
               <p>
                 Since GitCheck does not require user accounts, "termination" refers to:
               </p>
               <ul className="list-disc list-inside space-y-2 ml-4">
-                <li><strong className="text-white/80">IP Blocking:</strong> We may block IP addresses that violate these Terms</li>
-                <li><strong className="text-white/80">Profile Removal:</strong> We may remove profiles from our database upon valid request</li>
-                <li><strong className="text-white/80">Access Restriction:</strong> We may restrict access to specific features or the entire platform</li>
+                <li><strong className="text-black dark:text-white/80">IP Blocking:</strong> We may block IP addresses that violate these Terms</li>
+                <li><strong className="text-black dark:text-white/80">Profile Removal:</strong> We may remove profiles from our database upon valid request</li>
+                <li><strong className="text-black dark:text-white/80">Access Restriction:</strong> We may restrict access to specific features or the entire platform</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Governing Law</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Governing Law</h2>
               <p>
                 These Terms shall be governed by and construed in accordance with the laws of Turkey, without regard to its conflict of law provisions.
               </p>
@@ -276,7 +286,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Changes to Terms</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Changes to Terms</h2>
               <p>
                 We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting to this page with an updated "Last updated" date.
               </p>
@@ -286,7 +296,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Contact</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Contact</h2>
               <p>
                 For questions about these Terms, please contact us through:
               </p>
@@ -297,7 +307,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-white/90 mb-4">Severability</h2>
+              <h2 className="text-2xl font-bold text-black/90 dark:text-white/90 mb-4">Severability</h2>
               <p>
                 If any provision of these Terms is found to be unenforceable or invalid, that provision shall be limited or eliminated to the minimum extent necessary so that these Terms shall otherwise remain in full force and effect.
               </p>
@@ -311,17 +321,17 @@ export default function TermsPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="mt-16 pt-8 border-t border-white/[0.06] flex flex-wrap gap-4 justify-center text-sm text-white/40"
+          className="mt-16 pt-8 border-t border-black/[0.06] dark:border-white/[0.06] flex flex-wrap gap-4 justify-center text-sm text-black/40 dark:text-white/40"
         >
-          <Link href="/privacy" className="hover:text-white/70 transition-colors">
+          <Link href="/privacy" className="hover:text-black/70 dark:hover:text-white/70 transition-colors">
             Privacy Policy
           </Link>
           <span>•</span>
-          <Link href="/docs" className="hover:text-white/70 transition-colors">
+          <Link href="/docs" className="hover:text-black/70 dark:hover:text-white/70 transition-colors">
             Documentation
           </Link>
           <span>•</span>
-          <Link href="/" className="hover:text-white/70 transition-colors">
+          <Link href="/" className="hover:text-black/70 dark:hover:text-white/70 transition-colors">
             Home
           </Link>
         </motion.div>

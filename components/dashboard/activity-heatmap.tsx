@@ -41,21 +41,21 @@ export function ActivityHeatmap() {
   };
 
   const getColor = (count: number) => {
-    if (count === 0) return 'bg-[#161b22]'; // Koyu gri (no activity)
-    if (count < 3) return 'bg-[#0e4429]'; // Koyu yeşil
-    if (count < 6) return 'bg-[#006d32]'; // Orta yeşil
-    if (count < 9) return 'bg-[#26a641]'; // Parlak yeşil
-    return 'bg-[#39d353]'; // Çok parlak yeşil
+    if (count === 0) return 'bg-black/5 dark:bg-[#161b22]'; // Light: neutral gray, Dark: dark gray
+    if (count < 3) return 'bg-black/10 dark:bg-[#0e4429]'; // Light: light gray, Dark: dark green
+    if (count < 6) return 'bg-black/20 dark:bg-[#006d32]'; // Light: medium gray, Dark: medium green
+    if (count < 9) return 'bg-black/30 dark:bg-[#26a641]'; // Light: darker gray, Dark: bright green
+    return 'bg-black/40 dark:bg-[#39d353]'; // Light: darkest gray, Dark: brightest green
   };
 
   const dayLabels = ['Mon', 'Wed', 'Fri'];
 
   if (loading) {
     return (
-      <div className="bg-[#050307] rounded-xl border border-[#131c26] p-8">
+      <div className="bg-white dark:bg-[#050307] rounded-xl border border-black/10 dark:border-[#131c26] p-8">
         <div className="animate-pulse space-y-4">
-          <div className="h-4 bg-[#131c26] rounded w-1/3"></div>
-          <div className="h-32 bg-[#131c26] rounded"></div>
+          <div className="h-4 bg-black/10 dark:bg-[#131c26] rounded w-1/3"></div>
+          <div className="h-32 bg-black/10 dark:bg-[#131c26] rounded"></div>
         </div>
       </div>
     );
@@ -63,24 +63,24 @@ export function ActivityHeatmap() {
 
   if (!data) {
     return (
-      <div className="bg-[#050307] rounded-xl border border-[#131c26] p-8">
-        <p className="text-[#666] font-mono text-sm">Failed to load contribution data</p>
+      <div className="bg-white dark:bg-[#050307] rounded-xl border border-black/10 dark:border-[#131c26] p-8">
+        <p className="text-black/60 dark:text-[#666] font-mono text-sm">Failed to load contribution data</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#050307] rounded-xl border border-[#131c26] p-8 relative">
+    <div className="bg-white dark:bg-[#050307] rounded-xl border border-black/10 dark:border-[#131c26] p-8 relative">
       {/* Header */}
       <div className="mb-6">
-        <h3 className="text-xs font-bold text-[#666] tracking-wider mb-2">
+        <h3 className="text-xs font-bold text-black/60 dark:text-[#666] tracking-wider mb-2">
           ACTIVITY HEATMAP
         </h3>
         <div className="flex items-baseline gap-2">
-          <p className="text-3xl font-black text-[#e0e0e0]">
+          <p className="text-3xl font-black text-black dark:text-[#e0e0e0]">
             {data.totalContributions.toLocaleString()}
           </p>
-          <p className="text-sm text-[#666]">contributions in the last year</p>
+          <p className="text-sm text-black/60 dark:text-[#666]">contributions in the last year</p>
         </div>
       </div>
 
@@ -88,7 +88,7 @@ export function ActivityHeatmap() {
       <div className="relative overflow-x-auto pb-2">
         <div className="inline-flex gap-[2px]">
           {/* Day labels */}
-          <div className="flex flex-col justify-around text-[10px] text-[#666] font-mono mr-2 py-1">
+          <div className="flex flex-col justify-around text-[10px] text-black/60 dark:text-[#666] font-mono mr-2 py-1">
             {dayLabels.map((day) => (
               <div key={day} className="h-3">{day}</div>
             ))}
@@ -118,14 +118,14 @@ export function ActivityHeatmap() {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-3 mt-6 text-[10px] text-[#666] font-mono">
+      <div className="flex items-center gap-3 mt-6 text-[10px] text-black/60 dark:text-[#666] font-mono">
         <span>Less</span>
         <div className="flex gap-[2px]">
-          <div className="w-3 h-3 bg-[#161b22] rounded-sm"></div>
-          <div className="w-3 h-3 bg-[#0e4429] rounded-sm"></div>
-          <div className="w-3 h-3 bg-[#006d32] rounded-sm"></div>
-          <div className="w-3 h-3 bg-[#26a641] rounded-sm"></div>
-          <div className="w-3 h-3 bg-[#39d353] rounded-sm"></div>
+          <div className="w-3 h-3 bg-black/5 dark:bg-[#161b22] rounded-sm"></div>
+          <div className="w-3 h-3 bg-black/10 dark:bg-[#0e4429] rounded-sm"></div>
+          <div className="w-3 h-3 bg-black/20 dark:bg-[#006d32] rounded-sm"></div>
+          <div className="w-3 h-3 bg-black/30 dark:bg-[#26a641] rounded-sm"></div>
+          <div className="w-3 h-3 bg-black/40 dark:bg-[#39d353] rounded-sm"></div>
         </div>
         <span>More</span>
       </div>
@@ -142,12 +142,12 @@ export function ActivityHeatmap() {
             top: mousePosition.y - 60,
             pointerEvents: 'none',
           }}
-          className="bg-[#050307] border border-[#131c26] rounded-lg px-4 py-3 shadow-2xl z-50"
+          className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-lg px-4 py-3 shadow-2xl z-50"
         >
-          <div className="text-[#e0e0e0] font-bold text-sm mb-1">
+          <div className="text-black dark:text-[#e0e0e0] font-bold text-sm mb-1">
             {hoveredDay.contributionCount} {hoveredDay.contributionCount === 1 ? 'contribution' : 'contributions'}
           </div>
-          <div className="text-[#666] text-xs font-mono">
+          <div className="text-black/60 dark:text-[#666] text-xs font-mono">
             {new Date(hoveredDay.date).toLocaleDateString('en-US', { 
               weekday: 'short', 
               month: 'short', 

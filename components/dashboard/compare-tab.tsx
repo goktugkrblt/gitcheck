@@ -82,10 +82,10 @@ export function CompareTab({ userProfile }: CompareTabProps) {
 
   if (!userProfile) {
     return (
-      <div className="bg-[#050307] rounded-xl border border-[#131c26] p-8 text-center">
-        <Target className="w-12 h-12 text-[#666] mx-auto mb-4" />
-        <h3 className="text-xl font-bold text-[#e0e0e0] mb-2">No Profile Data</h3>
-        <p className="text-[#666] text-sm">Please analyze your profile first</p>
+      <div className="bg-white dark:bg-[#050307] rounded-xl border border-black/10 dark:border-[#131c26] p-8 text-center">
+        <Target className="w-12 h-12 text-black/60 dark:text-[#666] mx-auto mb-4" />
+        <h3 className="text-xl font-bold text-black dark:text-[#e0e0e0] mb-2">No Profile Data</h3>
+        <p className="text-black/60 dark:text-[#666] text-sm">Please analyze your profile first</p>
       </div>
     );
   }
@@ -93,17 +93,17 @@ export function CompareTab({ userProfile }: CompareTabProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-[#919191] font-mono text-sm">Loading comparison...</div>
+        <div className="text-black/70 dark:text-[#919191] font-mono text-sm">Loading comparison...</div>
       </div>
     );
   }
 
   if (error || !data) {
     return (
-      <div className="bg-[#050307] rounded-xl border border-[#131c26] p-8 text-center">
-        <Target className="w-12 h-12 text-[#666] mx-auto mb-4" />
-        <h3 className="text-xl font-bold text-[#e0e0e0] mb-2">Failed to Load Comparison</h3>
-        <p className="text-[#666] text-sm">Please try refreshing the page</p>
+      <div className="bg-white dark:bg-[#050307] rounded-xl border border-black/10 dark:border-[#131c26] p-8 text-center">
+        <Target className="w-12 h-12 text-black/60 dark:text-[#666] mx-auto mb-4" />
+        <h3 className="text-xl font-bold text-black dark:text-[#e0e0e0] mb-2">Failed to Load Comparison</h3>
+        <p className="text-black/60 dark:text-[#666] text-sm">Please try refreshing the page</p>
       </div>
     );
   }
@@ -154,7 +154,7 @@ export function CompareTab({ userProfile }: CompareTabProps) {
       avg: data.average.repositories, 
       top: data.top10.repositories,
       icon: Package,
-      color: "text-[#666]" 
+      color: "text-black/60 dark:text-[#666]" 
     },
     { 
       label: "Stars", 
@@ -162,7 +162,7 @@ export function CompareTab({ userProfile }: CompareTabProps) {
       avg: data.average.stars, 
       top: data.top10.stars,
       icon: Star,
-      color: "text-[#666]" 
+      color: "text-black/60 dark:text-[#666]" 
     },
     { 
       label: "Commits", 
@@ -170,7 +170,7 @@ export function CompareTab({ userProfile }: CompareTabProps) {
       avg: data.average.commits, 
       top: data.top10.commits,
       icon: GitBranch,
-      color: "text-[#666]" 
+      color: "text-black/60 dark:text-[#666]" 
     },
     { 
       label: "Pull Requests", 
@@ -178,7 +178,7 @@ export function CompareTab({ userProfile }: CompareTabProps) {
       avg: data.average.pullRequests, 
       top: data.top10.pullRequests,
       icon: GitPullRequest,
-      color: "text-[#666]" 
+      color: "text-black/60 dark:text-[#666]" 
     },
     { 
       label: "Followers", 
@@ -186,7 +186,7 @@ export function CompareTab({ userProfile }: CompareTabProps) {
       avg: data.average.followers, 
       top: data.top10.followers,
       icon: Users,
-      color: "text-[#666]" 
+      color: "text-black/60 dark:text-[#666]" 
     },
     { 
       label: "Streak", 
@@ -194,15 +194,15 @@ export function CompareTab({ userProfile }: CompareTabProps) {
       avg: data.average.streak, 
       top: data.top10.streak,
       icon: Zap,
-      color: "text-[#666]" 
+      color: "text-black/60 dark:text-[#666]" 
     },
   ];
 
   const getComparisonIcon = (user: number, avg: number) => {
-    if (avg === 0) return <Minus className="w-4 h-4 text-yellow-400" />;
-    if (user > avg * 1.2) return <TrendingUp className="w-4 h-4 text-green-400" />;
-    if (user < avg * 0.8) return <TrendingDown className="w-4 h-4 text-red-400" />;
-    return <Minus className="w-4 h-4 text-yellow-400" />;
+    if (avg === 0) return <Minus className="w-4 h-4 text-black/60 dark:text-yellow-400" />;
+    if (user > avg * 1.2) return <TrendingUp className="w-4 h-4 text-black/60 dark:text-green-400" />;
+    if (user < avg * 0.8) return <TrendingDown className="w-4 h-4 text-black/60 dark:text-red-400" />;
+    return <Minus className="w-4 h-4 text-black/60 dark:text-yellow-400" />;
   };
 
   const getComparisonText = (user: number, avg: number) => {
@@ -217,17 +217,17 @@ export function CompareTab({ userProfile }: CompareTabProps) {
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-2">
-        <h2 className="text-3xl md:text-4xl font-black text-[#e0e0e0] tracking-tighter">
+        <h2 className="text-3xl md:text-4xl font-black text-black dark:text-[#e0e0e0] tracking-tighter">
           How You Stack Up
         </h2>
-        <p className="text-[#666]">
-          Benchmarked against <span className="text-[#e0e0e0] font-bold">{data.totalUsers.toLocaleString()}</span> developers on GitCheck
+        <p className="text-black/60 dark:text-[#666]">
+          Benchmarked against <span className="text-black dark:text-[#e0e0e0] font-bold">{data.totalUsers.toLocaleString()}</span> developers on GitCheck
         </p>
       </div>
 
       {/* Radar Chart */}
-      <div className="bg-[#050307] border border-[#131c26] rounded-xl p-6 md:p-8">
-        <h3 className="text-lg md:text-xl font-bold text-[#e0e0e0] mb-6 text-center">Performance Overview</h3>
+      <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6 md:p-8">
+        <h3 className="text-lg md:text-xl font-bold text-black dark:text-[#e0e0e0] mb-6 text-center">Performance Overview</h3>
         <ResponsiveContainer width="100%" height={400}>
           <RadarChart data={radarData}>
             <PolarGrid stroke="#131c26" />
@@ -258,11 +258,11 @@ export function CompareTab({ userProfile }: CompareTabProps) {
         {comparisons.map((item, i) => {
           const Icon = item.icon;
           return (
-            <div key={i} className="bg-[#050307] border border-[#131c26] rounded-xl p-6 hover:border-[#333] transition-all">
+            <div key={i} className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6 hover:border-[#333] transition-all">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Icon className={`w-4 h-4 ${item.color}`} />
-                  <h4 className="text-sm font-bold text-[#666]">{item.label}</h4>
+                  <h4 className="text-sm font-bold text-black/60 dark:text-[#666]">{item.label}</h4>
                 </div>
                 {getComparisonIcon(item.user, item.avg)}
               </div>
@@ -270,20 +270,20 @@ export function CompareTab({ userProfile }: CompareTabProps) {
               <div className="space-y-3">
                 <div>
                   <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-2xl font-black text-[#e0e0e0]">{item.user.toLocaleString()}</span>
-                    <span className="text-xs text-[#666]">You</span>
+                    <span className="text-2xl font-black text-black dark:text-[#e0e0e0]">{item.user.toLocaleString()}</span>
+                    <span className="text-xs text-black/60 dark:text-[#666]">You</span>
                   </div>
-                  <p className="text-xs text-[#666]">{getComparisonText(item.user, item.avg)}</p>
+                  <p className="text-xs text-black/60 dark:text-[#666]">{getComparisonText(item.user, item.avg)}</p>
                 </div>
 
-                <div className="flex items-center justify-between text-xs pt-3 border-t border-[#131c26]">
+                <div className="flex items-center justify-between text-xs pt-3 border-t border-black/10 dark:border-[#131c26]">
                   <div>
-                    <div className="text-[#666]">Average</div>
-                    <div className="text-[#919191] font-bold">{item.avg.toLocaleString()}</div>
+                    <div className="text-black/60 dark:text-[#666]">Average</div>
+                    <div className="text-black/70 dark:text-[#919191] font-bold">{item.avg.toLocaleString()}</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-[#666]">Top 10%</div>
-                    <div className="text-purple-400 font-bold">{item.top.toLocaleString()}</div>
+                    <div className="text-black/60 dark:text-[#666]">Top 10%</div>
+                    <div className="text-black/60 dark:text-purple-400 font-bold">{item.top.toLocaleString()}</div>
                   </div>
                 </div>
               </div>

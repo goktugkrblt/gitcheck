@@ -122,22 +122,22 @@ export function ScoreDisplay({ score, globalRank }: ScoreDisplayProps) {
 
   // Component icons and colors
   const componentConfig = {
-    readmeQuality: { icon: '📝', name: 'README Quality', color: 'text-blue-400' },
-    repoHealth: { icon: '🏥', name: 'Repository Health', color: 'text-green-400' },
-    devPatterns: { icon: '🔄', name: 'Developer Patterns', color: 'text-purple-400' },
-    careerInsights: { icon: '💼', name: 'Career Insights', color: 'text-yellow-400' },
+    readmeQuality: { icon: '📝', name: 'README Quality', color: 'text-black/60 dark:text-blue-400' },
+    repoHealth: { icon: '🏥', name: 'Repository Health', color: 'text-black/60 dark:text-green-400' },
+    devPatterns: { icon: '🔄', name: 'Developer Patterns', color: 'text-black/60 dark:text-purple-400' },
+    careerInsights: { icon: '💼', name: 'Career Insights', color: 'text-black/60 dark:text-yellow-400' },
   };
 
   const getComponentGrade = (componentScore: number): { grade: string; color: string } => {
-    if (componentScore >= 85) return { grade: 'A', color: 'text-green-400' };
-    if (componentScore >= 70) return { grade: 'B', color: 'text-blue-400' };
-    if (componentScore >= 55) return { grade: 'C', color: 'text-purple-400' };
-    if (componentScore >= 40) return { grade: 'D', color: 'text-orange-400' };
-    return { grade: 'F', color: 'text-red-400' };
+    if (componentScore >= 85) return { grade: 'A', color: 'text-black/60 dark:text-green-400' };
+    if (componentScore >= 70) return { grade: 'B', color: 'text-black/60 dark:text-blue-400' };
+    if (componentScore >= 55) return { grade: 'C', color: 'text-black/60 dark:text-purple-400' };
+    if (componentScore >= 40) return { grade: 'D', color: 'text-black/60 dark:text-orange-400' };
+    return { grade: 'F', color: 'text-black/60 dark:text-red-400' };
   };
 
   return (
-    <div className="relative bg-[#050307] border border-white/10 rounded-xl p-6 md:p-8 backdrop-blur-sm overflow-hidden">
+    <div className="relative bg-white dark:bg-[#050307] border border-black/10 dark:border-white/10 rounded-xl p-6 md:p-8 backdrop-blur-sm overflow-hidden">
       {/* Background gradient effect */}
       <div className={`absolute inset-0 bg-gradient-to-br ${gradeInfo.color} opacity-5`} />
       
@@ -157,10 +157,10 @@ export function ScoreDisplay({ score, globalRank }: ScoreDisplayProps) {
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-xs font-bold text-white/40 tracking-wider mb-1">
+            <h3 className="text-xs font-bold text-black/40 dark:text-white/40 tracking-wider mb-1">
               DEVELOPER SCORE
             </h3>
-            <p className="text-sm text-white/60">
+            <p className="text-sm text-black/60 dark:text-white/60">
               {scoringMethod === 'pro' ? 'Based on PRO analytics' : 'Based on GitHub activity'}
             </p>
           </div>
@@ -175,23 +175,23 @@ export function ScoreDisplay({ score, globalRank }: ScoreDisplayProps) {
             className="flex flex-col items-center"
           >
             <div className="flex items-baseline gap-2">
-              <span className="text-6xl md:text-7xl font-black text-white tracking-tighter">
+              <span className="text-6xl md:text-7xl font-black text-black dark:text-white tracking-tighter">
                 {score.toFixed(2)}
               </span>
-              <span className="text-3xl md:text-4xl font-bold text-white/40">
+              <span className="text-3xl md:text-4xl font-bold text-black/40 dark:text-white/40">
                 /100
               </span>
             </div>
-            <p className="text-xs text-white/40 mt-2 font-mono uppercase tracking-widest">
+            <p className="text-xs text-black/40 dark:text-white/40 mt-2 font-mono uppercase tracking-widest">
               Precision Score
             </p>
           </motion.div>
 
-          <div className={`flex items-center gap-3 px-6 py-2.5 rounded-full ${gradeInfo.bgColor} border-2 border-white/20`}>
+          <div className={`flex items-center gap-3 px-6 py-2.5 rounded-full ${gradeInfo.bgColor} border-2 border-black/20 dark:border-white/20`}>
             <span className={`text-3xl font-black bg-gradient-to-br ${gradeInfo.color} bg-clip-text text-transparent`}>
               {gradeInfo.grade}
             </span>
-            <span className="text-sm font-bold text-white">
+            <span className="text-sm font-bold text-black dark:text-white">
               {gradeInfo.label}
             </span>
           </div>
@@ -203,35 +203,35 @@ export function ScoreDisplay({ score, globalRank }: ScoreDisplayProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="mt-3 pt-3 border-t border-white/10"
+            className="mt-3 pt-3 border-t border-black/10 dark:border-white/10"
           >
             <div className="flex items-center justify-center gap-3">
               <div className="flex items-baseline gap-1.5">
-                <span className="text-xs text-white/40 uppercase tracking-wider font-semibold">Rank</span>
+                <span className="text-xs text-black/40 dark:text-white/40 uppercase tracking-wider font-semibold">Rank</span>
                 <span className="text-2xl font-black bg-gradient-to-r from-blue-400 to-cyan-500 bg-clip-text text-transparent">
                   #{globalRank.rank.toLocaleString()}
                 </span>
               </div>
-              <div className="w-px h-6 bg-white/10" />
+              <div className="w-px h-6 bg-black/10 dark:bg-white/10" />
               <div className="flex items-baseline gap-1.5">
-                <span className="text-xs text-white/40">of</span>
-                <span className="text-sm font-bold text-white">
+                <span className="text-xs text-black/40 dark:text-white/40">of</span>
+                <span className="text-sm font-bold text-black dark:text-white">
                   {globalRank.totalProfiles.toLocaleString()}
                 </span>
               </div>
             </div>
-            <p className="text-center text-xs text-white/40 mt-2">
-              You're in the top <span className="text-white font-semibold">{globalRank.percentile.toFixed(2)}%</span>
+            <p className="text-center text-xs text-black/40 dark:text-white/40 mt-2">
+              You're in the top <span className="text-black dark:text-white font-semibold">{globalRank.percentile.toFixed(2)}%</span>
             </p>
           </motion.div>
         )}
 
         {/* ✅ Score Breakdown Toggle */}
         {components && (
-          <div className="mt-4 pt-4 border-t border-white/10">
+          <div className="mt-4 pt-4 border-t border-black/10 dark:border-white/10">
             <button
               onClick={() => setShowBreakdown(!showBreakdown)}
-              className="w-full flex items-center justify-center gap-2 text-sm text-white/60 hover:text-white transition-colors group"
+              className="w-full flex items-center justify-center gap-2 text-sm text-black/60 dark:text-white/60 hover:text-black dark:text-white transition-colors group"
             >
               <span className="font-medium cursor-pointer">Why this score?</span>
               {showBreakdown ? (
@@ -257,13 +257,13 @@ export function ScoreDisplay({ score, globalRank }: ScoreDisplayProps) {
                       const componentGrade = getComponentGrade(component.score);
                       
                       return (
-                        <div key={key} className="bg-white/5 rounded-lg p-3 border border-white/10">
+                        <div key={key} className="bg-black/5 dark:bg-white/5 rounded-lg p-3 border border-black/10 dark:border-white/10">
                           <div className="flex items-start justify-between mb-2">
                             <div className="flex items-center gap-2 flex-1">
                               <span className="text-xl">{config.icon}</span>
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                  <p className="text-xs text-white/80 font-medium">
+                                  <p className="text-xs text-black/80 dark:text-white/80 font-medium">
                                     {component.description}
                                   </p>
                                   <span className={`text-xs font-black ${componentGrade.color} flex-shrink-0`}>
@@ -273,17 +273,17 @@ export function ScoreDisplay({ score, globalRank }: ScoreDisplayProps) {
                               </div>
                             </div>
                             <div className="text-right flex-shrink-0 ml-3">
-                              <div className="text-lg font-black text-white">
+                              <div className="text-lg font-black text-black dark:text-white">
                                 {component.score.toFixed(2)}
                               </div>
-                              <div className="text-xs text-white/40">
+                              <div className="text-xs text-black/40 dark:text-white/40">
                                 {component.weight}%
                               </div>
                             </div>
                           </div>
 
                           {/* Progress Bar */}
-                          <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                          <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-1.5 overflow-hidden">
                             <motion.div
                               initial={{ width: 0 }}
                               animate={{ width: `${component.score}%` }}
@@ -293,11 +293,11 @@ export function ScoreDisplay({ score, globalRank }: ScoreDisplayProps) {
                           </div>
 
                           {/* Generic scoring explanation */}
-                          <div className="mt-3 pt-3 border-t border-white/10">
-                            <p className="text-xs text-white/60 font-semibold mb-2 uppercase tracking-wider">
+                          <div className="mt-3 pt-3 border-t border-black/10 dark:border-white/10">
+                            <p className="text-xs text-black/60 dark:text-white/60 font-semibold mb-2 uppercase tracking-wider">
                               📊 How This Is Calculated:
                             </p>
-                            <div className="text-xs text-white/50 leading-relaxed space-y-1">
+                            <div className="text-xs text-black/50 dark:text-white/50 leading-relaxed space-y-1">
                               {key === 'readmeQuality' && (
                                 <>
                                   <p>• Repository documentation completeness & quality</p>
@@ -334,7 +334,7 @@ export function ScoreDisplay({ score, globalRank }: ScoreDisplayProps) {
 
                           {/* Source indicator */}
                           {component.source === 'fallback' && component.details && (
-                            <p className="text-xs text-purple-400/60 mt-2 italic">
+                            <p className="text-xs text-black/60 dark:text-purple-400/60 mt-2 italic">
                               💡 {component.details}
                             </p>
                           )}
@@ -343,11 +343,11 @@ export function ScoreDisplay({ score, globalRank }: ScoreDisplayProps) {
                     })}
 
                     {/* Mathematical Formula */}
-                    <div className="mt-4 p-3 bg-white/5 border border-white/10 rounded-lg">
-                      <p className="text-xs text-white/60 font-semibold mb-2 uppercase tracking-wider">
+                    <div className="mt-4 p-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg">
+                      <p className="text-xs text-black/60 dark:text-white/60 font-semibold mb-2 uppercase tracking-wider">
                         🧮 Final Calculation:
                       </p>
-                      <p className="text-xs text-white/40 font-mono leading-relaxed">
+                      <p className="text-xs text-black/40 dark:text-white/40 font-mono leading-relaxed">
                         {components.readmeQuality && `(${components.readmeQuality.score.toFixed(2)} × 20%)`}
                         {components.repoHealth && ` + (${components.repoHealth.score.toFixed(2)} × 25%)`}
                         {components.devPatterns && ` + (${components.devPatterns.score.toFixed(2)} × 30%)`}
@@ -357,33 +357,33 @@ export function ScoreDisplay({ score, globalRank }: ScoreDisplayProps) {
                     </div>
 
                     {/* Scoring Method & Formula Explanation */}
-                    <div className="mt-2 p-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-lg">
-                      <p className="text-xs text-white/60 font-semibold mb-2 uppercase tracking-wider">
+                    <div className="mt-2 p-3 bg-gradient-to-r from-black/5 to-black/5 dark:from-purple-500/10 dark:to-pink-500/10 border border-black/10 dark:border-purple-500/20 rounded-lg">
+                      <p className="text-xs text-black/60 dark:text-white/60 font-semibold mb-2 uppercase tracking-wider">
                         🧮 Scoring Methodology:
                       </p>
-                      <div className="text-xs text-white/50 space-y-2">
+                      <div className="text-xs text-black/50 dark:text-white/50 space-y-2">
                         <p>
                           Your score is calculated using a weighted formula across four key areas:
                         </p>
                         <div className="grid grid-cols-2 gap-2 my-2">
-                          <div className="bg-white/5 rounded px-2 py-1">
-                            <span className="text-white/70 font-semibold">Documentation:</span>
-                            <span className="text-white/50 ml-1">20%</span>
+                          <div className="bg-black/5 dark:bg-white/5 rounded px-2 py-1">
+                            <span className="text-black/70 dark:text-white/70 font-semibold">Documentation:</span>
+                            <span className="text-black/50 dark:text-white/50 ml-1">20%</span>
                           </div>
-                          <div className="bg-white/5 rounded px-2 py-1">
-                            <span className="text-white/70 font-semibold">Repository Health:</span>
-                            <span className="text-white/50 ml-1">25%</span>
+                          <div className="bg-black/5 dark:bg-white/5 rounded px-2 py-1">
+                            <span className="text-black/70 dark:text-white/70 font-semibold">Repository Health:</span>
+                            <span className="text-black/50 dark:text-white/50 ml-1">25%</span>
                           </div>
-                          <div className="bg-white/5 rounded px-2 py-1">
-                            <span className="text-white/70 font-semibold">Dev Patterns:</span>
-                            <span className="text-white/50 ml-1">30%</span>
+                          <div className="bg-black/5 dark:bg-white/5 rounded px-2 py-1">
+                            <span className="text-black/70 dark:text-white/70 font-semibold">Dev Patterns:</span>
+                            <span className="text-black/50 dark:text-white/50 ml-1">30%</span>
                           </div>
-                          <div className="bg-white/5 rounded px-2 py-1">
-                            <span className="text-white/70 font-semibold">Career Insights:</span>
-                            <span className="text-white/50 ml-1">25%</span>
+                          <div className="bg-black/5 dark:bg-white/5 rounded px-2 py-1">
+                            <span className="text-black/70 dark:text-white/70 font-semibold">Career Insights:</span>
+                            <span className="text-black/50 dark:text-white/50 ml-1">25%</span>
                           </div>
                         </div>
-                        <p className="text-white/40 italic">
+                        <p className="text-black/40 dark:text-white/40 italic">
                           {scoringMethod === 'pro' 
                             ? 'Analyzed using advanced algorithms with logarithmic scaling and consistency checks.'
                             : `Estimated from GitHub activity metrics. Upgrade to PRO for detailed analysis.`
@@ -404,10 +404,10 @@ export function ScoreDisplay({ score, globalRank }: ScoreDisplayProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="mt-4 pt-4 border-t border-white/10"
+            className="mt-4 pt-4 border-t border-black/10 dark:border-white/10"
           >
-            <p className="text-xs text-center text-white/40">
-              Upgrade to <span className="text-purple-400 font-semibold">PRO</span> for detailed analytics
+            <p className="text-xs text-center text-black/40 dark:text-white/40">
+              Upgrade to <span className="text-black/60 dark:text-purple-400 font-semibold">PRO</span> for detailed analytics
             </p>
           </motion.div>
         )}

@@ -1,222 +1,257 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Check, Code2, Sparkles, Zap, Crown } from "lucide-react";
+import { Navbar } from "@/components/navbar";
+import { Check, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function PricingPage() {
-  const plans = [
-    {
-      name: "FREE",
-      price: "0",
-      description: "Perfect for trying out",
-      features: [
-        "1 GitHub analysis",
-        "Basic developer score",
-        "Public profile view",
-        "Community support",
-      ],
-      cta: "GET STARTED",
-      highlighted: false,
-      icon: Sparkles,
-    },
-    {
-      name: "PRO",
-      price: "19",
-      description: "For serious developers",
-      features: [
-        "Unlimited GitHub scans",
-        "Advanced analytics",
-        "Percentile ranking",
-        "Private profile option",
-        "PDF export",
-        "Priority support",
-      ],
-      cta: "UPGRADE TO PRO",
-      highlighted: true,
-      icon: Zap,
-      badge: "MOST POPULAR",
-    },
-    {
-      name: "PREMIUM",
-      price: "49",
-      description: "Coming soon",
-      features: [
-        "Everything in Pro",
-        "AI-powered insights",
-        "Career roadmap generator",
-        "Market value estimation",
-        "Resume builder",
-        "Interview prep tools",
-      ],
-      cta: "COMING SOON",
-      highlighted: false,
-      icon: Crown,
-      badge: "COMING SOON",
-      disabled: true,
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-[#050307] relative overflow-hidden">
+    <div className="min-h-screen bg-white dark:bg-[#050307] transition-colors duration-300">
       {/* Fixed Grid Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div 
-          className="absolute inset-0 opacity-[0.02]"
+        <div
+          className="absolute inset-0 opacity-[0.01] dark:opacity-[0.02]"
           style={{
             backgroundImage: `
               linear-gradient(to right, #919191 1px, transparent 1px),
               linear-gradient(to bottom, #919191 1px, transparent 1px)
             `,
-            backgroundSize: '100px 100px',
+            backgroundSize: "100px 100px",
           }}
         />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,transparent_0%,#050307_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,transparent_0%,rgba(255,255,255,0.6)_100%)] dark:bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,transparent_0%,#050307_100%)]" />
       </div>
 
       {/* Navbar */}
-      <nav className="relative z-10 border-b border-[#131c26] bg-[#050307]/80 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-lg bg-[#050307] border border-[#131c26] flex items-center justify-center group-hover:border-[#333] transition-colors duration-300">
-              <svg fill="#ededed" width={40} height={40} className="gitcheck-logo" xmlns="http://www.w3.org/2000/svg" id="Layer_1" viewBox="0 0 245 245"><path d="M185.8,232.75c9.45-10.21,14.43-20.71,10.61-35.01-3.06-11.43-16.92-24.07-17.7-32.75-.63-6.99,4.82-11.41,11.39-10.36,3.39.54,7.83,6.36,10.94,1.42,2.68-4.25-2.55-8.92-6.08-10.4-13.81-5.82-28.46,6.66-25.94,21.63,1.6,9.54,10.16,16.72,14.56,24.99,3.82,7.17,7.21,17.59.1,23.85l-.74-.57c-3.08-19.66-14.33-38.23-26.34-53.5-1.01-1.28-7.78-8.71-7.78-9.33,0-.46.35-.74.67-.99,1.18-.91,4.66-2.18,6.32-3.16,5.5-3.27,9.63-7.39,13.21-12.74,14.05,2.14,27.19-7.72,29.33-22.13,2.18-14.68-6.37-25.09-20.84-24.72-.71.02-1.89.65-2.27.03-4.48-29.93-33.71-44.47-61.11-38.79-17.89,3.71-32.53,17.11-37.76,35.12-1.66.48-3.3.38-5.04.82-5.22,1.33-9.45,6.28-10.86,11.48-2.74,10.11,1.79,21.25,11.35,25.29-.48,13.41,9.63,23,20.87,27.66.05.29.11.67-.03.91-.31.54-9.44,5.46-10.74,6.1-2.12,1.05-7.03,3.62-9.15,2.96-4.11-1.28-13.8-13.56-14.39-17.86-.35-2.55.49-5.15.62-7.63.17-3.33.54-12.69-4.38-12.16-2.65.28-2.93,3.72-3.57,5.68-.09.29-.12.93-.64.66-.43-.22-3.1-4.45-3.89-5.33-9.26-10.38-17.82-.52-16.66,10.78.72,6.98,6.47,13.72,12.06,17.24.79.5,2.74,1.1,3.15,1.51.69.68,3.03,6.49,3.82,7.97,3.61,6.79,10.03,15.86,17.07,19.08,5.63,2.58,11.55.6,17.02-1.51,1.22-.47,6.1-3.05,6.71-3.11.42-.04.49.17.75.45-6.25,17.06-10.31,35.22-8.09,53.58l2.76,14.82c-.36.56-.55.08-.96-.01-8.95-2.11-21.45-9.12-29.2-14.29C-4.7,190.53-17.92,106.22,25.83,48.42c49.53-65.43,145.86-64.24,194.47,1.67,42.04,57.01,29.09,139.38-28.69,179.14-.63.43-5.56,3.75-5.81,3.52Z"/></svg>               
-              </div>
-            </Link>
-
-            <Link href="/login">
-              <Button size="sm" className="bg-[#e0e0e0] text-[#050307] hover:bg-[#d0d0d0] px-6 py-5 text-sm font-bold rounded-xl transition-colors duration-300">
-                SIGN IN
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Main Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pt-32 md:pt-40 pb-16">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#131c26] bg-[#050307] text-xs text-[#666] font-mono tracking-wider mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-xs text-black/60 dark:text-white/60 font-mono tracking-wider mb-6">
             <Sparkles className="h-3 w-3" />
-            TRANSPARENT PRICING
+            SIMPLE PRICING
           </div>
-          <h1 className="text-5xl md:text-7xl font-black text-[#e0e0e0] tracking-tighter mb-6">
-            CHOOSE YOUR PLAN
+          <h1 className="text-4xl md:text-5xl font-bold text-black dark:text-white tracking-tight mb-4">
+            Pay only for what you need
           </h1>
-          <p className="text-xl text-[#919191] font-light max-w-2xl mx-auto">
-            Start free, upgrade when you're ready. No hidden fees.
+          <p className="text-base text-black/60 dark:text-white/60 max-w-2xl mx-auto">
+            Get started with a free analysis, then unlock deeper insights with PRO analyses.
           </p>
         </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-          {plans.map((plan, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
-              className={`relative group ${plan.highlighted ? 'md:-mt-4' : ''}`}
-            >
-              {plan.badge && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                  <span className="inline-block px-4 py-1 text-xs font-bold font-mono bg-[#e0e0e0] text-[#050307] rounded-full">
-                    {plan.badge}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 max-w-4xl mx-auto">
+          {/* Free Plan */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+            className="relative group"
+          >
+            <div className="relative bg-white/40 dark:bg-black/40 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-2xl p-6 h-full transition-all duration-300 hover:border-black/20 dark:hover:border-white/20">
+              <div className="mb-6">
+                <h3 className="text-xl font-semibold text-black dark:text-white mb-2">
+                  Free Analysis
+                </h3>
+                <p className="text-sm text-black/60 dark:text-white/60 mb-4">
+                  Try GitCheck with your first analysis
+                </p>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-4xl font-bold text-black dark:text-white">
+                    $0
+                  </span>
+                  <span className="text-black/40 dark:text-white/40 text-sm">
+                    / analysis
                   </span>
                 </div>
-              )}
-
-              <div className={`relative bg-[#050307] border rounded-3xl p-8 h-full transition-all duration-300 ${
-                plan.highlighted 
-                  ? 'border-[#e0e0e0] shadow-[0_0_50px_rgba(224,224,224,0.1)]' 
-                  : 'border-[#131c26] hover:border-[#333]'
-              }`}>
-                <div className="text-center mb-8">
-                  <div className={`inline-flex w-16 h-16 rounded-2xl items-center justify-center mb-6 ${
-                    plan.highlighted ? 'bg-[#e0e0e0]' : 'bg-[#131c26]'
-                  }`}>
-                    <plan.icon className={`h-8 w-8 ${
-                      plan.highlighted ? 'text-[#050307]' : 'text-[#919191]'
-                    }`} />
-                  </div>
-                  <h3 className="text-2xl font-black text-[#e0e0e0] tracking-tighter mb-2">
-                    {plan.name}
-                  </h3>
-                  <p className="text-sm text-[#919191] font-light mb-6">
-                    {plan.description}
-                  </p>
-                  <div className="flex items-baseline justify-center gap-2">
-                    <span className="text-5xl font-black text-[#e0e0e0] tracking-tighter">
-                      ${plan.price}
-                    </span>
-                    {plan.price !== "0" && (
-                      <span className="text-[#666] font-mono text-sm">/month</span>
-                    )}
-                  </div>
-                </div>
-
-                <ul className="space-y-4 mb-8">
-                  {plan.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start gap-3">
-                      <Check className="h-5 w-5 text-[#919191] flex-shrink-0 mt-0.5" />
-                      <span className="text-sm text-[#919191] font-light">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  className={`w-full py-6 text-base font-bold rounded-2xl transition-all duration-300 ${
-                    plan.highlighted
-                      ? 'bg-[#e0e0e0] text-[#050307] hover:bg-[#d0d0d0]'
-                      : 'bg-[#131c26] text-[#e0e0e0] hover:bg-[#333] border border-[#333]'
-                  }`}
-                  disabled={plan.disabled}
-                >
-                  {plan.cta}
-                </Button>
               </div>
-            </motion.div>
-          ))}
+
+              <ul className="space-y-3 mb-6">
+                {[
+                  "Basic developer score (0-100)",
+                  "Global ranking",
+                  "Public profile analytics",
+                  "Language breakdown",
+                ].map((feature, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-black/60 dark:text-white/60 flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-black/70 dark:text-white/70">
+                      {feature}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="pt-4 border-t border-black/10 dark:border-white/10">
+                <p className="text-xs text-black/50 dark:text-white/50">
+                  Perfect for trying out GitCheck
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* PRO Plan */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="relative group"
+          >
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+              <span className="inline-block px-3 py-1 text-xs font-semibold bg-purple-500 text-white rounded-full">
+                RECOMMENDED
+              </span>
+            </div>
+
+            <div className="relative bg-white/60 dark:bg-black/60 backdrop-blur-2xl border-2 border-purple-500/50 rounded-2xl p-6 h-full transition-all duration-300 shadow-2xl shadow-purple-500/10">
+              <div className="mb-6">
+                <h3 className="text-xl font-semibold text-black dark:text-white mb-2">
+                  PRO Analysis
+                </h3>
+                <p className="text-sm text-black/60 dark:text-white/60 mb-4">
+                  Deep insights and advanced metrics
+                </p>
+                <div className="flex items-baseline gap-2 mb-2">
+                  <span className="text-4xl font-bold text-black dark:text-white">
+                    $4
+                  </span>
+                  <span className="text-black/40 dark:text-white/40 text-sm">
+                    first analysis
+                  </span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-3xl font-bold text-black dark:text-white">
+                    $2
+                  </span>
+                  <span className="text-black/40 dark:text-white/40 text-sm">
+                    subsequent analyses
+                  </span>
+                </div>
+              </div>
+
+              <ul className="space-y-3 mb-6">
+                {[
+                  "Everything in Free",
+                  "Advanced statistical analysis",
+                  "Percentile-based ranking",
+                  "Detailed impact metrics",
+                  "Code quality assessment",
+                  "Consistency scoring",
+                  "Collaboration insights",
+                  "Career narrative generation",
+                  "Professional metrics",
+                  "Repository deep-dive",
+                ].map((feature, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-purple-400 flex-shrink-0 mt-0.5" />
+                    <span className="text-sm text-black/70 dark:text-white/70">
+                      {feature}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="pt-4 border-t border-black/20 dark:border-white/20">
+                <p className="text-xs text-black/50 dark:text-white/50">
+                  Pay per analysis • No subscription required
+                </p>
+              </div>
+            </div>
+          </motion.div>
         </div>
+
+        {/* How it Works */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="max-w-3xl mx-auto mb-16"
+        >
+          <h2 className="text-2xl font-bold text-black dark:text-white text-center mb-8">
+            How it works
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                step: "1",
+                title: "Enter username",
+                desc: "Type any GitHub username",
+              },
+              {
+                step: "2",
+                title: "Choose analysis",
+                desc: "Free or PRO level insights",
+              },
+              {
+                step: "3",
+                title: "Get results",
+                desc: "View your comprehensive report",
+              },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="bg-white/40 dark:bg-black/40 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-xl p-5 text-center"
+              >
+                <div className="w-10 h-10 rounded-full bg-purple-500/20 text-purple-400 font-bold text-lg flex items-center justify-center mx-auto mb-3">
+                  {item.step}
+                </div>
+                <h3 className="text-sm font-semibold text-black dark:text-white mb-1">
+                  {item.title}
+                </h3>
+                <p className="text-xs text-black/60 dark:text-white/60">
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </motion.div>
 
         {/* FAQ */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
           className="max-w-3xl mx-auto"
         >
-          <h2 className="text-3xl font-black text-[#e0e0e0] tracking-tighter text-center mb-12">
-            FREQUENTLY ASKED QUESTIONS
+          <h2 className="text-2xl font-bold text-black dark:text-white text-center mb-8">
+            Frequently asked questions
           </h2>
-          <div className="space-y-6">
+          <div className="space-y-4">
             {[
               {
-                q: "Can I upgrade or downgrade my plan?",
-                a: "Yes, you can change your plan at any time. Upgrades take effect immediately, and downgrades apply at the end of your billing cycle."
+                q: "Do I need an account?",
+                a: "No. GitCheck is a public analytics service - simply enter any GitHub username to analyze. No registration or authentication required.",
               },
               {
-                q: "Is my GitHub data safe?",
-                a: "Absolutely. We only read public repository data and never store your GitHub credentials. All data is encrypted and secure."
+                q: "What's the difference between Free and PRO?",
+                a: "Free analysis provides basic scoring and metrics. PRO includes advanced statistical analysis, percentile rankings, detailed breakdowns, and AI-generated career insights.",
               },
               {
-                q: "What's your refund policy?",
-                a: "We offer a 14-day money-back guarantee on all paid plans. No questions asked."
-              }
+                q: "How does payment work?",
+                a: "Your first PRO analysis costs $4, and subsequent PRO analyses are $2 each. No subscriptions - pay only when you need a PRO analysis.",
+              },
+              {
+                q: "Is my GitHub data secure?",
+                a: "Yes. We only access publicly visible GitHub data. No authentication required, no access to private repositories.",
+              },
             ].map((faq, i) => (
-              <div key={i} className="bg-[#050307] border border-[#131c26] rounded-2xl p-6 hover:border-[#333] transition-colors duration-300">
-                <h3 className="text-lg font-bold text-[#e0e0e0] mb-2">
+              <div
+                key={i}
+                className="bg-white/40 dark:bg-black/40 backdrop-blur-md border border-black/10 dark:border-white/10 rounded-xl p-5 hover:border-black/20 dark:hover:border-white/20 transition-colors duration-300"
+              >
+                <h3 className="text-sm font-semibold text-black dark:text-white mb-2">
                   {faq.q}
                 </h3>
-                <p className="text-[#919191] font-light">
+                <p className="text-sm text-black/60 dark:text-white/60">
                   {faq.a}
                 </p>
               </div>

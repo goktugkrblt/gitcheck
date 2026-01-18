@@ -1,8 +1,8 @@
 "use client";
 import { useRef } from "react";
-import { 
+import {
   Code, Shield, Activity, Target, Brain,
-  Sparkles, ArrowRight, Check, X, Lock
+  Sparkles, ArrowRight, Check, X, Lock, TrendingUp, Crown
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -189,7 +189,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
     return (
       <div className="space-y-6">
         {/* Hero Header with Analysis Date & Re-analyze Button */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 border-2 border-purple-500/20 p-4 md:p-6">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 border-2 border-black/10 dark:border-purple-500/20 p-4 md:p-6">
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-pink-500/5 animate-pulse" />
 
           <div className="relative z-10 space-y-4">
@@ -197,22 +197,23 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                  <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-black dark:text-white" />
                 </div>
                 <div className="text-left">
-                  <h2 className="text-xl md:text-2xl font-black text-[#e0e0e0] tracking-tighter">
+                  <h2 className="text-xl md:text-2xl font-black text-black dark:text-[#e0e0e0] tracking-tighter">
                     Premium Analytics
                   </h2>
-                  <p className="text-purple-400 text-xs md:text-sm font-medium">
+                  <p className="text-black/60 dark:text-purple-400 text-xs md:text-sm font-medium">
                     Advanced insights from your GitHub data
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="px-4 md:px-5 py-1.5 md:py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50">
-                  <span className="text-xs md:text-sm font-black text-white tracking-wider">
-                    ✨ PRO MEMBER
+                <div className="px-4 md:px-5 py-1.5 md:py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50 flex items-center gap-2">
+                  <Crown className="w-3.5 h-3.5 md:w-4 md:h-4 text-black dark:text-white" />
+                  <span className="text-xs md:text-sm font-black text-black dark:text-white tracking-wider">
+                    PRO MEMBER
                   </span>
                 </div>
               </div>
@@ -220,8 +221,8 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
 
             {/* Bottom Row: Analysis Date & Re-analyze Button */}
             {proData && analysisDate && (
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pt-3 border-t border-purple-500/20">
-                <div className="flex items-center gap-2 text-xs text-purple-300/80">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pt-3 border-t border-black/10 dark:border-purple-500/20">
+                <div className="flex items-center gap-2 text-xs text-black dark:text-purple-300/80">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -231,7 +232,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                 <Button
                   onClick={() => setReAnalyzeState({ ...reAnalyzeState, showPaymentModal: true })}
                   disabled={reAnalyzeState.isProcessing}
-                  className="bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/30 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:bg-white/20 border border-black/20 dark:border-white/20 hover:border-white/30 text-black dark:text-white text-xs font-bold px-4 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {reAnalyzeState.isProcessing ? (
                     <>
@@ -254,17 +255,17 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
 
         {/* Loading State */}
         {loading && !proData && (
-          <div className="bg-[#050307] border border-[#131c26] rounded-xl p-12 text-center">
+          <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-12 text-center">
             <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-[#666]">Analyzing your GitHub data...</p>
-            <p className="text-xs text-[#444] mt-2">This may take 15-30 seconds</p>
+            <p className="text-black/60 dark:text-[#666]">Analyzing your GitHub data...</p>
+            <p className="text-xs text-black/60 dark:text-[#444] mt-2">This may take 15-30 seconds</p>
           </div>
         )}
 
         {/* Error State */}
         {error && (
-          <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-center">
-            <p className="text-red-400 mb-4">{error}</p>
+          <div className="bg-red-500/10 border border-black/10 dark:border-red-500/20 rounded-xl p-6 text-center">
+            <p className="text-black/60 dark:text-red-400 mb-4">{error}</p>
             <Button onClick={handleRefresh} variant="outline">
               Try Again
             </Button>
@@ -275,24 +276,24 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
         {proData && (
           <Tabs defaultValue="code-quality" className="w-full">
             <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              <TabsList className="bg-[#131c26] border border-[#131c26] p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-5 rounded-xl h-auto">
-                <TabsTrigger value="code-quality" className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-300 text-purple-400/60 hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap">
+              <TabsList className="bg-black/5 dark:bg-[#131c26] border border-black/10 dark:border-[#131c26] p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-5 rounded-xl h-auto">
+                <TabsTrigger value="code-quality" className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-300 text-black/60 dark:text-purple-400/60 hover:text-purple-600 dark:hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap">
                   <Code className="w-4 h-4 mr-1.5" />
                   README
                 </TabsTrigger>
-                <TabsTrigger value="repo-health" className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-300 text-purple-400/60 hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap">
+                <TabsTrigger value="repo-health" className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-300 text-black/60 dark:text-purple-400/60 hover:text-purple-600 dark:hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap">
                   <Shield className="w-4 h-4 mr-1.5" />
                   HEALTH
                 </TabsTrigger>
-                <TabsTrigger value="dev-patterns" className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-300 text-purple-400/60 hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap">
+                <TabsTrigger value="dev-patterns" className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-300 text-black/60 dark:text-purple-400/60 hover:text-purple-600 dark:hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap">
                   <Activity className="w-4 h-4 mr-1.5" />
                   PATTERNS
                 </TabsTrigger>
-                <TabsTrigger value="career" className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-300 text-purple-400/60 hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap">
+                <TabsTrigger value="career" className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-300 text-black/60 dark:text-purple-400/60 hover:text-purple-600 dark:hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap">
                   <Target className="w-4 h-4 mr-1.5" />
                   CAREER
                 </TabsTrigger>
-                <TabsTrigger value="ai-analysis" className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-300 text-purple-400/60 hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap relative">
+                <TabsTrigger value="ai-analysis" className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-300 text-black/60 dark:text-purple-400/60 hover:text-purple-600 dark:hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap relative">
                   <Brain className="w-4 h-4 mr-1.5" />
                   AI                
                 </TabsTrigger>
@@ -332,28 +333,28 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
         {/* Re-analyze Payment Modal */}
         {reAnalyzeState.showPaymentModal && (
           <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm" onClick={() => setReAnalyzeState({ ...reAnalyzeState, showPaymentModal: false })}>
-            <div className="fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md bg-[#050307] border-2 border-blue-500/30 rounded-2xl shadow-2xl p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md bg-white dark:bg-[#050307] border-2 border-blue-500/30 rounded-2xl shadow-2xl p-6" onClick={(e) => e.stopPropagation()}>
               <div className="text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8 text-black dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
                 </div>
 
-                <h3 className="text-2xl font-black text-white mb-2">
+                <h3 className="text-2xl font-black text-black dark:text-white mb-2">
                   Re-analyze Your Profile
                 </h3>
-                <p className="text-white/60 text-sm mb-2">
+                <p className="text-black/60 dark:text-white/60 text-sm mb-2">
                   Get fresh PRO analytics with the latest data from your GitHub profile
                 </p>
-                <p className="text-white/40 text-xs mb-6">
+                <p className="text-black/40 dark:text-white/40 text-xs mb-6">
                   Note: Your basic score updates automatically every 24 hours at no cost. This re-analysis updates your PRO insights, AI recommendations, and all advanced metrics.
                 </p>
 
-                <div className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-xl p-4 mb-6">
+                <div className="bg-gradient-to-r from-black/5 to-black/5 dark:from-blue-500/10 dark:to-cyan-500/10 border border-black/10 dark:border-blue-500/20 rounded-xl p-4 mb-6">
                   <div className="text-center">
-                    <div className="text-4xl font-black text-white mb-1">$1.00</div>
-                    <p className="text-xs text-white/60">One-time payment for fresh analysis</p>
+                    <div className="text-4xl font-black text-black dark:text-white mb-1">$1.00</div>
+                    <p className="text-xs text-black/60 dark:text-white/60">One-time payment for fresh analysis</p>
                   </div>
                 </div>
 
@@ -364,8 +365,8 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                     "Latest metrics & scoring",
                     "Instant results in 30-60 seconds"
                   ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm text-white/80">
-                      <Check className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                    <div key={i} className="flex items-center gap-2 text-sm text-black/80 dark:text-white/80">
+                      <Check className="w-4 h-4 text-black/60 dark:text-blue-400 flex-shrink-0" />
                       <span>{item}</span>
                     </div>
                   ))}
@@ -382,7 +383,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                   <Button
                     onClick={handleReAnalyze}
                     disabled={reAnalyzeState.isProcessing}
-                    className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold shadow-lg shadow-blue-500/20"
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-black dark:text-white font-bold shadow-lg shadow-blue-500/20"
                   >
                     {reAnalyzeState.isProcessing ? (
                       <>
@@ -395,7 +396,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                   </Button>
                 </div>
 
-                <p className="text-xs text-white/40 mt-4">
+                <p className="text-xs text-black/40 dark:text-white/40 mt-4">
                   💳 Secure payment • This updates your existing PRO data
                 </p>
               </div>
@@ -414,12 +415,12 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
         
         {/* ✅ NEW: Silent background analysis for FREE users */}
         {loading && !proData && (
-          <div className="fixed bottom-4 right-4 bg-[#050307] border border-purple-500/30 rounded-lg p-4 shadow-xl z-50">
+          <div className="fixed bottom-4 right-4 bg-white dark:bg-[#050307] border border-purple-500/30 rounded-lg p-4 shadow-xl z-50">
             <div className="flex items-center gap-3">
               <div className="animate-spin w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full"></div>
               <div className="text-sm">
-                <p className="text-white font-medium">Calculating your score...</p>
-                <p className="text-xs text-[#666]">This will improve your profile score</p>
+                <p className="text-black dark:text-white font-medium">Calculating your score...</p>
+                <p className="text-xs text-black/60 dark:text-[#666]">This will improve your profile score</p>
               </div>
             </div>
           </div>
@@ -427,18 +428,18 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
 
         {/* ✅ CHANGED: Removed absolute positioning, now flows naturally */}
         <div className="flex items-center justify-center py-8 md:py-12 px-0 md:px-4">
-          <div className="w-full max-w-2xl bg-[#050307] border-2 border-purple-500/30 rounded-2xl p-6 px-[15px] md:p-8 shadow-2xl">
+          <div className="w-full max-w-2xl bg-white dark:bg-[#050307] border-2 border-purple-500/30 rounded-2xl p-6 px-[15px] md:p-8 shadow-2xl">
             {/* Header */}
             <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 mb-4">
-                <Sparkles className="w-4 h-4 text-purple-400" />
-                <span className="text-sm font-bold text-purple-400">PREMIUM ANALYTICS</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-black/5 to-black/5 dark:from-purple-500/10 dark:to-pink-500/10 border border-black/10 dark:border-purple-500/20 mb-4">
+                <Sparkles className="w-4 h-4 text-black/60 dark:text-purple-400" />
+                <span className="text-sm font-bold text-black/60 dark:text-purple-400">PREMIUM ANALYTICS</span>
               </div>
               
-              <h2 className="text-3xl md:text-4xl font-black text-[#e0e0e0] tracking-tighter mb-2">
+              <h2 className="text-3xl md:text-4xl font-black text-black dark:text-[#e0e0e0] tracking-tighter mb-2">
                 Unlock Detailed Insights
               </h2>
-              <p className="text-[#919191]">
+              <p className="text-black/50 dark:text-[#919191]">
                 Your score is calculated! Get full PRO analytics
               </p>
             </div>
@@ -452,26 +453,26 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                 { icon: Target, title: "Career Insights", desc: "Experience & specialization" },
                 { icon: Brain, title: "AI Career Analysis", desc: "Personalized recommendations" }
               ].map((feature, i) => (
-                <div key={i} className={`flex items-start gap-3 bg-[#050307] rounded-lg p-4 ${i === 4 ? 'md:col-span-2' : ''}`}>
+                <div key={i} className={`flex items-start gap-3 bg-white dark:bg-[#050307] rounded-lg p-4 ${i === 4 ? 'md:col-span-2' : ''}`}>
                   <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-                    <feature.icon className="w-5 h-5 text-white" />
+                    <feature.icon className="w-5 h-5 text-black dark:text-white" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#e0e0e0] text-sm mb-1">{feature.title}</h3>
-                    <p className="text-xs text-[#666]">{feature.desc}</p>
+                    <h3 className="font-bold text-black dark:text-[#e0e0e0] text-sm mb-1">{feature.title}</h3>
+                    <p className="text-xs text-black/60 dark:text-[#666]">{feature.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Pricing */}
-            <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-xl p-6 mb-6">
+            <div className="bg-gradient-to-r from-black/5 to-black/5 dark:from-purple-500/10 dark:to-pink-500/10 border border-black/10 dark:border-purple-500/20 rounded-xl p-6 mb-6">
               <div className="text-center mb-4">
-                <p className="text-xs text-purple-400 font-bold mb-2">ONE-TIME PAYMENT</p>
+                <p className="text-xs text-black/60 dark:text-purple-400 font-bold mb-2">ONE-TIME PAYMENT</p>
                 <div className="flex items-baseline justify-center gap-2 mb-1">
-                  <span className="text-5xl font-black text-[#e0e0e0]">$2.99</span>
+                  <span className="text-5xl font-black text-black dark:text-[#e0e0e0]">$2.99</span>
                 </div>
-                <p className="text-xs text-[#666]">
+                <p className="text-xs text-black/60 dark:text-[#666]">
                   One-time payment • Lifetime access
                 </p>
               </div>
@@ -483,8 +484,8 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                   "Advanced code quality metrics",
                   "AI-powered career insights"
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center justify-center gap-2 text-sm text-[#919191]">
-                    <Check className="w-4 h-4 text-green-400 flex-shrink-0" />
+                  <div key={i} className="flex items-center justify-center gap-2 text-sm text-black/50 dark:text-[#919191]">
+                    <Check className="w-4 h-4 text-black/60 dark:text-green-400 flex-shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
@@ -494,7 +495,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                 size="lg"
                 onClick={handlePurchase}
                 disabled={isPurchasing}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-black dark:text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isPurchasing ? (
                   <>
@@ -509,7 +510,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                 )}
               </Button>
               
-              <p className="text-xs text-center text-[#666] mt-3">
+              <p className="text-xs text-center text-black/60 dark:text-[#666] mt-3">
                 💳 Secure payment • ❌ No recurring charges               
               </p>
             </div>
@@ -517,7 +518,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
             {/* Learn More Button */}
             <button
               onClick={() => setShowFeaturesModal(true)}
-              className="text-sm text-purple-400 hover:text-purple-300 transition-colors mx-auto block font-medium cursor-pointer"
+              className="text-sm text-black/60 dark:text-purple-400 hover:text-purple-300 transition-colors mx-auto block font-medium cursor-pointer"
             >
               Learn more about features →
             </button>
@@ -528,24 +529,24 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
       {/* Features Modal - unchanged */}
       {showFeaturesModal && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm rounded-xl" onClick={() => setShowFeaturesModal(false)}>
-          <div className="fixed top-[27%] md:top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-3xl max-h-[90vh] overflow-y-auto bg-[#050307] border-2 border-purple-500/30 rounded-2xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <div className="bg-[#050307] border-b border-[#131c26] p-6 flex items-center justify-between">
+          <div className="fixed top-[27%] md:top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-3xl max-h-[90vh] overflow-y-auto bg-white dark:bg-[#050307] border-2 border-purple-500/30 rounded-2xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-white dark:bg-[#050307] border-b border-black/10 dark:border-[#131c26] p-6 flex items-center justify-between">
               <div className="text-left ml-4">
-                <h3 className="text-2xl font-black text-[#e0e0e0]">Premium Features</h3>
-                <p className="text-sm text-[#666]">Everything included in your purchase</p>
+                <h3 className="text-2xl font-black text-black dark:text-[#e0e0e0]">Premium Features</h3>
+                <p className="text-sm text-black/60 dark:text-[#666]">Everything included in your purchase</p>
               </div>
-              <button onClick={() => setShowFeaturesModal(false)} className="w-10 h-10 rounded-lg bg-[#050307] hover:bg-[#131c26] flex items-center justify-center transition-colors cursor-pointer">
-                <X className="w-5 h-5 text-[#666]" />
+              <button onClick={() => setShowFeaturesModal(false)} className="w-10 h-10 rounded-lg bg-white dark:bg-[#050307] hover:bg-black/5 dark:bg-[#131c26] flex items-center justify-center transition-colors cursor-pointer">
+                <X className="w-5 h-5 text-black/60 dark:text-[#666]" />
               </button>
             </div>
 
             <div className="p-6 space-y-6">
               <div>
-                <h4 className="font-bold text-[#e0e0e0] mb-3 flex items-center gap-2 text-lg">
-                  <Code className="w-5 h-5 text-blue-400" />
+                <h4 className="font-bold text-black dark:text-[#e0e0e0] mb-3 flex items-center gap-2 text-lg">
+                  <Code className="w-5 h-5 text-black/60 dark:text-blue-400" />
                   Code Quality Metrics
                 </h4>
-                <ul className="space-y-2 ml-7 text-[#919191] text-left">
+                <ul className="space-y-2 ml-7 text-black/50 dark:text-[#919191] text-left">
                   <li>• README quality scoring based on length, structure, sections, and badges</li>
                   <li>• Test coverage detection by analyzing test files and frameworks</li>
                   <li>• CI/CD integration analysis including GitHub Actions workflows</li>
@@ -553,11 +554,11 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                 </ul>
               </div>
               <div>
-                <h4 className="font-bold text-[#e0e0e0] mb-3 flex items-center gap-2 text-lg">
-                  <Shield className="w-5 h-5 text-green-400" />
+                <h4 className="font-bold text-black dark:text-[#e0e0e0] mb-3 flex items-center gap-2 text-lg">
+                  <Shield className="w-5 h-5 text-black/60 dark:text-green-400" />
                   Repository Health
                 </h4>
-                <ul className="space-y-2 ml-7 text-[#919191] text-left">
+                <ul className="space-y-2 ml-7 text-black/50 dark:text-[#919191] text-left">
                   <li>• Maintenance score tracking based on commit frequency and recency</li>
                   <li>• Issue response time analysis measuring community engagement</li>
                   <li>• PR merge rate statistics showing collaboration effectiveness</li>
@@ -565,11 +566,11 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                 </ul>
               </div>
               <div>
-                <h4 className="font-bold text-[#e0e0e0] mb-3 flex items-center gap-2 text-lg">
-                  <Activity className="w-5 h-5 text-purple-400" />
+                <h4 className="font-bold text-black dark:text-[#e0e0e0] mb-3 flex items-center gap-2 text-lg">
+                  <Activity className="w-5 h-5 text-black/60 dark:text-purple-400" />
                   Developer Patterns
                 </h4>
-                <ul className="space-y-2 ml-7 text-[#919191] text-left">
+                <ul className="space-y-2 ml-7 text-black/50 dark:text-[#919191] text-left">
                   <li>• Commit patterns by hour with 0-23 detailed heatmap visualization</li>
                   <li>• Language evolution tracking showing technology adoption over time</li>
                   <li>• Productivity peak hours analysis identifying your best coding times</li>
@@ -577,11 +578,11 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                 </ul>
               </div>
               <div>
-                <h4 className="font-bold text-[#e0e0e0] mb-3 flex items-center gap-2 text-lg">
-                  <Target className="w-5 h-5 text-yellow-400" />
+                <h4 className="font-bold text-black dark:text-[#e0e0e0] mb-3 flex items-center gap-2 text-lg">
+                  <Target className="w-5 h-5 text-black/60 dark:text-yellow-400" />
                   Career Insights
                 </h4>
-                <ul className="space-y-2 ml-7 text-[#919191] text-left">
+                <ul className="space-y-2 ml-7 text-black/50 dark:text-[#919191] text-left">
                   <li>• Experience level indicator based on account age and activity depth</li>
                   <li>• Specialization score calculation showing your strongest tech areas</li>
                   <li>• Consistency rating analysis measuring your commitment patterns</li>
@@ -589,11 +590,11 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                 </ul>
               </div>
               <div>
-                <h4 className="font-bold text-[#e0e0e0] mb-3 flex items-center gap-2 text-lg">
-                  <Brain className="w-5 h-5 text-pink-400" />
+                <h4 className="font-bold text-black dark:text-[#e0e0e0] mb-3 flex items-center gap-2 text-lg">
+                  <Brain className="w-5 h-5 text-black/60 dark:text-pink-400" />
                   AI Career Analysis
                 </h4>
-                <ul className="space-y-2 ml-7 text-[#919191] text-left">
+                <ul className="space-y-2 ml-7 text-black/50 dark:text-[#919191] text-left">
                   <li>• Personalized career roadmap generated by Claude AI analyzing your profile</li>
                   <li>• Actionable growth strategies tailored to your current skill level and goals</li>
                   <li>• Technical strengths identification highlighting your best competencies</li>
@@ -603,7 +604,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
               </div>
             </div>
 
-            <div className="bg-[#050307] border-t border-[#131c26] p-6">
+            <div className="bg-white dark:bg-[#050307] border-t border-black/10 dark:border-[#131c26] p-6">
               <Button
                 onClick={() => {
                   setShowFeaturesModal(false);
@@ -611,7 +612,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                 }}
                 disabled={isPurchasing}
                 size="lg"
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-black dark:text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isPurchasing ? (
                   <>
