@@ -940,8 +940,8 @@ function LeaderboardCard({
               </div>
 
               {/* Avatar */}
-              <img 
-                src={profile.avatar} 
+              <img
+                src={profile.avatarUrl || profile.avatar}
                 alt={profile.username}
                 className="w-6 h-6 rounded-full border border-black/10 dark:border-white/10 flex-shrink-0"
                 loading="lazy"
