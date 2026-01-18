@@ -142,7 +142,7 @@ export default function HomePage() {
 
         {!isMobile && !prefersReducedMotion && (
           <motion.div
-            className="absolute inset-0"
+            className="absolute inset-0 dark:[background-image:linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)]"
             style={{
               backgroundImage: `
                 linear-gradient(to right, rgba(0,0,0,0.06) 1px, transparent 1px),
@@ -151,20 +151,6 @@ export default function HomePage() {
               backgroundSize: '80px 80px',
               transform: `perspective(1000px) rotateX(${mousePosition.y * 5}deg) rotateY(${mousePosition.x * 5}deg)`
             }}
-            className="dark:!bg-[length:80px_80px]"
-            {...({
-              style: {
-                ...(!isMobile && !prefersReducedMotion && {
-                  backgroundImage: `
-                    linear-gradient(to right, rgba(0,0,0,0.06) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(0,0,0,0.06) 1px, transparent 1px)
-                  `,
-                  backgroundSize: '80px 80px',
-                  transform: `perspective(1000px) rotateX(${mousePosition.y * 5}deg) rotateY(${mousePosition.x * 5}deg)`
-                })
-              },
-              className: "absolute inset-0 dark:[background-image:linear-gradient(to_right,rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)]"
-            } as any)}
           />
         )}
 
