@@ -1,54 +1,103 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { NextRequest } from "next/server";
 
 /**
  * GET /api/leaderboard
- * Returns top 10 real developers sorted by score
- * NO MOCK DATA - Only real analyzed profiles
- * Auto-updates as users analyze their profiles
+ * Returns top developers sorted by score
+ * Supports global and country-based filtering
+ * Query params:
+ *   - type: "global" | "country"
+ *   - country: country name (required when type=country)
  */
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    console.log('📊 [LEADERBOARD] Fetching top developers...');
+    const searchParams = request.nextUrl.searchParams;
+    const type = searchParams.get('type') || 'global';
+    const country = searchParams.get('country');
 
-    // Get real profiles with scores from database
+    console.log('📊 [LEADERBOARD] Fetching top developers...', { type, country });
+
+    // Build where clause
+    const whereClause: any = {
+      score: { gt: 0 },
+      isPublic: true,
+      username: { not: '' },
+    };
+
+    // Add country filter if type is country
+    if (type === 'country' && country) {
+      whereClause.location = {
+        contains: country,
+        mode: 'insensitive',
+      };
+    }
+
+    // Get profiles from database
     const profiles = await prisma.profile.findMany({
-      where: {
-        score: { gt: 0 },      // ✅ Score > 0
-        isPublic: true,         // ✅ Only public
-        username: { not: '' },  // ✅ Not empty (null check included)
-      },
+      where: whereClause,
       select: {
         username: true,
         avatarUrl: true,
         score: true,
+        location: true,
         percentile: true,
         scannedAt: true,
       },
       orderBy: {
         score: 'desc',
       },
-      take: 10,
+      take: 100,
     });
 
-    console.log(`📊 [LEADERBOARD] Found ${profiles.length} real profiles`);
+    console.log(`📊 [LEADERBOARD] Found ${profiles.length} profiles`);
 
-// Convert to leaderboard format
-const leaderboard = profiles.map((profile, index) => ({
-  rank: index + 1,
-  username: profile.username || 'Anonymous',
-  score: Number(profile.score.toFixed(2)), // ✅ CHANGED: 54.30 (2 decimal)
-  avatar: profile.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.username}`,
-  percentile: profile.percentile,
-  lastUpdated: profile.scannedAt,
-}));
+    // Get all unique countries for the dropdown
+    const allProfiles = await prisma.profile.findMany({
+      where: {
+        score: { gt: 0 },
+        isPublic: true,
+        location: { not: null },
+      },
+      select: {
+        location: true,
+      },
+    });
+
+    // Extract unique countries from location field
+    const countries = Array.from(
+      new Set(
+        allProfiles
+          .map(p => p.location)
+          .filter(Boolean)
+          .map(loc => {
+            // Try to extract country from location string
+            // Common patterns: "Turkey", "Istanbul, Turkey", "TR"
+            const parts = loc!.split(',').map(s => s.trim());
+            return parts[parts.length - 1]; // Take last part as country
+          })
+      )
+    ).sort();
+
+    // Convert to leaderboard format
+    const users = profiles.map((profile, index) => ({
+      rank: index + 1,
+      username: profile.username || 'Anonymous',
+      score: Number(profile.score.toFixed(2)),
+      avatarUrl: profile.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.username}`,
+      country: profile.location ? profile.location.split(',').map(s => s.trim()).pop() : null,
+      percentile: profile.percentile,
+      lastUpdated: profile.scannedAt,
+    }));
 
     // Create response
     const response = NextResponse.json({
       success: true,
-      leaderboard,
+      users,
+      countries,
       count: profiles.length,
+      type,
       lastUpdated: new Date().toISOString(),
     });
 
@@ -59,11 +108,12 @@ const leaderboard = profiles.map((profile, index) => ({
 
   } catch (error: any) {
     console.error('❌ [LEADERBOARD] Error:', error);
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: false,
-      error: 'Failed to load leaderboard', 
+      error: 'Failed to load leaderboard',
       details: error.message,
-      leaderboard: [],
+      users: [],
+      countries: [],
       count: 0,
     }, { status: 500 });
   }

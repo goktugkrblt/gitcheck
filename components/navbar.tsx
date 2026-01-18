@@ -40,6 +40,7 @@ export function Navbar({ maxWidth = "max-w-5xl", sticky = true }: NavbarProps) {
 
   const navLinks = [
     { href: "/docs", label: "Documentation" },
+    { href: "/leaderboard", label: "Leaderboard" },
     { href: "/pricing", label: "Pricing" },
   ];
 
