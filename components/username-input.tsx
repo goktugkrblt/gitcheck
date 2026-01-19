@@ -137,14 +137,6 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
 
   return (
     <>
-      {/* Rate Limit Warning */}
-      {rateLimitInfo && (
-        <RateLimitWarning
-          resetAt={rateLimitInfo.resetAt}
-          minutesUntilReset={rateLimitInfo.minutesUntilReset}
-        />
-      )}
-
       <div className="w-full max-w-md">
       <div className="flex flex-col sm:flex-row gap-3">
         {/* Honeypot field - Hidden from users, visible to bots */}
@@ -251,6 +243,16 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
         >
           {error}
         </motion.div>
+      )}
+
+      {/* Rate Limit Warning */}
+      {rateLimitInfo && (
+        <div className="mt-3">
+          <RateLimitWarning
+            resetAt={rateLimitInfo.resetAt}
+            minutesUntilReset={rateLimitInfo.minutesUntilReset}
+          />
+        </div>
       )}
 
       {/* Helper Text */}

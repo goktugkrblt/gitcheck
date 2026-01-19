@@ -785,25 +785,13 @@ const fetchGlobalRank = async (username: string) => {
             
             <TabsContent value="pro" className="space-y-6 mt-6 px-4 md:px-0">
               <div className="bg-white/5 rounded-xl border border-white/10 p-1 text-center backdrop-blur-sm">
-                {process.env.NEXT_PUBLIC_ENABLE_PRO_TAB === 'true' ? (                  
-                  <ProTab 
-                    isPro={effectivePlan === "PRO"}
-                    username={displayData.username}
-                    onPurchaseComplete={() => {
-                      fetchProfile();
-                    }}
-                  />
-                ) : (
-                  <div className="py-12">
-                    <Sparkles className="w-16 h-16 text-purple-400/40 mx-auto mb-6" />
-                    <h3 className="text-2xl font-black text-white mb-3">
-                      Premium Features Coming Soon
-                    </h3>
-                    <p className="text-white/40 max-w-md mx-auto">
-                      Advanced analytics and insights are on the way. Stay tuned for exclusive features!
-                    </p>
-                  </div>
-                )}
+                <ProTab
+                  isPro={effectivePlan === "PRO"}
+                  username={displayData.username}
+                  onPurchaseComplete={() => {
+                    fetchProfile();
+                  }}
+                />
               </div>
             </TabsContent>
           </Tabs>

@@ -115,6 +115,19 @@ export class GitHubService {
               }
             }
           }
+          repositories(first: 100, ownerAffiliations: OWNER) {
+            nodes {
+              defaultBranchRef {
+                target {
+                  ... on Commit {
+                    history {
+                      totalCount
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     `;
@@ -123,8 +136,14 @@ export class GitHubService {
       const result = await this.graphqlClient(query, { username });
       const collection = result.user.contributionsCollection;
 
+      // ✅ Calculate total commits from all repositories
+      const allTimeCommits = result.user.repositories.nodes.reduce((total: number, repo: any) => {
+        const commitCount = repo.defaultBranchRef?.target?.history?.totalCount || 0;
+        return total + commitCount;
+      }, 0);
+
       return {
-        totalCommits: collection.totalCommitContributions,
+        totalCommits: allTimeCommits, // ✅ Use all-time commits instead of last year
         totalPRs: collection.totalPullRequestContributions,
         totalIssues: collection.totalIssueContributions,
         totalReviews: collection.totalPullRequestReviewContributions,
