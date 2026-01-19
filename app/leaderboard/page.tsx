@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Trophy, Medal, Crown, Globe, MapPin, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/navbar";
@@ -23,10 +23,36 @@ export default function LeaderboardPage() {
   const [availableCountries, setAvailableCountries] = useState<string[]>([]);
   const [hasMore, setHasMore] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetchLeaderboard(true);
   }, [filterType, selectedCountry]);
+
+  // Infinite scroll setup
+  useEffect(() => {
+    if (loading || loadingMore || !hasMore) return;
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore) {
+          fetchLeaderboard(false);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [loading, loadingMore, hasMore, users.length]);
 
   const fetchLeaderboard = async (reset: boolean = false) => {
     if (reset) {
@@ -240,27 +266,37 @@ export default function LeaderboardPage() {
           )}
         </motion.div>
 
-        {/* Load More Button */}
+        {/* Infinite Scroll Trigger & Loading Indicator */}
         {!loading && hasMore && (
+          <div ref={loadMoreRef} className="mt-6 text-center py-8">
+            {loadingMore && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex flex-col items-center gap-3"
+              >
+                <div className="animate-spin w-8 h-8 border-4 border-purple-500 border-t-transparent rounded-full"></div>
+                <p className="text-sm text-black/60 dark:text-white/40 font-mono">
+                  Loading more developers... ({users.length}/{totalCount})
+                </p>
+              </motion.div>
+            )}
+          </div>
+        )}
+
+        {/* End of List Indicator */}
+        {!loading && !hasMore && users.length > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="mt-6 text-center"
+            className="mt-6 text-center py-4"
           >
-            <button
-              onClick={() => fetchLeaderboard(false)}
-              disabled={loadingMore}
-              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loadingMore ? (
-                <span className="flex items-center gap-2">
-                  <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-                  Loading...
-                </span>
-              ) : (
-                `Load More (${users.length}/${totalCount})`
-              )}
-            </button>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
+              <Trophy className="w-4 h-4 text-purple-500" />
+              <p className="text-xs text-black/60 dark:text-white/40 font-medium">
+                You've reached the end • {users.length} developers
+              </p>
+            </div>
           </motion.div>
         )}
 
