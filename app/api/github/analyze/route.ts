@@ -59,6 +59,9 @@ export async function POST(req: NextRequest) {
 
     const previousProfile = user.profiles[0];
 
+    // ✅ Normalize username to lowercase to prevent duplicates
+    const normalizedUsername = user.githubUsername.toLowerCase();
+
     console.log('📊 Fetching core GitHub data...');
     const userData = await github.getUserData(user.githubUsername);
 
@@ -127,7 +130,7 @@ export async function POST(req: NextRequest) {
 
     const profile = await prisma.profile.upsert({
       where: {
-        username: user.githubUsername
+        username: normalizedUsername
       },
       update: {
         score: 0, // Prisma null kabul etmiyorsa 0
@@ -137,7 +140,7 @@ export async function POST(req: NextRequest) {
         totalStars,
         totalForks,
         
-        username: user.githubUsername,
+        username: normalizedUsername,
         avatarUrl: userData.avatar_url,
         bio: userData.bio,
         location: userData.location,
@@ -192,7 +195,7 @@ export async function POST(req: NextRequest) {
         totalStars,
         totalForks,
         
-        username: user.githubUsername,
+        username: normalizedUsername,
         avatarUrl: userData.avatar_url,
         bio: userData.bio,
         location: userData.location,
@@ -249,7 +252,7 @@ export async function POST(req: NextRequest) {
 
       // Clear old PRO cache
       await prisma.profile.update({
-        where: { username: user.githubUsername },
+        where: { username: normalizedUsername },
         data: {
           proAnalysisCache: Prisma.JsonNull,
           lastProAnalysisScan: null,
@@ -278,7 +281,7 @@ export async function POST(req: NextRequest) {
     if (shouldUpdateProCache) {
       console.log('🗑️  Clearing old PRO cache for fresh analysis...');
       await prisma.profile.update({
-        where: { username: user.githubUsername },
+        where: { username: normalizedUsername },
         data: {
           proAnalysisCache: Prisma.JsonNull,
           lastProAnalysisScan: null,
@@ -310,7 +313,7 @@ export async function POST(req: NextRequest) {
         
         // Re-fetch profile with PRO cache
         const updatedProfile = await prisma.profile.findUnique({
-          where: { username: user.githubUsername },
+          where: { username: normalizedUsername },
         });
 
         // ✅ ALWAYS calculate score with PRO data (regardless of cache status)
@@ -356,7 +359,7 @@ export async function POST(req: NextRequest) {
 
           // Update with FINAL precision score
           await prisma.profile.update({
-            where: { username: user.githubUsername },
+            where: { username: normalizedUsername },
             data: {
               score: finalScoring.overallScore,
               percentile: finalScoring.percentile,
