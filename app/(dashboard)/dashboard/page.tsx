@@ -185,11 +185,20 @@ export default function DashboardPage() {
       return;
     }
 
+    // Get username from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username');
+
+    if (!username) {
+      console.error('No username for background analysis');
+      return;
+    }
+
     setProAnalysisStatus('running');
     setAnalysisProgress(0);
-    
-    console.log('🚀 Starting background PRO analysis...');
-    
+
+    console.log('🚀 Starting background PRO analysis for:', username);
+
     try {
       // Simulate progress
       const progressInterval = setInterval(() => {
@@ -199,24 +208,20 @@ export default function DashboardPage() {
         });
       }, 1000);
 
-      const response = await fetch('/api/pro/analyze-all');
+      const response = await fetch(`/api/pro/analyze-all?username=${encodeURIComponent(username)}`);
       const result = await response.json();
 
       clearInterval(progressInterval);
 
       if (result.success) {
         console.log('✅ Background PRO analysis complete');
-        
-        // ✅ YENİ: Score'u güncelle
-        console.log('🔄 Updating score in database...');
-        await fetch('/api/score'); // Score hesapla ve kaydet
-        
+
         setProAnalysisStatus('complete');
         setAnalysisProgress(100);
-        
+
         window.dispatchEvent(new Event('proAnalysisComplete'));
-        
-        // Refresh profile data
+
+        // Refresh profile data to get updated score
         await fetchProfile();
       } else {
         console.error('❌ PRO analysis failed:', result.error);

@@ -13,16 +13,12 @@ import { DevPatternsCard } from "@/components/dashboard/dev-patterns-card";
 import { CareerInsightsCard } from "@/components/dashboard/career-insights-card";
 import { AIAnalysisCard } from "@/components/dashboard/ai-analysis-card";
 import { ClientCache, ProCacheKeys } from "@/lib/client-cache";
+import { useRouter } from "next/navigation";
 
 interface ProTabProps {
   isPro?: boolean;
   username?: string;
   onPurchaseComplete?: () => void;
-}
-
-interface ReAnalyzeState {
-  isProcessing: boolean;
-  showPaymentModal: boolean;
 }
 
 export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabProps) {
@@ -31,12 +27,7 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
   const proTabRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showGradient, setShowGradient] = useState(true);
-
-  // ✅ Re-analyze state
-  const [reAnalyzeState, setReAnalyzeState] = useState<ReAnalyzeState>({
-    isProcessing: false,
-    showPaymentModal: false
-  });
+  const router = useRouter();
 
   
   const [proData, setProData] = useState<{
@@ -77,58 +68,6 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
     }
   };
 
-  // ✅ Handle re-analysis
-  const handleReAnalyze = async () => {
-    if (!username) return;
-
-    setReAnalyzeState({ isProcessing: true, showPaymentModal: false });
-
-    try {
-      // Simulate $2 payment
-      const paymentResponse = await fetch('/api/simulate-purchase', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: 2, type: 'reanalyze' }),
-      });
-
-      if (!paymentResponse.ok) {
-        throw new Error('Payment failed');
-      }
-
-      // Clear cache to force fresh analysis
-      ClientCache.remove(ProCacheKeys.allAnalysis(username));
-
-      // Clear AI analysis cache too
-      const aiClearResponse = await fetch(`/api/pro/ai-analysis?username=${username}`, {
-        method: 'DELETE',
-      });
-
-      if (!aiClearResponse.ok) {
-        console.warn('Failed to clear AI cache, continuing...');
-      }
-
-      // Fetch fresh analysis with force flag
-      const response = await fetch(`/api/pro/analyze-all?username=${username}&force=true`);
-      const result = await response.json();
-
-      if (result.success) {
-        setProData(result.data);
-        // Clear AI state to force regeneration
-        setAiAnalysis(null);
-        setAiGeneratedAt(null);
-        setAiIsCached(false);
-
-        alert('✅ Profile re-analyzed successfully! Your PRO data has been updated with the latest information.');
-      } else {
-        throw new Error(result.error || 'Analysis failed');
-      }
-    } catch (error) {
-      console.error('Re-analysis error:', error);
-      alert('❌ Re-analysis failed. Please try again.');
-    } finally {
-      setReAnalyzeState({ isProcessing: false, showPaymentModal: false });
-    }
-  };
 
   // ✅ NEW: Run analysis for ALL users (FREE and PRO)
   const fetchAllProData = useCallback(async () => {
@@ -287,23 +226,13 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                 </div>
 
                 <Button
-                  onClick={() => setReAnalyzeState({ ...reAnalyzeState, showPaymentModal: true })}
-                  disabled={reAnalyzeState.isProcessing}
-                  className="bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:bg-white/20 border border-black/20 dark:border-white/20 hover:border-white/30 text-black dark:text-white text-[10px] sm:text-xs font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-all flex items-center gap-1.5 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto justify-center"
+                  onClick={() => router.push('/pricing')}
+                  className="bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:bg-white/20 border border-black/20 dark:border-white/20 hover:border-white/30 text-black dark:text-white text-[10px] sm:text-xs font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-all flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto justify-center"
                 >
-                  {reAnalyzeState.isProcessing ? (
-                    <>
-                      <div className="animate-spin w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                      Re-analyze ($2)
-                    </>
-                  )}
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Re-analyze ($2)
                 </Button>
               </div>
             )}
@@ -394,79 +323,6 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
           </Tabs>
         )}
 
-        {/* Re-analyze Payment Modal */}
-        {reAnalyzeState.showPaymentModal && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm" onClick={() => setReAnalyzeState({ ...reAnalyzeState, showPaymentModal: false })}>
-            <div className="fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md bg-white dark:bg-[#050307] border-2 border-blue-500/30 rounded-2xl shadow-2xl p-6" onClick={(e) => e.stopPropagation()}>
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-black dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                </div>
-
-                <h3 className="text-2xl font-black text-black dark:text-white mb-2">
-                  Re-analyze Your Profile
-                </h3>
-                <p className="text-black/60 dark:text-white/60 text-sm mb-2">
-                  Get fresh PRO analytics with the latest data from your GitHub profile
-                </p>
-                <p className="text-black/40 dark:text-white/40 text-xs mb-6">
-                  Note: Your basic score updates automatically every 24 hours at no cost. This re-analysis updates your PRO insights, AI recommendations, and all advanced metrics.
-                </p>
-
-                <div className="bg-gradient-to-r from-black/5 to-black/5 dark:from-blue-500/10 dark:to-cyan-500/10 border border-black/10 dark:border-blue-500/20 rounded-xl p-4 mb-6">
-                  <div className="text-center">
-                    <div className="text-4xl font-black text-black dark:text-white mb-1">$2.00</div>
-                    <p className="text-xs text-black/60 dark:text-white/60">One-time payment for fresh analysis</p>
-                  </div>
-                </div>
-
-                <div className="space-y-2 mb-6 text-left">
-                  {[
-                    "Fresh PRO analysis of all repositories",
-                    "Updated career insights & AI recommendations",
-                    "Latest metrics & scoring",
-                    "Instant results in 30-60 seconds"
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm text-black/80 dark:text-white/80">
-                      <Check className="w-4 h-4 text-black/60 dark:text-blue-400 flex-shrink-0" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex gap-3">
-                  <Button
-                    onClick={() => setReAnalyzeState({ ...reAnalyzeState, showPaymentModal: false })}
-                    variant="outline"
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleReAnalyze}
-                    disabled={reAnalyzeState.isProcessing}
-                    className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-black dark:text-white font-bold shadow-lg shadow-blue-500/20"
-                  >
-                    {reAnalyzeState.isProcessing ? (
-                      <>
-                        <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2" />
-                        Processing...
-                      </>
-                    ) : (
-                      <>Pay $2 & Re-analyze</>
-                    )}
-                  </Button>
-                </div>
-
-                <p className="text-xs text-black/40 dark:text-white/40 mt-4">
-                  💳 Secure payment • This updates your existing PRO data
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     );
   }

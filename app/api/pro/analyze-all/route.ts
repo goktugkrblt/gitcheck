@@ -8,34 +8,32 @@ import { calculateDeveloperScore } from "@/lib/scoring/developer-score"; // ✅ 
 
 export async function GET(request: Request) {
   try {
-    const session = await auth();
-
-    if (!session || !session.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: {
-        profiles: {
-          orderBy: { scannedAt: 'desc' },
-          take: 1,
-        }
-      }
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
-
-    if (!user.githubToken || !user.githubUsername) {
-      return NextResponse.json({ error: "GitHub account not connected" }, { status: 404 });
-    }
-
-    // ✅ FIX: Get username from query params, fallback to authenticated user
+    // ✅ Get username from query params
     const { searchParams } = new URL(request.url);
     const requestedUsername = searchParams.get('username');
-    const username = requestedUsername || user.githubUsername;
+
+    // ✅ Try to get session (optional for public profiles)
+    const session = await auth();
+
+    let user = null;
+    if (session?.user?.email) {
+      user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        include: {
+          profiles: {
+            orderBy: { scannedAt: 'desc' },
+            take: 1,
+          }
+        }
+      });
+    }
+
+    // ✅ Determine username: from query param or authenticated user
+    const username = requestedUsername || user?.githubUsername;
+
+    if (!username) {
+      return NextResponse.json({ error: "Username is required" }, { status: 400 });
+    }
 
     console.log(`🎯 Analyzing profile: ${username} ${requestedUsername ? '(requested)' : '(own profile)'}`);
 
@@ -154,10 +152,10 @@ export async function GET(request: Request) {
     // Cache miss - analyze everything
     console.log(`🔍 Cache MISS, running full PRO analysis for: ${username}`);
 
-    // ✅ FIX: Use authenticated user's token for API rate limits
+    // ✅ FIX: Use authenticated user's token for API rate limits (if available)
     // Public data is accessible even when analyzing other users
     const octokit = new Octokit({
-      auth: user.githubToken,
+      auth: user?.githubToken || process.env.GITHUB_TOKEN,
     });
 
     const analysis = await analyzeAllPro(octokit, username);
