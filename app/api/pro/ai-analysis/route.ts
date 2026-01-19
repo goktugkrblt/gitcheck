@@ -130,7 +130,8 @@ export async function GET(request: NextRequest) {
 
     // 7. Generate AI analysis
     const startTime = Date.now();
-    const analysis = await generateAIAnalysis(username, proData);
+    // Type assertion - analyzeAllPro returns compatible data structure
+    const analysis = await generateAIAnalysis(username, proData as any);
     const duration = Date.now() - startTime;
 
     console.log(`✅ AI analysis generated in ${duration}ms`);
