@@ -30,7 +30,7 @@ export default function RefundPage() {
             Refund & Return Policy
           </h1>
           <p className="text-black/60 dark:text-white/60">
-            Last updated: January 18, 2025
+            Last updated: January 19, 2026
           </p>
         </motion.div>
 
@@ -42,13 +42,13 @@ export default function RefundPage() {
           className="prose prose-lg dark:prose-invert max-w-none"
         >
           <div className="space-y-8 text-black/80 dark:text-white/80">
-            {/* 7-Day Money Back Guarantee */}
+            {/* 14-Day Money Back Guarantee */}
             <section>
               <h2 className="text-2xl font-bold text-black dark:text-white mb-4">
-                7-Day Money Back Guarantee
+                14-Day Money Back Guarantee
               </h2>
               <p className="mb-4">
-                We stand behind the quality of our PRO analysis. If you're not satisfied with your purchase, we offer a full refund within 7 days of your purchase date.
+                We stand behind the quality of our PRO analysis. If you're not satisfied with your purchase, we offer a full refund within 14 days of your purchase date.
               </p>
             </section>
 
@@ -124,7 +124,7 @@ export default function RefundPage() {
                 We cannot provide refunds in the following cases:
               </p>
               <ul className="list-disc pl-6 space-y-2">
-                <li>Requests made after 7 days from the purchase date</li>
+                <li>Requests made after 14 days from the purchase date</li>
                 <li>Purchases made more than 30 days ago</li>
                 <li>Chargebacks or disputes filed without first contacting us</li>
               </ul>
@@ -136,11 +136,11 @@ export default function RefundPage() {
                 Re-analysis Refund Policy
               </h2>
               <p className="mb-4">
-                For re-analysis purchases ($2), the same 7-day refund policy applies. However, please note:
+                For re-analysis purchases ($2), the same 14-day refund policy applies. However, please note:
               </p>
               <ul className="list-disc pl-6 space-y-2">
                 <li>Re-analysis refunds are processed separately from initial PRO purchases</li>
-                <li>You can request a refund for your most recent re-analysis within 7 days</li>
+                <li>You can request a refund for your most recent re-analysis within 14 days</li>
                 <li>Your previous PRO analysis data will remain accessible</li>
               </ul>
             </section>

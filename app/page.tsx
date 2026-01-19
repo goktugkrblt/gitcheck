@@ -737,9 +737,9 @@ export default function HomePage() {
                   q: "How does the payment work?",
                   a: "Pay $4 for your first PRO analysis, then $2 for each subsequent re-analysis. No subscriptions, no recurring charges. After payment via Stripe, you'll have instant access to all advanced features and insights for your profile."
                 },
-                { 
-                  q: "Can I request a refund?", 
-                  a: "Yes. If you're not satisfied with your PRO analysis, contact us within 7 days of purchase for a full refund, no questions asked." 
+                {
+                  q: "Can I request a refund?",
+                  a: "Yes. If you're not satisfied with your PRO analysis, contact us within 14 days of purchase for a full refund, no questions asked."
                 },
                 { 
                   q: "How is my developer score calculated?", 
