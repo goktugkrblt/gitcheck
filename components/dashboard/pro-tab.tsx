@@ -29,6 +29,8 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
   const [showFeaturesModal, setShowFeaturesModal] = useState(false);
   const [isPurchasing, setIsPurchasing] = useState(false);
   const proTabRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [showGradient, setShowGradient] = useState(true);
 
   // ✅ Re-analyze state
   const [reAnalyzeState, setReAnalyzeState] = useState<ReAnalyzeState>({
@@ -82,13 +84,44 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
     setReAnalyzeState({ isProcessing: true, showPaymentModal: false });
 
     try {
+      // Simulate $2 payment
+      const paymentResponse = await fetch('/api/simulate-purchase', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: 2, type: 'reanalyze' }),
+      });
+
+      if (!paymentResponse.ok) {
+        throw new Error('Payment failed');
+      }
+
       // Clear cache to force fresh analysis
       ClientCache.remove(ProCacheKeys.allAnalysis(username));
 
-      // Fetch fresh analysis
-      await fetchAllProData();
+      // Clear AI analysis cache too
+      const aiClearResponse = await fetch(`/api/pro/ai-analysis?username=${username}`, {
+        method: 'DELETE',
+      });
 
-      alert('✅ Profile re-analyzed successfully! Your data has been updated.');
+      if (!aiClearResponse.ok) {
+        console.warn('Failed to clear AI cache, continuing...');
+      }
+
+      // Fetch fresh analysis with force flag
+      const response = await fetch(`/api/pro/analyze-all?username=${username}&force=true`);
+      const result = await response.json();
+
+      if (result.success) {
+        setProData(result.data);
+        // Clear AI state to force regeneration
+        setAiAnalysis(null);
+        setAiGeneratedAt(null);
+        setAiIsCached(false);
+
+        alert('✅ Profile re-analyzed successfully! Your PRO data has been updated with the latest information.');
+      } else {
+        throw new Error(result.error || 'Analysis failed');
+      }
     } catch (error) {
       console.error('Re-analysis error:', error);
       alert('❌ Re-analysis failed. Please try again.');
@@ -161,6 +194,30 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
     }
   }, [username, fetchAllProData]);
 
+  // ✅ Scroll kontrolü - en sona gelince gradient'i gizle
+  useEffect(() => {
+    const handleScroll = () => {
+      if (scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 5; // 5px tolerance
+        setShowGradient(!isAtEnd);
+      }
+    };
+
+    const scrollElement = scrollRef.current;
+    if (scrollElement) {
+      scrollElement.addEventListener('scroll', handleScroll);
+      // İlk yüklemede kontrol et
+      handleScroll();
+    }
+
+    return () => {
+      if (scrollElement) {
+        scrollElement.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [proData]);
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -187,32 +244,32 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
     const analysisDate = cachedData?.timestamp ? new Date(cachedData.timestamp) : (proData ? new Date() : null);
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Hero Header with Analysis Date & Re-analyze Button */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 border-2 border-black/10 dark:border-purple-500/20 p-4 md:p-6">
+        <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 border-2 border-black/10 dark:border-purple-500/20 p-3 sm:p-4 md:p-6">
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-pink-500/5 animate-pulse" />
 
-          <div className="relative z-10 space-y-4">
+          <div className="relative z-10 space-y-3 sm:space-y-4">
             {/* Top Row: Title & PRO Badge */}
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-                  <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-black dark:text-white" />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-black dark:text-white" />
                 </div>
-                <div className="text-left">
-                  <h2 className="text-xl md:text-2xl font-black text-black dark:text-[#e0e0e0] tracking-tighter">
+                <div className="text-left min-w-0">
+                  <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-black dark:text-[#e0e0e0] tracking-tighter truncate">
                     Premium Analytics
                   </h2>
-                  <p className="text-black/60 dark:text-purple-400 text-xs md:text-sm font-medium">
-                    Advanced insights from your GitHub data
+                  <p className="text-black/60 dark:text-purple-400 text-xs sm:text-sm font-medium">
+                    Advanced insights
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <div className="px-4 md:px-5 py-1.5 md:py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50 flex items-center gap-2">
-                  <Crown className="w-3.5 h-3.5 md:w-4 md:h-4 text-black dark:text-white" />
-                  <span className="text-xs md:text-sm font-black text-black dark:text-white tracking-wider">
+              <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                <div className="px-2.5 sm:px-3 md:px-4 lg:px-5 py-1 sm:py-1.5 md:py-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg shadow-purple-500/50 flex items-center gap-1.5 sm:gap-2">
+                  <Crown className="w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-black dark:text-white" />
+                  <span className="text-[10px] sm:text-xs md:text-sm font-black text-black dark:text-white tracking-wider whitespace-nowrap">
                     PRO MEMBER
                   </span>
                 </div>
@@ -221,8 +278,8 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
 
             {/* Bottom Row: Analysis Date & Re-analyze Button */}
             {proData && analysisDate && (
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pt-3 border-t border-black/10 dark:border-purple-500/20">
-                <div className="flex items-center gap-2 text-xs text-black dark:text-purple-300/80">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-3 pt-2 sm:pt-3 border-t border-black/10 dark:border-purple-500/20">
+                <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-black dark:text-purple-300/80">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -232,16 +289,16 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                 <Button
                   onClick={() => setReAnalyzeState({ ...reAnalyzeState, showPaymentModal: true })}
                   disabled={reAnalyzeState.isProcessing}
-                  className="bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:bg-white/20 border border-black/20 dark:border-white/20 hover:border-white/30 text-black dark:text-white text-xs font-bold px-4 py-2 rounded-lg transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:bg-white/20 border border-black/20 dark:border-white/20 hover:border-white/30 text-black dark:text-white text-[10px] sm:text-xs font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg transition-all flex items-center gap-1.5 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto justify-center"
                 >
                   {reAnalyzeState.isProcessing ? (
                     <>
-                      <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                      <div className="animate-spin w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full" />
                       Processing...
                     </>
                   ) : (
                     <>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                       </svg>
                       Re-analyze ($2)
@@ -275,8 +332,14 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
         {/* Data loaded - Show full tabs */}
         {proData && (
           <Tabs defaultValue="code-quality" className="w-full">
-            <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              <TabsList className="bg-black/5 dark:bg-[#131c26] border border-black/10 dark:border-[#131c26] p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-5 rounded-xl h-auto">
+            <div className="relative">
+              {/* Fade indicator on right to show scrollability - only on small screens */}
+              {showGradient && (
+                <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white/80 dark:from-[#050307]/80 via-white/30 dark:via-[#050307]/30 to-transparent pointer-events-none z-10 md:hidden transition-opacity duration-300" />
+              )}
+
+              <div ref={scrollRef} className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <TabsList className="bg-black/5 dark:bg-[#131c26] border border-black/10 dark:border-[#131c26] p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-5 rounded-xl h-auto">
                 <TabsTrigger value="code-quality" className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-300 text-black/60 dark:text-purple-400/60 hover:text-purple-600 dark:hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap">
                   <Code className="w-4 h-4 mr-1.5" />
                   README
@@ -295,9 +358,10 @@ export function ProTab({ isPro = false, username, onPurchaseComplete }: ProTabPr
                 </TabsTrigger>
                 <TabsTrigger value="ai-analysis" className="cursor-pointer data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500/20 data-[state=active]:to-pink-500/20 data-[state=active]:border data-[state=active]:border-purple-500/40 data-[state=active]:text-purple-600 dark:data-[state=active]:text-purple-300 text-black/60 dark:text-purple-400/60 hover:text-purple-600 dark:hover:text-purple-400 font-bold text-xs tracking-wider transition-all duration-200 rounded-lg px-3 md:px-4 py-2.5 whitespace-nowrap relative">
                   <Brain className="w-4 h-4 mr-1.5" />
-                  AI                
+                  AI
                 </TabsTrigger>
               </TabsList>
+              </div>
             </div>
 
             <TabsContent value="code-quality" className="space-y-6 mt-6">

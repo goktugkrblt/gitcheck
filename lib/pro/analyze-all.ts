@@ -238,23 +238,23 @@ function calculateCareerInsights(data: {
   else if (consistency >= 60) experiencePoints += 2;
   else if (consistency >= 40) experiencePoints += 1;
 
-  // Repository health (maintenance quality)
-  if (repoHealth.overallScore >= 8) experiencePoints += 3;
-  else if (repoHealth.overallScore >= 6) experiencePoints += 2;
-  else if (repoHealth.overallScore >= 4) experiencePoints += 1;
+  // Repository health (maintenance quality) - repoHealth.overallScore is 0-100
+  if (repoHealth.overallScore >= 80) experiencePoints += 3;
+  else if (repoHealth.overallScore >= 60) experiencePoints += 2;
+  else if (repoHealth.overallScore >= 40) experiencePoints += 1;
 
-  // Collaboration (team work)
-  if (collaborationScore >= 7) experiencePoints += 3;
-  else if (collaborationScore >= 5) experiencePoints += 2;
-  else if (collaborationScore >= 3) experiencePoints += 1;
+  // Collaboration (team work) - collaborationScore is 0-100
+  if (collaborationScore >= 70) experiencePoints += 3;
+  else if (collaborationScore >= 50) experiencePoints += 2;
+  else if (collaborationScore >= 30) experiencePoints += 1;
 
   // Technology adoption
   if (cuttingEdge >= 60) experiencePoints += 2;
   else if (modernFrameworks >= 70) experiencePoints += 1;
 
-  // Code quality & documentation
-  if (codeQualityScore >= 8 && documentationHabits >= 70) experiencePoints += 2;
-  else if (codeQualityScore >= 6) experiencePoints += 1;
+  // Code quality & documentation - codeQualityScore is 0-100
+  if (codeQualityScore >= 80 && documentationHabits >= 70) experiencePoints += 2;
+  else if (codeQualityScore >= 60) experiencePoints += 1;
 
   // Leadership indicators
   const contributorCount = activity.contributorCount || 1;
@@ -275,9 +275,9 @@ function calculateCareerInsights(data: {
   
   if (soloVsTeam >= 80) {
     profileType = 'Solo Developer';
-  } else if (collaborationScore >= 8 && contributorCount >= 5) {
+  } else if (collaborationScore >= 80 && contributorCount >= 5) {
     profileType = 'Open Source Contributor';
-  } else if (documentationHabits >= 80 && readmeQuality.overallScore >= 8) {
+  } else if (documentationHabits >= 80 && readmeQuality.overallScore >= 80) {
     profileType = 'Documentation-Focused Engineer';
   } else if (modernFrameworks >= 80 && cuttingEdge >= 60) {
     profileType = 'Early Adopter / Tech Lead';
@@ -377,11 +377,11 @@ function calculateCareerInsights(data: {
   // Market Value
   let marketValue: 'Entry' | 'Competitive' | 'High-Value' | 'Elite' = 'Entry';
 
-  if (experiencePoints >= 14 && overallScore >= 8.5) {
+  if (experiencePoints >= 14 && overallScore >= 85) {
     marketValue = 'Elite';
-  } else if (experiencePoints >= 10 && overallScore >= 7.5) {
+  } else if (experiencePoints >= 10 && overallScore >= 75) {
     marketValue = 'High-Value';
-  } else if (experiencePoints >= 6 || overallScore >= 6.5) {
+  } else if (experiencePoints >= 6 || overallScore >= 65) {
     marketValue = 'Competitive';
   }
   
@@ -404,20 +404,20 @@ function calculateCareerInsights(data: {
   // ==========================================
   
   const strengths: string[] = [];
-  
-  if (technicalBreadth >= 8) {
+
+  if (technicalBreadth >= 80) {
     strengths.push('🚀 Diverse technology stack with modern frameworks');
   }
-  if (documentation >= 8) {
+  if (documentation >= 80) {
     strengths.push('📚 Exceptional documentation and communication skills');
   }
-  if (collaborationSkill >= 8) {
+  if (collaborationSkill >= 80) {
     strengths.push('🤝 Strong collaboration and team contribution');
   }
-  if (codeQualitySkill >= 8) {
+  if (codeQualitySkill >= 80) {
     strengths.push('✨ High code quality with best practices');
   }
-  if (productivitySkill >= 8) {
+  if (productivitySkill >= 80) {
     strengths.push('⚡ Outstanding productivity and focus');
   }
   if (consistency >= 80) {
@@ -435,66 +435,66 @@ function calculateCareerInsights(data: {
   // ==========================================
   
   const recommendations: string[] = [];
-  
+
   // Technical breadth
-  if (technicalBreadth < 6) {
+  if (technicalBreadth < 60) {
     recommendations.push('📚 Expand your technology stack by learning modern frameworks');
   }
   if (cuttingEdge < 40 && modernFrameworks >= 60) {
     recommendations.push('🚀 Explore cutting-edge technologies to stay ahead');
   }
-  
+
   // Documentation
-  if (documentation < 6) {
+  if (documentation < 60) {
     recommendations.push('📝 Improve documentation quality across your repositories');
   }
   if (documentationHabits < 50) {
     recommendations.push('📋 Add README files and documentation to more projects');
   }
-  
+
   // Collaboration
-  if (collaborationSkill < 5) {
+  if (collaborationSkill < 50) {
     recommendations.push('🤝 Increase open source contributions and code reviews');
   }
   if (reviewParticipation < 40) {
     recommendations.push('👀 Participate more in pull request reviews');
   }
-  
+
   // Code quality
-  if (codeQualitySkill < 6) {
+  if (codeQualitySkill < 60) {
     recommendations.push('✨ Focus on code quality and best practices');
   }
   if (commitMessageQuality < 60) {
     recommendations.push('💬 Improve commit message quality with conventional commits');
   }
-  
+
   // Project management
-  if (projectManagement < 6) {
+  if (projectManagement < 60) {
     recommendations.push('📊 Enhance project maintenance and issue management');
   }
   if ((maintenance.lastCommitDays || 0) > 30) {
     recommendations.push('⏰ Update repositories more frequently');
   }
-  
+
   // Work-life balance
   if (burnoutRisk > 60) {
     recommendations.push('🌴 Consider work-life balance to prevent burnout');
   }
-  
+
   // Visibility
   if (visibility < 50) {
     recommendations.push('🌐 Increase your visibility through better documentation and collaboration');
   }
-  
+
   // Career advancement
-  if (experiencePoints < 6 && overallScore >= 6) {
+  if (experiencePoints < 6 && overallScore >= 60) {
     recommendations.push('📈 Keep building your portfolio - you\'re making great progress');
   }
-  if (experiencePoints >= 6 && experiencePoints < 10 && overallScore >= 7.5) {
+  if (experiencePoints >= 6 && experiencePoints < 10 && overallScore >= 75) {
     recommendations.push('🎯 Focus on leadership and mentoring to advance your career');
   }
 
-  console.log(`  Overall Career Score: ${overallScore}/10 (${grade})`);
+  console.log(`  Overall Career Score: ${overallScore}/100 (${grade})`);
   console.log(`  Experience Points: ${experiencePoints}/18`);
   console.log(`  Profile Type: ${profileType}`);
   console.log(`  Market Value: ${marketValue}`);

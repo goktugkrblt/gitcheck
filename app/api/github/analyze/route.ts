@@ -246,19 +246,15 @@ export async function POST(req: NextRequest) {
     // ✅ YENİ: skipPro true ise burada dur, PRO analizini atla
     if (skipPro) {
       console.log('✅ Public data saved. PRO analysis will run in background.');
-      
+
       // Clear old PRO cache
       await prisma.profile.update({
         where: { username: user.githubUsername },
         data: {
-          codeQualityCache: Prisma.JsonNull,
-          repoHealthCache: Prisma.JsonNull,
-          testCoverageCache: Prisma.JsonNull,
-          cicdAnalysisCache: Prisma.JsonNull,
-          lastCodeQualityScan: null,
-          lastRepoHealthScan: null,
-          lastTestCoverageScan: null,
-          lastCicdAnalysisScan: null,
+          proAnalysisCache: Prisma.JsonNull,
+          lastProAnalysisScan: null,
+          aiAnalysisCache: null,
+          lastAiAnalysisScan: null,
         },
       });
       
@@ -276,21 +272,23 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // ✅ Normal flow: PRO analizini de yap
-    console.log('🗑️  Clearing old PRO cache for fresh analysis...');
-    await prisma.profile.update({
-      where: { username: user.githubUsername },
-      data: {
-        codeQualityCache: Prisma.JsonNull,
-        repoHealthCache: Prisma.JsonNull,
-        testCoverageCache: Prisma.JsonNull,
-        cicdAnalysisCache: Prisma.JsonNull,
-        lastCodeQualityScan: null,
-        lastRepoHealthScan: null,
-        lastTestCoverageScan: null,
-        lastCicdAnalysisScan: null,
-      },
-    });
+    // ✅ Check if user has PRO plan and existing PRO cache
+    const shouldUpdateProCache = user.plan === 'FREE' || !(previousProfile as any)?.proAnalysisCache;
+
+    if (shouldUpdateProCache) {
+      console.log('🗑️  Clearing old PRO cache for fresh analysis...');
+      await prisma.profile.update({
+        where: { username: user.githubUsername },
+        data: {
+          proAnalysisCache: Prisma.JsonNull,
+          lastProAnalysisScan: null,
+          aiAnalysisCache: null,
+          lastAiAnalysisScan: null,
+        },
+      });
+    } else {
+      console.log('✅ PRO user - keeping existing PRO frontend cache');
+    }
 
     // ✅ WAIT for PRO analysis and update score
     console.log('🎯 Running PRO analysis for precision scoring...');
@@ -314,12 +312,15 @@ export async function POST(req: NextRequest) {
         const updatedProfile = await prisma.profile.findUnique({
           where: { username: user.githubUsername },
         });
-        
-        if (updatedProfile?.codeQualityCache) {
-          const analysisData = typeof updatedProfile.codeQualityCache === 'string' 
-            ? JSON.parse(updatedProfile.codeQualityCache) 
-            : updatedProfile.codeQualityCache;
-          
+
+        // ✅ ALWAYS calculate score with PRO data (regardless of cache status)
+        const analysisData = (updatedProfile as any)?.proAnalysisCache
+          ? (typeof (updatedProfile as any).proAnalysisCache === 'string'
+              ? JSON.parse((updatedProfile as any).proAnalysisCache)
+              : (updatedProfile as any).proAnalysisCache)
+          : null;
+
+        if (analysisData) {
           // Recalculate with PRO data
           const finalScoring = calculateDeveloperScore({
             readmeQuality: analysisData.readmeQuality,
@@ -347,12 +348,12 @@ export async function POST(req: NextRequest) {
               accountAge,
               totalContributions: contributions.contributionCalendar.totalContributions,
               mostActiveDay: activity.mostActiveDay,
-              averageRepoSize: repos.length > 0 
-                ? Math.round(repos.reduce((sum, repo: any) => sum + (repo.size || 0), 0) / repos.length) 
+              averageRepoSize: repos.length > 0
+                ? Math.round(repos.reduce((sum, repo: any) => sum + (repo.size || 0), 0) / repos.length)
                 : 0,
             },
           });
-          
+
           // Update with FINAL precision score
           await prisma.profile.update({
             where: { username: user.githubUsername },
@@ -361,8 +362,10 @@ export async function POST(req: NextRequest) {
               percentile: finalScoring.percentile,
             },
           });
-          
+
           console.log(`🎯 Final Precision Score: ${finalScoring.overallScore.toFixed(2)} (${finalScoring.percentile}th percentile)`);
+        } else {
+          console.log('⚠️ PRO analysis data not found in cache');
         }
       }
     } catch (err: any) {

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Trophy, Medal, Crown, Globe, MapPin, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/navbar";
+import Link from "next/link";
 
 interface LeaderboardUser {
   username: string;
@@ -16,26 +17,38 @@ interface LeaderboardUser {
 export default function LeaderboardPage() {
   const [users, setUsers] = useState<LeaderboardUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [filterType, setFilterType] = useState<"global" | "country">("global");
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [availableCountries, setAvailableCountries] = useState<string[]>([]);
+  const [hasMore, setHasMore] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
-    fetchLeaderboard();
+    fetchLeaderboard(true);
   }, [filterType, selectedCountry]);
 
-  const fetchLeaderboard = async () => {
-    setLoading(true);
+  const fetchLeaderboard = async (reset: boolean = false) => {
+    if (reset) {
+      setLoading(true);
+      setUsers([]);
+    } else {
+      setLoadingMore(true);
+    }
+
     try {
+      const offset = reset ? 0 : users.length;
       const url = filterType === "global"
-        ? "/api/leaderboard?type=global"
-        : `/api/leaderboard?type=country&country=${selectedCountry}`;
+        ? `/api/leaderboard?type=global&limit=50&offset=${offset}`
+        : `/api/leaderboard?type=country&country=${selectedCountry}&limit=50&offset=${offset}`;
 
       const response = await fetch(url);
       const data = await response.json();
 
       if (data.success) {
-        setUsers(data.users);
+        setUsers(prev => reset ? data.users : [...prev, ...data.users]);
+        setHasMore(data.hasMore);
+        setTotalCount(data.totalCount);
         if (data.countries) {
           setAvailableCountries(data.countries);
         }
@@ -44,6 +57,7 @@ export default function LeaderboardPage() {
       console.error("Failed to fetch leaderboard:", error);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   };
 
@@ -63,7 +77,7 @@ export default function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#050307]">
-      <Navbar maxWidth="max-w-7xl" sticky={false} />
+      <Navbar sticky={false} />
 
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 md:pt-40 pb-12">
         {/* Header */}
@@ -142,13 +156,13 @@ export default function LeaderboardPage() {
         >
           <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg p-4 text-center">
             <TrendingUp className="w-6 h-6 text-purple-500 mx-auto mb-1.5" />
-            <p className="text-xl font-black text-black dark:text-white">{users.length}</p>
+            <p className="text-xl font-black text-black dark:text-white">{totalCount || users.length}</p>
             <p className="text-[10px] text-black/40 dark:text-white/40 uppercase tracking-wider">Total Developers</p>
           </div>
           <div className="bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg p-4 text-center">
             <Crown className="w-6 h-6 text-yellow-500 mx-auto mb-1.5" />
             <p className="text-xl font-black text-black dark:text-white">
-              {users[0]?.score || 0}
+              {users[0]?.score.toFixed(2) || '0.00'}
             </p>
             <p className="text-[10px] text-black/40 dark:text-white/40 uppercase tracking-wider">Top Score</p>
           </div>
@@ -217,7 +231,7 @@ export default function LeaderboardPage() {
                 {/* Score */}
                 <div className="text-right flex-shrink-0">
                   <p className="text-lg font-black bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-                    {user.score}
+                    {user.score.toFixed(2)}
                   </p>
                   <p className="text-[10px] text-black/40 dark:text-white/40">score</p>
                 </div>
@@ -225,6 +239,70 @@ export default function LeaderboardPage() {
             ))
           )}
         </motion.div>
+
+        {/* Load More Button */}
+        {!loading && hasMore && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-6 text-center"
+          >
+            <button
+              onClick={() => fetchLeaderboard(false)}
+              disabled={loadingMore}
+              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold rounded-lg hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loadingMore ? (
+                <span className="flex items-center gap-2">
+                  <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                  Loading...
+                </span>
+              ) : (
+                `Load More (${users.length}/${totalCount})`
+              )}
+            </button>
+          </motion.div>
+        )}
+
+        {/* Footer */}
+        <footer className="pt-16 md:pt-24 border-t border-black/[0.06] dark:border-white/[0.06] mt-12">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6"
+          >
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 text-xs text-black/40 dark:text-white/40">
+              {[
+                { label: "Documentation", href: "/docs" },
+                { label: "Privacy", href: "/privacy" },
+                { label: "Terms", href: "/terms" },
+                { label: "Refund Policy", href: "/refund" },
+              ].map((link, i) => (
+                <Link
+                  key={i}
+                  href={link.href}
+                  className="hover:text-black/70 dark:hover:text-white/70 transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
+            <div className="text-xs text-black/40 dark:text-white/40 font-mono">
+              © 2025 • Built for{" "}
+              <a
+                href="https://goktug.info"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors"
+              >
+                developer
+              </a>
+              {" "}by developers
+            </div>
+          </motion.div>
+        </footer>
       </main>
     </div>
   );

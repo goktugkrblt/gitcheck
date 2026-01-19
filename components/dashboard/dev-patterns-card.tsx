@@ -94,7 +94,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-0 sm:p-4">
       {/* Main Score Card */}
       <div className="relative overflow-hidden bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-2xl p-8">
         <div className={`absolute inset-0 bg-gradient-to-br ${getScoreBgColor(data.overallScore)} opacity-50`} />
@@ -132,12 +132,12 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
           </div>
 
           {/* Giant Score Display */}
-          <div className="flex items-center gap-8 mb-8">
-            <div className="flex items-end gap-3">
-              <div className={`text-8xl font-black bg-gradient-to-r ${getScoreColor(data.overallScore)} bg-clip-text text-transparent`}>
+          <div className="flex items-center gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8">
+            <div className="flex items-end gap-2 sm:gap-3">
+              <div className={`text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r ${getScoreColor(data.overallScore)} bg-clip-text text-transparent`}>
                 {data.overallScore.toFixed(2)}
               </div>
-              <div className="text-4xl text-black/60 dark:text-[#666] mb-4">/100</div>
+              <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-black/60 dark:text-[#666] mb-2 sm:mb-3 md:mb-4">/100</div>
             </div>
 
             {/* Circular Progress */}
@@ -186,8 +186,11 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
             </div>
           </div>
           {/* Story Section - MOVED TO TOP! */}
-          {data.insights.story && (
-            <div className="bg-gradient-to-br from-black/5 to-black/5 dark:from-purple-500/10 dark:to-pink-500/10 border border-black/10 dark:border-purple-500/20 rounded-xl p-6 mt-8">
+          
+        </div>
+      </div>
+{data.insights.story && (
+            <div className="bg-gradient-to-br from-black/5 to-black/5 dark:from-purple-500/10 dark:to-pink-500/10 border border-black/10 dark:border-purple-500/20 rounded-xl p-8 mt-8">
               <div className="flex items-center gap-2 mb-4">
                 <Activity className="w-5 h-5 text-black/60 dark:text-purple-400" />
                 <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Your Developer Story</h4>
@@ -197,9 +200,6 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
               </p>
             </div>
           )}
-        </div>
-      </div>
-
       {/* TODO: 24-Hour Heatmap */}
       {/* TODO: 6 Metric Cards */}
       {/* TODO: Weekly Pattern Chart */}
@@ -208,7 +208,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
       <div className="text-center text-black/60 dark:text-[#666] py-8">
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* 1. Commit Patterns */}
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
             <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
                 <Clock className="w-5 h-5 text-black/60 dark:text-[#666]" />
@@ -254,7 +254,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
         </div>
 
         {/* 2. Code Quality */}
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
             <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
                 <Code className="w-5 h-5 text-black/60 dark:text-[#666]" />
@@ -300,7 +300,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
         </div>
 
         {/* 3. Work-Life Balance */}
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
             <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
                 <Zap className="w-5 h-5 text-black/60 dark:text-[#666]" />
@@ -346,7 +346,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
         </div>
 
         {/* 4. Collaboration */}
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
             <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
                 <Users className="w-5 h-5 text-black/60 dark:text-[#666]" />
@@ -392,7 +392,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
         </div>
 
         {/* 5. Technology */}
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
             <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
                 <Sparkles className="w-5 h-5 text-black/60 dark:text-[#666]" />
@@ -438,7 +438,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
         </div>
 
         {/* 6. Productivity */}
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
             <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
                 <Target className="w-5 h-5 text-black/60 dark:text-[#666]" />
@@ -487,7 +487,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
         {/* Legend */}  
 </div>
      {/* 24-Hour Activity Heatmap - TAM GENİŞLİK */}
-<div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+<div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
   <div className="flex items-center gap-3 mb-6">
     <Clock className="w-6 h-6 text-black/60 dark:text-purple-400" />
     <div>
@@ -565,7 +565,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
 <div className="grid md:grid-cols-3 gap-6">
   {/* Strengths */}
   {data.insights.strengths.length > 0 && (
-    <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+    <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
       <div className="flex items-center gap-2 mb-4">
         <CheckCircle className="w-5 h-5 text-black/60 dark:text-green-400" />
         <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Strengths</h4>
@@ -583,7 +583,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
 
   {/* Patterns */}
   {data.insights.patterns.length > 0 && (
-    <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+    <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
       <div className="flex items-center gap-2 mb-4">
         <Sparkles className="w-5 h-5 text-black/60 dark:text-purple-400" />
         <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Your Patterns</h4>
@@ -601,7 +601,7 @@ export function DevPatternsCard({ data }: DevPatternsCardProps) {
 
   {/* Recommendations */}
   {data.insights.recommendations.length > 0 && (
-    <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+    <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
       <div className="flex items-center gap-2 mb-4">
         <TrendingUp className="w-5 h-5 text-black/60 dark:text-blue-400" />
         <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Recommendations</h4>

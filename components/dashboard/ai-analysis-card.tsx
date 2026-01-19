@@ -146,7 +146,7 @@ export function AIAnalysisCard({
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -30 }}
-            className="relative overflow-hidden bg-gradient-to-br from-white to-white dark:from-[#050307] dark:to-[#050307] border border-black/10 dark:border-[#131c26] rounded-2xl p-12"
+            className="relative overflow-hidden bg-gradient-to-br from-white to-white dark:from-[#050307] dark:to-[#050307] border border-black/10 dark:border-[#131c26] rounded-2xl p-4 md:p-12"
           >
             <div className="max-w-4xl mx-auto text-center">
               <motion.div 
@@ -317,11 +317,11 @@ export function AIAnalysisCard({
                   li: ({ node, children, ...props }) => {
                     const content = children?.toString() || '';
                     const isCheckbox = content.includes('[ ]') || content.includes('[x]') || content.includes('[X]');
-                    
+
                     if (isCheckbox) {
                       const isChecked = content.includes('[x]') || content.includes('[X]');
                       const text = content.replace(/\[(x|X| )\]\s*/, '');
-                      
+
                       return (
                         <li className="flex items-start gap-3 text-black/70 dark:text-[#b4b4b4] list-none ml-0" {...props}>
                           <div className={`mt-0.5 w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 ${
@@ -337,7 +337,7 @@ export function AIAnalysisCard({
                         </li>
                       );
                     }
-                    
+
                     return (
                       <li className="text-black/70 dark:text-[#b4b4b4] ml-5 list-disc text-left" {...props}>{children}</li>
                     );
@@ -345,7 +345,7 @@ export function AIAnalysisCard({
                   strong: ({ node, ...props }) => (
                     <strong className="text-black dark:text-[#e0e0e0] font-bold" {...props} />
                   ),
-                  code: ({ node, inline, ...props }: any) => 
+                  code: ({ node, inline, ...props }: any) =>
                     inline ? (
                       <code className="bg-purple-500/10 dark:bg-[#8b5cf6]/10 text-purple-400 dark:text-[#a78bfa] px-1.5 py-0.5 rounded text-sm font-mono" {...props} />
                     ) : (

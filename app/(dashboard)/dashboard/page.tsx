@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { ScoreDisplay } from "@/components/dashboard/score-display";
 import { BadgeEmbed } from "@/components/dashboard/badge-embed";
@@ -42,6 +42,8 @@ export default function DashboardPage() {
   const [userPlan, setUserPlan] = useState<string>("FREE");
   const [activeTab, setActiveTab] = useState("overview");
   const [devMockPlan, setDevMockPlan] = useState<"FREE" | "PRO" | null>(null);
+  const mainTabsScrollRef = useRef<HTMLDivElement>(null);
+  const [showMainTabsGradient, setShowMainTabsGradient] = useState(true);
 
   // ✅ NEW: PRO Analysis state
   const [proAnalysisStatus, setProAnalysisStatus] = useState<'idle' | 'running' | 'complete'>('idle');
@@ -91,13 +93,37 @@ export default function DashboardPage() {
       // Refresh profile to get updated score
       fetchProfile();
     };
-    
+
     window.addEventListener('proAnalysisComplete', handleAnalysisComplete);
-    
+
     return () => {
       window.removeEventListener('proAnalysisComplete', handleAnalysisComplete);
     };
   }, []);
+
+  // ✅ Main tabs scroll kontrolü - en sona gelince gradient'i gizle
+  useEffect(() => {
+    const handleScroll = () => {
+      if (mainTabsScrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = mainTabsScrollRef.current;
+        const isAtEnd = scrollLeft + clientWidth >= scrollWidth - 5; // 5px tolerance
+        setShowMainTabsGradient(!isAtEnd);
+      }
+    };
+
+    const scrollElement = mainTabsScrollRef.current;
+    if (scrollElement) {
+      scrollElement.addEventListener('scroll', handleScroll);
+      // İlk yüklemede kontrol et
+      handleScroll();
+    }
+
+    return () => {
+      if (scrollElement) {
+        scrollElement.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [hasProfile]);
 
   useEffect(() => {
     const handleNavigateToProTab = () => {
@@ -562,8 +588,14 @@ const fetchGlobalRank = async (username: string) => {
           {/* ✅ Tabs section */}
           <div>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <div className="overflow-x-auto px-4 md:px-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              <TabsList className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-6 rounded-xl h-auto backdrop-blur-sm">
+            <div className="relative px-4 md:px-0">
+              {/* Fade indicator on right to show scrollability - only on small screens */}
+              {showMainTabsGradient && (
+                <div className="absolute right-4 md:right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white/80 dark:from-[#050307]/80 via-white/30 dark:via-[#050307]/30 to-transparent pointer-events-none z-10 md:hidden transition-opacity duration-300" />
+              )}
+
+              <div ref={mainTabsScrollRef} className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <TabsList className="bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 p-1.5 w-full min-w-max md:min-w-0 grid grid-cols-6 rounded-xl h-auto backdrop-blur-sm">
 
                 <TabsTrigger
                   value="overview"
@@ -613,6 +645,7 @@ const fetchGlobalRank = async (username: string) => {
                   PRO
                 </TabsTrigger>
               </TabsList>
+              </div>
             </div>
 
             {/* ✅ OVERVIEW TAB - Info iconlar eklendi */}

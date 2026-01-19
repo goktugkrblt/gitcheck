@@ -1,8 +1,9 @@
 "use client";
 
 import { Navbar } from "@/components/navbar";
-import { Check, Sparkles } from "lucide-react";
+import { Check, Zap } from "lucide-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function PricingPage() {
   return (
@@ -35,7 +36,7 @@ export default function PricingPage() {
           className="text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-xs text-black/60 dark:text-white/60 font-mono tracking-wider mb-6">
-            <Sparkles className="h-3 w-3" />
+            <Zap className="h-3 w-3" />
             SIMPLE PRICING
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-black dark:text-white tracking-tight mb-4">
@@ -258,6 +259,46 @@ export default function PricingPage() {
             ))}
           </div>
         </motion.div>
+
+        {/* Footer */}
+        <footer className="pt-16 md:pt-24 border-t border-black/[0.06] dark:border-white/[0.06] mt-16">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 max-w-5xl mx-auto px-6"
+          >
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 text-xs text-black/40 dark:text-white/40">
+              {[
+                { label: "Documentation", href: "/docs" },
+                { label: "Privacy", href: "/privacy" },
+                { label: "Terms", href: "/terms" },
+                { label: "Refund Policy", href: "/refund" },
+              ].map((link, i) => (
+                <Link
+                  key={i}
+                  href={link.href}
+                  className="hover:text-black/70 dark:hover:text-white/70 transition-colors"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+
+            <div className="text-xs text-black/40 dark:text-white/40 font-mono">
+              © 2025 • Built for{" "}
+              <a
+                href="https://goktug.info"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white transition-colors"
+              >
+                developer
+              </a>
+              {" "}by developers
+            </div>
+          </motion.div>
+        </footer>
       </div>
     </div>
   );

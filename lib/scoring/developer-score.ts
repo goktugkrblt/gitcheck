@@ -451,8 +451,8 @@ function calculateHybridScore(input: ScoringInput): ScoringResult {
 
   let collaborationScore = statResult.components.collaboration.score;
   if (career !== null) {
-    // ✅ FIX: Career is already 0-100
-    const proScore = career;
+    // ✅ FIX: Career Insights returns 0-10, convert to 0-100 scale
+    const proScore = career * 10;
     collaborationScore = Math.min(proScore, 95);
   }
 

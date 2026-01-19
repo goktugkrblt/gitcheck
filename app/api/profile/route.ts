@@ -40,10 +40,10 @@ export async function GET(req: NextRequest) {
     console.log('📊 Score from DB:', profile.score);
 
     // Parse cached PRO data
-    const analysisData = profile.codeQualityCache 
-      ? (typeof profile.codeQualityCache === 'string' 
-          ? JSON.parse(profile.codeQualityCache) 
-          : profile.codeQualityCache)
+    const analysisData = (profile as any).proAnalysisCache
+      ? (typeof (profile as any).proAnalysisCache === 'string'
+          ? JSON.parse((profile as any).proAnalysisCache)
+          : (profile as any).proAnalysisCache)
       : null;
 
     // ✅ YENİ: scoreComponents hesapla (Why this score? için)
@@ -104,7 +104,7 @@ export async function GET(req: NextRequest) {
       },
       profile: {
         ...profile,
-        codeQualityCache: analysisData,
+        proAnalysisCache: analysisData, // ✅ Changed from codeQualityCache
         scoringMethod: analysisData ? 'pro' : 'fallback',
         scoreComponents: scoringResult?.components || null, // ✅ Why this score?
         scoreStrengths: scoringResult?.strengths || null,

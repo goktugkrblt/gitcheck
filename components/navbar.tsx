@@ -7,11 +7,11 @@ import { Menu, X, Sun, Moon } from "lucide-react";
 import { useTheme } from "@/contexts/theme-context";
 
 interface NavbarProps {
-  maxWidth?: string;
   sticky?: boolean;
 }
 
-export function Navbar({ maxWidth = "max-w-5xl", sticky = true }: NavbarProps) {
+export function Navbar({ sticky = true }: NavbarProps) {
+  const maxWidth = "max-w-5xl"; // ✅ Fixed width for all pages
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme, toggleTheme, mounted } = useTheme();
@@ -41,6 +41,7 @@ export function Navbar({ maxWidth = "max-w-5xl", sticky = true }: NavbarProps) {
   const navLinks = [
     { href: "/docs", label: "Documentation" },
     { href: "/leaderboard", label: "Leaderboard" },
+    { href: "/blog", label: "Blog" },
     { href: "/pricing", label: "Pricing" },
   ];
 

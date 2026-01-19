@@ -111,12 +111,16 @@ model Profile {
   repoHealthCache       Json?
   testCoverageCache     Json?
   cicdAnalysisCache     Json?
-  
+  proAnalysisCache      Json?     // Full PRO analysis cache
+  aiAnalysisCache       String?   @db.Text  // AI analysis text cache
+
   // PRO Cache Timestamps
   lastCodeQualityScan   DateTime?
   lastRepoHealthScan    DateTime?
   lastTestCoverageScan  DateTime?
   lastCicdAnalysisScan  DateTime?
+  lastProAnalysisScan   DateTime? // Last full PRO analysis timestamp
+  lastAiAnalysisScan    DateTime? // Last AI analysis timestamp
   
   // Analysis
   strengths       Json?

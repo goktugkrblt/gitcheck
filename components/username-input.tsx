@@ -22,6 +22,8 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
   } | null>(null);
   const [pageLoadTime] = useState(() => Date.now()); // Track when component mounted
   const [honeypot, setHoneypot] = useState(""); // Honeypot field (should stay empty)
+  const [progress, setProgress] = useState(0);
+  const [statusMessage, setStatusMessage] = useState("");
   const router = useRouter();
 
   const handleAnalyze = async () => {
@@ -49,6 +51,30 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
 
     setError("");
     setAnalyzing(true);
+    setProgress(0);
+    setStatusMessage("Validating username...");
+
+    // Simulate progress updates
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 90) return prev;
+        return prev + Math.random() * 15;
+      });
+    }, 500);
+
+    const statusMessages = [
+      "Validating username...",
+      "Fetching GitHub data...",
+      "Analyzing repositories...",
+      "Calculating developer score...",
+      "Finalizing analysis..."
+    ];
+
+    let messageIndex = 0;
+    const messageInterval = setInterval(() => {
+      messageIndex = (messageIndex + 1) % statusMessages.length;
+      setStatusMessage(statusMessages[messageIndex]);
+    }, 2000);
 
     try {
       const response = await fetch("/api/analyze-username", {
@@ -65,6 +91,9 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
 
       const data = await response.json();
 
+      clearInterval(progressInterval);
+      clearInterval(messageInterval);
+
       if (!response.ok) {
         // Handle rate limit error specifically
         if (response.status === 429 && data.resetAt && data.minutesUntilReset) {
@@ -77,14 +106,26 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
           setError(data.error || "Failed to analyze profile");
         }
         setAnalyzing(false);
+        setProgress(0);
+        setStatusMessage("");
         return;
       }
 
-      // Success - redirect to dashboard with just username (cache info comes from API)
-      router.push(`/dashboard?username=${extractedUsername}`);
+      // Success - complete progress
+      setProgress(100);
+      setStatusMessage("Analysis complete! Redirecting...");
+
+      // Small delay before redirect
+      setTimeout(() => {
+        router.push(`/dashboard?username=${extractedUsername}`);
+      }, 500);
     } catch (err) {
+      clearInterval(progressInterval);
+      clearInterval(messageInterval);
       setError("Network error. Please try again.");
       setAnalyzing(false);
+      setProgress(0);
+      setStatusMessage("");
     }
   };
 
@@ -135,11 +176,6 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
             disabled={analyzing || isLoading}
             className="w-full px-4 py-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:outline-none focus:border-black/30 dark:focus:border-white/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           />
-          {analyzing && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2">
-              <Loader2 className="w-4 h-4 text-black/60 dark:text-white/60 animate-spin" />
-            </div>
-          )}
         </div>
 
         {/* Button */}
@@ -181,6 +217,31 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
         </motion.div>
       </div>
 
+      {/* Progress Bar & Status */}
+      {analyzing && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-3 space-y-2"
+        >
+          {/* Progress Bar */}
+          <div className="w-full h-2 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
+
+          {/* Status Message */}
+          <div className="flex items-center gap-2 text-xs text-black/60 dark:text-white/60">
+            <Loader2 className="w-3 h-3 animate-spin" />
+            <span className="font-mono">{statusMessage}</span>
+          </div>
+        </motion.div>
+      )}
+
       {/* Error Message */}
       {error && (
         <motion.div
@@ -193,7 +254,7 @@ export function UsernameInput({ isMobile = false, isLoading = false }: UsernameI
       )}
 
       {/* Helper Text */}
-      {!error && (
+      {!error && !analyzing && (
         <div className="mt-3 space-y-2">
           <motion.p
             initial={{ opacity: 0 }}

@@ -1,4 +1,29 @@
+# GitCheck - GitHub Analytics Platform
+# Website: https://gitcheck.me
+
 User-agent: *
 Allow: /
+Allow: /dashboard
+Allow: /leaderboard
+Allow: /blog
+Allow: /docs
+Allow: /pricing
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+Disallow: /data-usage
 
+# Crawl delay to be respectful
+Crawl-delay: 1
+
+# Sitemaps
 Sitemap: https://gitcheck.me/sitemap.xml
+
+# Special instructions for major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0

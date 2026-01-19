@@ -94,7 +94,7 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-0 sm:p-4">
       {/* Main Health Score Card */}
       <div className="relative overflow-hidden bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-2xl p-8">
         <div className={`absolute inset-0 bg-gradient-to-br ${getScoreBgColor(data.overallScore)} opacity-50`} />
@@ -133,12 +133,12 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
           </div>
 
           {/* Giant Score Display */}
-          <div className="flex items-center gap-8 mb-8">
-            <div className="flex items-end gap-3">
-              <div className={`text-8xl font-black bg-gradient-to-r ${getScoreColor(data.overallScore)} bg-clip-text text-transparent`}>
+          <div className="flex items-center gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8">
+            <div className="flex items-end gap-2 sm:gap-3">
+              <div className={`text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r ${getScoreColor(data.overallScore)} bg-clip-text text-transparent`}>
                 {data.overallScore.toFixed(2)}
               </div>
-              <div className="text-4xl text-black/60 dark:text-[#666] mb-4">/100</div>
+              <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-black/60 dark:text-[#666] mb-2 sm:mb-3 md:mb-4">/100</div>
             </div>
 
             {/* Circular Progress - SADECE BURASI YÜZDE */}
@@ -187,9 +187,11 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
             </div>
           </div>
 
-          {/* Story Section - MOVED TO TOP! */}
-          {data.insights.story && (
-            <div className="bg-gradient-to-br from-black/5 to-black/5 dark:from-blue-500/10 dark:to-cyan-500/10 border border-black/10 dark:border-blue-500/20 rounded-xl p-6 mt-8">
+          {/* Story Section - MOVED TO TOP! */}         
+        </div>
+      </div>
+ {data.insights.story && (
+            <div className="bg-gradient-to-br from-black/5 to-black/5 dark:from-blue-500/10 dark:to-cyan-500/10 border border-black/10 dark:border-blue-500/20 rounded-xl p-8 mt-8">
               <div className="flex items-center gap-2 mb-4">
                 <Activity className="w-5 h-5 text-black/60 dark:text-blue-400" />
                 <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Health Assessment</h4>
@@ -199,13 +201,10 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
               </p>
             </div>
           )}
-        </div>
-      </div>
-
       {/* Metrics Grid - HER ŞEY /10 */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Maintenance */}
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <GitCommit className="w-5 h-5 text-black/60 dark:text-[#666]" />
@@ -241,7 +240,7 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
         </div>
 
         {/* Issue Management */}
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <AlertTriangle className="w-5 h-5 text-black/60 dark:text-[#666]" />
@@ -277,7 +276,7 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
         </div>
 
         {/* Pull Requests */}
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <GitPullRequest className="w-5 h-5 text-black/60 dark:text-[#666]" />
@@ -313,7 +312,7 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
         </div>
 
         {/* Activity */}
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <Activity className="w-5 h-5 text-black/60 dark:text-[#666]" />
@@ -354,7 +353,7 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
      <div className="grid md:grid-cols-3 gap-6">
         {/* Strengths - YENİ EKLENEN */}
         {data.insights.strengths.length > 0 && (
-          <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+          <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
             <div className="flex items-center gap-2 mb-4">
               <CheckCircle className="w-5 h-5 text-black/60 dark:text-green-400" />
               <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Strengths</h4>
@@ -372,7 +371,7 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
 
         {/* Concerns */}
         {data.insights.concerns.length > 0 && (
-          <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+          <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
             <div className="flex items-center gap-2 mb-4">
               <AlertCircle className="w-5 h-5 text-black/60 dark:text-red-400" />
               <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Concerns</h4>
@@ -390,7 +389,7 @@ export function RepoHealthCard({ data }: RepoHealthCardProps) {
 
         {/* Recommendations */}
         {data.insights.recommendations.length > 0 && (
-          <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+          <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5 text-black/60 dark:text-blue-400" />
               <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Recommendations</h4>

@@ -88,16 +88,16 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-6"
+      className="space-y-6 p-0 sm:p-4"
     >
       {/* Main Header Card */}
-      <div className="relative overflow-hidden bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-2xl p-8">
+      <div className="relative overflow-hidden bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-2xl p-4 sm:p-6 md:p-8">
         <div className={`absolute inset-0 bg-gradient-to-br ${levelColor} opacity-5`} />
 
         <div className="relative z-10">
-          <div className="flex items-start justify-between mb-8">
-            <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-              <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${levelColor} flex items-center justify-center shadow-lg`}>
+          <div className="flex items-start justify-between mb-6 sm:mb-8">
+            <div className="flex flex-col items-start gap-3 sm:gap-4 sm:flex-row sm:items-center">
+              <div className={`w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl bg-gradient-to-r ${levelColor} flex items-center justify-center shadow-lg`}>
                 <Target className="w-8 h-8 text-black dark:text-white" />
               </div>
               <div>
@@ -120,12 +120,12 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
           </div>
 
           {/* Giant Score Display */}
-          <div className="flex items-center gap-8 mb-8">
-            <div className="flex items-end gap-3">
-              <div className={`text-8xl font-black bg-gradient-to-r ${getScoreColor(safeData.overallScore)} bg-clip-text text-transparent`}>
+          <div className="flex items-center gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8">
+            <div className="flex items-end gap-2 sm:gap-3">
+              <div className={`text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r ${getScoreColor(safeData.overallScore)} bg-clip-text text-transparent`}>
                 {safeData.overallScore.toFixed(2)}
               </div>
-              <div className="text-4xl text-black/60 dark:text-[#666] mb-4">/100</div>
+              <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-black/60 dark:text-[#666] mb-2 sm:mb-3 md:mb-4">/100</div>
             </div>
 
             {/* Circular Progress */}
@@ -324,8 +324,8 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Portfolio Strength */}
-          <div className="bg-white dark:bg-[#050307] rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
+          <div className="bg-white dark:bg-[#050307] rounded-lg p-8">
+            <div className="flex items-center justify-between mb-4 flex-col sm:flex-row">
               <div className="flex items-center gap-2">
                 <Award className="w-5 h-5 text-black/60 dark:text-[#666]" />
                 <span className="text-sm font-medium text-black/70 dark:text-[#919191]">Portfolio Strength</span>
@@ -346,8 +346,8 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
           </div>
 
           {/* Visibility */}
-          <div className="bg-white dark:bg-[#050307] rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
+          <div className="bg-white dark:bg-[#050307] rounded-lg p-8">
+            <div className="flex items-center justify-between mb-4 flex-col sm:flex-row">
               <div className="flex items-center gap-2">
                 <Eye className="w-5 h-5 text-black/60 dark:text-[#666]" />
                 <span className="text-sm font-medium text-black/70 dark:text-[#919191]">Visibility</span>
@@ -368,8 +368,8 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
           </div>
 
           {/* Consistency */}
-          <div className="bg-white dark:bg-[#050307] rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
+          <div className="bg-white dark:bg-[#050307] rounded-lg p-8">
+            <div className="flex items-center justify-between mb-4 flex-col sm:flex-row items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Activity className="w-5 h-5 text-black/60 dark:text-[#666]" />
                 <span className="text-sm font-medium text-black/70 dark:text-[#919191]">Consistency</span>
@@ -390,7 +390,7 @@ export function CareerInsightsCard({ data }: CareerInsightsCardProps) {
           </div>
 
           {/* Market Value */}
-          <div className="bg-white dark:bg-[#050307] rounded-lg p-6">
+          <div className="bg-white dark:bg-[#050307] rounded-lg p-8">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-black/60 dark:text-[#666]" />

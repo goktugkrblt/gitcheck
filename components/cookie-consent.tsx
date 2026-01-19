@@ -72,13 +72,13 @@ export function CookieConsent() {
                   <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                     <button
                       onClick={declineCookies}
-                      className="px-4 py-2 text-sm font-semibold text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-all"
+                      className="px-4 py-2 text-sm font-semibold text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-all cursor-pointer"
                     >
                       Decline
                     </button>
                     <button
                       onClick={acceptCookies}
-                      className="px-4 py-2 text-sm font-semibold text-white bg-purple-500 hover:bg-purple-600 rounded-lg transition-all shadow-lg shadow-purple-500/25"
+                      className="px-4 py-2 text-sm font-semibold text-white bg-purple-500 hover:bg-purple-600 rounded-lg transition-all shadow-lg shadow-purple-500/25 cursor-pointer"
                     >
                       Accept
                     </button>
@@ -87,7 +87,7 @@ export function CookieConsent() {
                   {/* Close Button */}
                   <button
                     onClick={declineCookies}
-                    className="absolute top-4 right-4 md:relative md:top-0 md:right-0 p-1 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors"
+                    className="absolute top-4 right-4 md:relative md:top-0 md:right-0 p-1 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
                     aria-label="Close"
                   >
                     <X className="w-5 h-5" />

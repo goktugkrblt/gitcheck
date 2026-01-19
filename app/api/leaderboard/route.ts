@@ -16,8 +16,10 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const type = searchParams.get('type') || 'global';
     const country = searchParams.get('country');
+    const limit = parseInt(searchParams.get('limit') || '50');
+    const offset = parseInt(searchParams.get('offset') || '0');
 
-    console.log('📊 [LEADERBOARD] Fetching top developers...', { type, country });
+    console.log('📊 [LEADERBOARD] Fetching top developers...', { type, country, limit, offset });
 
     // Build where clause
     const whereClause: any = {
@@ -34,6 +36,11 @@ export async function GET(request: NextRequest) {
       };
     }
 
+    // Get total count for pagination
+    const totalCount = await prisma.profile.count({
+      where: whereClause,
+    });
+
     // Get profiles from database
     const profiles = await prisma.profile.findMany({
       where: whereClause,
@@ -48,7 +55,8 @@ export async function GET(request: NextRequest) {
       orderBy: {
         score: 'desc',
       },
-      take: 100,
+      skip: offset,
+      take: limit,
     });
 
     console.log(`📊 [LEADERBOARD] Found ${profiles.length} profiles`);
@@ -200,7 +208,7 @@ export async function GET(request: NextRequest) {
 
     // Convert to leaderboard format
     const users = profiles.map((profile, index) => ({
-      rank: index + 1,
+      rank: offset + index + 1,
       username: profile.username || 'Anonymous',
       score: Number(profile.score.toFixed(2)),
       avatarUrl: profile.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.username}`,
@@ -216,6 +224,8 @@ export async function GET(request: NextRequest) {
       leaderboard: users, // For backward compatibility with homepage
       countries,
       count: profiles.length,
+      totalCount,
+      hasMore: offset + profiles.length < totalCount,
       type,
       lastUpdated: new Date().toISOString(),
     });

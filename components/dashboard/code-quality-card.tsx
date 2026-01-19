@@ -49,7 +49,7 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="space-y-6"
+      className="space-y-6 p-0 sm:p-4"
     >
       {/* Main Score Card */}
       <div className="relative overflow-hidden bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-2xl p-8">
@@ -80,12 +80,12 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
           </div>
 
           {/* Giant Score Display */}
-          <div className="flex items-center gap-8 mb-8">
-            <div className="flex items-end gap-3">
-              <div className={`text-8xl font-black bg-gradient-to-r ${getScoreColor(data.overallScore)} bg-clip-text text-transparent`}>
+          <div className="flex items-center gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8">
+            <div className="flex items-end gap-2 sm:gap-3">
+              <div className={`text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black bg-gradient-to-r ${getScoreColor(data.overallScore)} bg-clip-text text-transparent`}>
                 {data.overallScore.toFixed(2)}
               </div>
-              <div className="text-4xl text-black/60 dark:text-[#666] mb-4">/100</div>
+              <div className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-black/60 dark:text-[#666] mb-2 sm:mb-3 md:mb-4">/100</div>
             </div>
           </div>
 
@@ -103,7 +103,7 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
 
       {/* Story Section - MOVED TO TOP! */}
       {data.story && (
-        <div className="bg-gradient-to-br from-black/5 to-black/5 dark:from-purple-500/10 dark:to-pink-500/10 border border-black/10 dark:border-purple-500/20 rounded-xl p-6">
+        <div className="bg-gradient-to-br from-black/5 to-black/5 dark:from-purple-500/10 dark:to-pink-500/10 border border-black/10 dark:border-purple-500/20 rounded-xl p-8">
           <div className="flex items-center gap-2 mb-4">
             <BookOpen className="w-5 h-5 text-black/60 dark:text-purple-400" />
             <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">What This Means</h4>
@@ -116,7 +116,7 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
 
       {/* Metrics Grid with explanatory text */}
       <div className="grid md:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
           <div className="flex items-center gap-2 mb-3">
             <FileText className="w-5 h-5 text-black/60 dark:text-[#666]" />
             <h4 className="font-bold text-black dark:text-[#e0e0e0]">Length</h4>
@@ -130,7 +130,7 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
           <div className="flex items-center gap-2 mb-3">
             <Star className="w-5 h-5 text-black/60 dark:text-[#666]" />
             <h4 className="font-bold text-black dark:text-[#e0e0e0]">Sections</h4>
@@ -144,7 +144,7 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
           <div className="flex items-center gap-2 mb-3">
             <TrendingUp className="w-5 h-5 text-black/60 dark:text-[#666]" />
             <h4 className="font-bold text-black dark:text-[#e0e0e0]">Badges</h4>
@@ -161,7 +161,7 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
 
       {/* Quality Insights - Fine-grained scores with decimals */}
       <div className="grid md:grid-cols-3 gap-4">
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
           <h4 className="font-bold text-black dark:text-[#e0e0e0] mb-2">Readability</h4>
           <div className="flex items-end gap-2">
             <div className="text-3xl font-black text-black/60 dark:text-blue-400">
@@ -180,7 +180,7 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
           <h4 className="font-bold text-black dark:text-[#e0e0e0] mb-2">Completeness</h4>
           <div className="flex items-end gap-2">
             <div className="text-3xl font-black text-black/60 dark:text-green-400">
@@ -199,7 +199,7 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+        <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
           <h4 className="font-bold text-black dark:text-[#e0e0e0] mb-2">Professionalism</h4>
           <div className="flex items-end gap-2">
             <div className="text-3xl font-black text-black/60 dark:text-purple-400">
@@ -295,7 +295,7 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
       <div className="grid md:grid-cols-2 gap-6">
         {/* Strengths */}
         {data.strengths.length > 0 && (
-          <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+          <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
             <div className="flex items-center gap-2 mb-4">
               <CheckCircle2 className="w-5 h-5 text-black/60 dark:text-green-400" />
               <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Strengths</h4>
@@ -313,7 +313,7 @@ export function CodeQualityCard({ data }: CodeQualityCardProps) {
 
         {/* Improvements */}
         {data.improvements.length > 0 && (
-          <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-6">
+          <div className="bg-white dark:bg-[#050307] border border-black/10 dark:border-[#131c26] rounded-xl p-8">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5 text-black/60 dark:text-blue-400" />
               <h4 className="text-lg font-black text-black dark:text-[#e0e0e0]">Improvements</h4>
