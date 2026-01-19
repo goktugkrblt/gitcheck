@@ -70,8 +70,8 @@ export default function DashboardPage() {
     ? devMockPlan
     : userPlan;
 
-  // ✅ CHANGED: Show score only after analysis completes
-  const shouldShowScore = proAnalysisStatus === 'complete';
+  // ✅ CHANGED: Show score only if it exists (score > 0)
+  const shouldShowScore = profileData?.score && profileData.score > 0;
 
   useEffect(() => {
     fetchProfile();
@@ -557,31 +557,21 @@ const fetchGlobalRank = async (username: string) => {
             {/* ✅ CHANGED: Score Display - Full width, separate from profile */}
             <div className="lg:motion-safe:animate-slideInRight">
               {shouldShowScore ? (
-                <>
-                  <ScoreDisplay
-                    score={displayData.score}
-                    percentile={displayData.percentile}
-                    username={displayData.username}
-                    globalRank={globalRank}
-                  />
-
-                  {/* Badge Embed Component */}
-                  <div className="mt-6">
-                    <BadgeEmbed
-                      username={displayData.username}
-                      rank={globalRank?.rank}
-                    />
-                  </div>
-                </>
+                <ScoreDisplay
+                  score={displayData.score}
+                  percentile={displayData.percentile}
+                  username={displayData.username}
+                  globalRank={globalRank}
+                />
               ) : (
-                <div className="bg-[#050307] rounded-xl border border-blue-500/30 p-6 md:p-8 flex items-center justify-center min-h-[200px]">
+                <div className="bg-white dark:bg-[#050307] rounded-xl border border-blue-500/30 dark:border-blue-500/30 p-6 md:p-8 flex items-center justify-center min-h-[200px]">
                   <div className="text-center">
                     <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                    <h3 className="text-lg font-bold text-white mb-2">Calculating Developer Score</h3>
-                    <p className="text-white/40 text-sm">
+                    <h3 className="text-lg font-bold text-black dark:text-white mb-2">Calculating Developer Score</h3>
+                    <p className="text-black/60 dark:text-white/40 text-sm">
                       Analyzing your coding patterns and contribution quality...
                     </p>
-                    <p className="text-blue-400 text-xs mt-3 font-mono">
+                    <p className="text-blue-600 dark:text-blue-400 text-xs mt-3 font-mono">
                       This may take 30-60 seconds
                     </p>
                   </div>
