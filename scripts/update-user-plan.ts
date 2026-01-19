@@ -1,10 +1,18 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Plan } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
 async function main() {
   const username = process.argv[2]
-  const plan = process.argv[3] || 'PRO'
+  const planArg = (process.argv[3] || 'PRO').toUpperCase()
+
+  // Validate plan
+  if (!['FREE', 'PRO'].includes(planArg)) {
+    console.log('❌ Invalid plan. Must be FREE or PRO')
+    process.exit(1)
+  }
+
+  const plan = planArg as Plan
 
   if (!username) {
     console.log('Usage: tsx scripts/update-user-plan.ts <username> [plan]')
@@ -30,7 +38,7 @@ async function main() {
 
   const updated = await prisma.user.update({
     where: { id: user.id },
-    data: { plan }
+    data: { plan: plan as Plan }
   })
 
   console.log(`✅ Updated ${updated.githubUsername} to ${plan} plan`)
