@@ -166,11 +166,9 @@ export async function GET(request: NextRequest) {
     try {
       console.log(`💾 Saving AI analysis to database for: ${username}`);
 
-      await prisma.profile.updateMany({
+      await prisma.profile.update({
         where: {
-          user: {
-            githubUsername: username
-          }
+          username: username
         },
         data: {
           aiAnalysisCache: analysis,
@@ -235,11 +233,9 @@ export async function DELETE(request: NextRequest) {
     // Clear database cache
     try {
       if (username) {
-        await prisma.profile.updateMany({
+        await prisma.profile.update({
           where: {
-            user: {
-              githubUsername: username
-            }
+            username: username
           },
           data: {
             aiAnalysisCache: null,
@@ -254,11 +250,9 @@ export async function DELETE(request: NextRequest) {
         });
 
         if (user?.githubUsername) {
-          await prisma.profile.updateMany({
+          await prisma.profile.update({
             where: {
-              user: {
-                githubUsername: user.githubUsername
-              }
+              username: user.githubUsername
             },
             data: {
               aiAnalysisCache: null,

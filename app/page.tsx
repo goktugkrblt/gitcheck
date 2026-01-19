@@ -456,9 +456,10 @@ export default function HomePage() {
     >
       <LeaderboardCard
         profiles={leaderboard.slice(0, 10)}
-        count={leaderboardCount}
+        count={Math.min(10, leaderboard.length)}
+        totalCount={leaderboardCount}
         loading={leaderboardLoading}
-        isMobile={isMobile} 
+        isMobile={isMobile}
       />
     </motion.div>
   </div>
@@ -467,9 +468,10 @@ export default function HomePage() {
   <motion.div className="lg:hidden mb-12 mt-8">
     <LeaderboardCard
       profiles={leaderboard.slice(0, 10)}
-      count={leaderboardCount}
+      count={Math.min(10, leaderboard.length)}
+      totalCount={leaderboardCount}
       loading={leaderboardLoading}
-      isMobile={isMobile} 
+      isMobile={isMobile}
     />
   </motion.div>
 </div>
@@ -856,16 +858,18 @@ export default function HomePage() {
 
 // ✅ NEW: Leaderboard Card Component with Real Data Support
 // ✅ FIXED: Leaderboard Card Component - Hydration Error Fixed
-function LeaderboardCard({ 
-  profiles, 
+function LeaderboardCard({
+  profiles,
   count,
+  totalCount,
   loading,
-  isMobile 
-}: { 
-  profiles: any[], 
+  isMobile
+}: {
+  profiles: any[],
   count: number,
+  totalCount?: number,
   loading: boolean,
-  isMobile: boolean 
+  isMobile: boolean
 }) {
   return (
     <div className="border border-black/[0.08] dark:border-white/[0.08] rounded-xl bg-black/[0.02] dark:bg-white/[0.02] p-4 backdrop-blur-sm">
@@ -976,7 +980,7 @@ function LeaderboardCard({
         >
           {count > 0 ? (
             <span>
-              {count} developer{count > 1 ? 's' : ''} ranked
+              Top {count} of {totalCount || count} ranked
               <br />
               Updated live
             </span>
