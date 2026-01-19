@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
 
     // 6. Fetch PRO analysis data from existing endpoint
     const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
-    const proAnalysisResponse = await fetch(`${baseUrl}/api/pro/analyze-all`, {
+    const proAnalysisResponse = await fetch(`${baseUrl}/api/pro/analyze-all?username=${username}`, {
       headers: {
         cookie: request.headers.get('cookie') || '',
       },

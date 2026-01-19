@@ -136,14 +136,18 @@ export class GitHubService {
       const result = await this.graphqlClient(query, { username });
       const collection = result.user.contributionsCollection;
 
-      // ✅ Calculate total commits from all repositories
-      const allTimeCommits = result.user.repositories.nodes.reduce((total: number, repo: any) => {
+      // ✅ Calculate TOTAL commits from all user's repositories (all-time)
+      // Sum up commit counts from each repository's default branch
+      const repos = result.user.repositories.nodes;
+      const totalCommits = repos.reduce((sum: number, repo: any) => {
         const commitCount = repo.defaultBranchRef?.target?.history?.totalCount || 0;
-        return total + commitCount;
+        return sum + commitCount;
       }, 0);
 
+      console.log(`📊 Total commits across ${repos.length} repositories: ${totalCommits}`);
+
       return {
-        totalCommits: allTimeCommits, // ✅ Use all-time commits instead of last year
+        totalCommits, // ✅ All-time total commits from all repos
         totalPRs: collection.totalPullRequestContributions,
         totalIssues: collection.totalIssueContributions,
         totalReviews: collection.totalPullRequestReviewContributions,
