@@ -105,20 +105,16 @@ export async function GET(request: NextRequest) {
 
     console.log(`⏱️  Generating AI analysis for: ${username} ${forceRegenerate ? '(FORCED)' : ''}`);
 
-    // 6. Fetch PRO analysis data from existing endpoint
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
-    const proAnalysisResponse = await fetch(`${baseUrl}/api/pro/analyze-all?username=${username}`, {
-      headers: {
-        cookie: request.headers.get('cookie') || '',
-      },
+    // 6. Fetch PRO analysis data - use direct import instead of internal fetch to avoid Vercel issues
+    const { Octokit } = await import('@octokit/rest');
+    const { analyzeAllPro } = await import('@/lib/pro/analyze-all');
+
+    const octokit = new Octokit({
+      auth: process.env.GITHUB_PERSONAL_TOKEN,
     });
 
-    if (!proAnalysisResponse.ok) {
-      throw new Error('Failed to fetch PRO analysis data');
-    }
-
-    const proAnalysisResult = await proAnalysisResponse.json();
-    const proData = proAnalysisResult.data;
+    console.log(`📡 Running PRO analysis for: ${username}`);
+    const proData = await analyzeAllPro(octokit, username);
 
     // 🔍 DEBUG: Data yapısını görelim
     console.log('🔍 PRO DATA STRUCTURE:');
