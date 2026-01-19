@@ -161,7 +161,7 @@ export default function LeaderboardPage() {
             <select
               value={selectedCountry}
               onChange={(e) => setSelectedCountry(e.target.value)}
-              className="px-3 py-1.5 rounded-lg bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 text-black dark:text-white font-medium text-xs focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="pl-4 pr-6 py-1.5 rounded-md bg-white dark:bg-white/5 border border-black/10 dark:border-white/10 text-black dark:text-white font-semibold text-xs focus:outline-none focus:ring-2 focus:ring-purple-500 min-w-[140px]"
             >
               <option value="">Select Country</option>
               {availableCountries.map((country) => (

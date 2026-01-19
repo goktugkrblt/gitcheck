@@ -980,7 +980,7 @@ function LeaderboardCard({
         >
           {count > 0 ? (
             <span>
-              Top {count} of {totalCount || count} ranked
+              Top {count} developers
               <br />
               Updated live
             </span>
