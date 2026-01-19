@@ -38,35 +38,23 @@ function setCachedAnalysis(username: string, analysis: string): void {
 
 export async function GET(request: NextRequest) {
   try {
-    // 1. Check authentication
-    const session = await auth();
-    
-    if (!session?.user?.email) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    // 2. Get user from database
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    // ✅ PUBLIC ACCESS: AI analysis is now available to all authenticated users
-    console.log(`✅ AI Analysis access granted for user: ${user.githubUsername}`);
-
-    // 3. Check query params - GET USERNAME FROM QUERY!
+    // 1. Get username from query params
     const { searchParams } = new URL(request.url);
     const requestedUsername = searchParams.get('username');
     const forceRegenerate = searchParams.get('regenerate') === 'true';
 
-    // Use requested username if provided, fallback to authenticated user
-    const username = requestedUsername || user.githubUsername;
+    // 2. Try to get session (optional for public profiles)
+    const session = await auth();
+
+    let user = null;
+    if (session?.user?.email) {
+      user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+      });
+    }
+
+    // 3. Determine username: from query param or authenticated user
+    const username = requestedUsername || user?.githubUsername;
 
     if (!username) {
       return NextResponse.json({ error: 'GitHub username not found' }, { status: 404 });
